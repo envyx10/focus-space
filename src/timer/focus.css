@@ -1,0 +1,129 @@
+.focus {
+  position: relative;
+  height: 100%;
+  padding: 18px 20px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.focus > *:not(.focus-bg) {
+  position: relative;
+  z-index: 2;
+}
+
+.focus-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.focus-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.focus-ctl {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.focus-ctl button {
+  opacity: 0.5;
+  text-transform: inherit;
+  letter-spacing: inherit;
+}
+
+.focus-ctl button:hover,
+.focus-ctl button.on,
+.focus-ctl button.acc {
+  opacity: 1;
+}
+
+.focus-free {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.focus-free input {
+  width: 44px;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  text-align: right;
+}
+
+.big {
+  display: flex;
+  align-items: center;
+  font-size: clamp(120px, 21vw, 320px);
+  font-weight: 800;
+  letter-spacing: -0.07em;
+  line-height: 0.74;
+  margin-left: -0.06em;
+  font-feature-settings: 'tnum';
+  text-shadow: 0 0 40px var(--bg);
+  pointer-events: none;
+}
+
+.big .colon {
+  display: flex;
+  flex-direction: column;
+  gap: 0.14em;
+  margin: 0 0.06em;
+}
+
+.big .colon i {
+  width: 0.09em;
+  height: 0.09em;
+  background: var(--accent);
+}
+
+.big .colon.blink {
+  animation: blink 1s steps(1) infinite;
+}
+
+.big .sec {
+  -webkit-text-stroke: 1.5px var(--fg);
+  color: rgba(11, 11, 11, 0.55);
+  font-weight: 700;
+  text-shadow: none;
+}
+
+.big sup {
+  align-self: flex-start;
+  font-size: 0.14em;
+  font-weight: 500;
+  letter-spacing: 0;
+  margin: 0.25em 0 0 0.25em;
+  opacity: 0.7;
+}
+
+.focus-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  padding-bottom: 14px;
+}
+
+.focus-dim {
+  opacity: 0.4;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.15;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .big .colon.blink {
+    animation: none;
+  }
+}
