@@ -17,7 +17,8 @@ describe('MixerBar', () => {
   })
 
   it('shows volume as 00–100 and exposes a slider', () => {
-    render(<MixerBar prefs={DEFAULT_PREFS} onVolume={() => {}} onVariant={() => {}} />)
+    const prefs = { ...DEFAULT_PREFS, volumes: { ...DEFAULT_PREFS.volumes, rain: 0.65 } }
+    render(<MixerBar prefs={prefs} onVolume={() => {}} onVariant={() => {}} />)
     const slider = screen.getByRole('slider', { name: /volumen lluvia/i })
     expect(slider).toHaveAttribute('aria-valuenow', '65')
     expect(screen.getByText('65')).toBeInTheDocument()
@@ -25,7 +26,8 @@ describe('MixerBar', () => {
 
   it('arrow keys change the volume in steps of 5', async () => {
     const onVolume = vi.fn()
-    render(<MixerBar prefs={DEFAULT_PREFS} onVolume={onVolume} onVariant={() => {}} />)
+    const prefs = { ...DEFAULT_PREFS, volumes: { ...DEFAULT_PREFS.volumes, rain: 0.65 } }
+    render(<MixerBar prefs={prefs} onVolume={onVolume} onVariant={() => {}} />)
     screen.getByRole('slider', { name: /volumen lluvia/i }).focus()
     await userEvent.keyboard('{ArrowRight}')
     expect(onVolume).toHaveBeenCalledWith('rain', 0.7)

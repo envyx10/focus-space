@@ -12,7 +12,7 @@ export type Prefs = {
 
 export const DEFAULT_PREFS: Prefs = {
   v: 1,
-  volumes: { rain: 0.65, fire: 0, cafe: 0, wind: 0 },
+  volumes: { rain: 0, fire: 0, cafe: 0, wind: 0 },
   variants: { rain: 'suave', fire: 'hoguera', cafe: 'cafeteria', wind: 'suave' },
   lofiVolume: 0.6,
 }

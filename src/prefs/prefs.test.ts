@@ -2,9 +2,9 @@ import { describe, expect, it } from 'vitest'
 import { DEFAULT_PREFS, loadPrefs, PREFS_KEY, savePrefs } from './prefs'
 
 describe('prefs', () => {
-  it('defaults: rain at 0.65, the rest silent', () => {
+  it('defaults: every ambient channel silent until the user raises it', () => {
     expect(loadPrefs()).toEqual(DEFAULT_PREFS)
-    expect(DEFAULT_PREFS.volumes).toEqual({ rain: 0.65, fire: 0, cafe: 0, wind: 0 })
+    expect(DEFAULT_PREFS.volumes).toEqual({ rain: 0, fire: 0, cafe: 0, wind: 0 })
   })
 
   it('falls back on corrupt JSON', () => {
@@ -22,7 +22,7 @@ describe('prefs', () => {
   it('rejects out-of-range volumes and unknown variants', () => {
     localStorage.setItem(PREFS_KEY, JSON.stringify({ v: 1, volumes: { rain: 7 }, variants: { rain: 'lava' } }))
     const p = loadPrefs()
-    expect(p.volumes.rain).toBe(0.65)
+    expect(p.volumes.rain).toBe(0)
     expect(p.variants.rain).toBe('suave')
   })
 
