@@ -38,7 +38,7 @@ describe('engine', () => {
     expect(audio.made.every((a) => a.play.mock.calls.length === 0)).toBe(true)
     await e.resume()
     expect(ctx.resume).toHaveBeenCalled()
-    const rain = audio.made.find((a) => a.src.endsWith('/sounds/rain-suave.wav'))!
+    const rain = audio.made.find((a) => a.src.endsWith('/sounds/rain-suave.mp3'))!
     expect(rain.loop).toBe(true)
     expect(rain.play).toHaveBeenCalled()
     expect(audio.made.some((a) => a.src.includes('fire'))).toBe(false)
@@ -51,7 +51,7 @@ describe('engine', () => {
     e.setVolume('rain', 0.5)
     await e.resume()
     e.setVariant('rain', 'tormenta')
-    const storm = audio.made.find((a) => a.src.endsWith('/sounds/rain-tormenta.wav'))!
+    const storm = audio.made.find((a) => a.src.endsWith('/sounds/rain-tormenta.mp3'))!
     expect(storm.play).toHaveBeenCalled()
   })
 })

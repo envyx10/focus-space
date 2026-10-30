@@ -5,7 +5,7 @@ import { loadTimerStore, saveTimerStore, todayKey } from './timerStore'
 const MIN = 60_000
 
 function chime() {
-  const a = new Audio('/sounds/chime.wav')
+  const a = new Audio('/sounds/chime.mp3')
   a.volume = 0.4
   a.play().catch(() => {})
 }
