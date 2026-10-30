@@ -1,5 +1,21 @@
 import { describe, expect, it } from 'vitest'
-import { SCENES } from './scenes'
+import { SCENES, sceneTargets } from './scenes'
+
+describe('sceneTargets', () => {
+  it.each(SCENES.map((s) => s.id))('%s resamples to exactly n finite points inside the frame', (id) => {
+    const t = sceneTargets(id, 40_000)
+    expect(t).toBeInstanceOf(Float32Array)
+    expect(t.length).toBe(120_000)
+    for (const v of t) {
+      expect(Number.isFinite(v)).toBe(true)
+      expect(Math.abs(v)).toBeLessThanOrEqual(1.75)
+    }
+  })
+
+  it('falls back to the sphere for an unknown id', () => {
+    expect(sceneTargets('nope', 10).length).toBe(30)
+  })
+})
 
 describe('SCENES', () => {
   it('has the six scenes in order', () => {

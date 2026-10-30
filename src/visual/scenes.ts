@@ -82,11 +82,43 @@ function galaxy(n: number, arms: number): number[] {
   return out
 }
 
-function lattice(per: number, size: number): number[] {
+/** Cube of grid lines, each line drawn as a row of particles (reads as a glowing wireframe). */
+function lattice(per: number, size: number, perLine: number): number[] {
   const out: number[] = []
-  for (let i = 0; i < per; i++)
-    for (let j = 0; j < per; j++)
-      for (let k = 0; k < per; k++) out.push(...[i, j, k].map((v) => (v / (per - 1) - 0.5) * size))
+  const at = (v: number) => (v / (per - 1) - 0.5) * size
+  for (let a = 0; a < per; a++)
+    for (let b = 0; b < per; b++)
+      for (let s = 0; s < perLine; s++) {
+        const u = (s / (perLine - 1) - 0.5) * size
+        out.push(u, at(a), at(b), at(a), u, at(b), at(a), at(b), u)
+      }
+  return out
+}
+
+/**
+ * Flattens a scene into exactly `n` target positions for the particle system, baking in each
+ * layer's tilt (and a resting swell for wave surfaces). Extra particles reuse points with a
+ * little jitter so dense scenes don't show duplicates.
+ */
+export function sceneTargets(id: string, n: number): Float32Array {
+  const def = SCENES.find((s) => s.id === id) ?? SCENES[0]
+  const pool: number[] = []
+  for (const layer of def.build()) {
+    let pts = layer.tilt ? rotateX(layer.positions, layer.tilt) : layer.positions
+    if (layer.mode === 'wave') {
+      pts = pts.map((v, i) => (i % 3 === 1 ? v + Math.sin(pts[i - 1] * 2.2 + pts[i + 1] * 1.5) * 0.1 : v))
+    }
+    pool.push(...pts)
+  }
+  const count = pool.length / 3
+  const out = new Float32Array(n * 3)
+  for (let i = 0; i < n; i++) {
+    // first pass covers every point evenly; the rest are random repeats
+    const firstPass = i < Math.min(n, count)
+    const j = firstPass ? Math.floor((i * count) / Math.min(n, count)) : Math.floor(Math.random() * count)
+    const jitter = firstPass ? 0 : 0.012
+    for (let k = 0; k < 3; k++) out[i * 3 + k] = pool[j * 3 + k] + (Math.random() - 0.5) * jitter
+  }
   return out
 }
 
@@ -103,7 +135,7 @@ export const SCENES: SceneDef[] = [
   { id: 'toro', label: 'Toro', build: () => [{ positions: torus(5200, 0.9, 0.34), spin: 0.8, tilt: 0.75, persp: 3.5, fade: 0.45 }] },
   { id: 'ondas', label: 'Ondas', build: () => [{ positions: plane(110, 46, 3.2, 1.8), spin: 0, tilt: 0.45, persp: 3, mode: 'wave', fade: 0.6 }] },
   { id: 'galaxia', label: 'Galaxia', build: () => [{ positions: galaxy(6000, 3), spin: 0.6, tilt: 0.55, persp: 4, fade: 0.3 }] },
-  { id: 'reticula', label: 'Retícula', build: () => [{ positions: lattice(13, 1.55), spin: 0.8, persp: 3, fade: 0.55 }] },
+  { id: 'reticula', label: 'Retícula', build: () => [{ positions: lattice(6, 1.55, 110), spin: 0.8, persp: 3, fade: 0.55 }] },
   {
     id: 'giroscopio',
     label: 'Giroscopio',

@@ -11,6 +11,17 @@ export function fibonacciSphere(n: number): [number, number, number][] {
   })
 }
 
+/** Cubic ease-in-out, clamped to 0..1. */
+export function easeInOut(t: number): number {
+  const x = Math.min(1, Math.max(0, t))
+  return x < 0.5 ? 4 * x * x * x : 1 - (-2 * x + 2) ** 3 / 2
+}
+
+/** out = from + (to - from) * t, element-wise. */
+export function lerpInto(out: Float32Array, from: Float32Array, to: Float32Array, t: number): void {
+  for (let i = 0; i < out.length; i++) out[i] = from[i] + (to[i] - from[i]) * t
+}
+
 /** Envelope follower: jumps towards louder levels (beats punch) and eases back down. */
 export function follow(current: number, target: number): number {
   return current + (target - current) * (target > current ? 0.55 : 0.08)
