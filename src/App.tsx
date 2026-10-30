@@ -13,9 +13,13 @@ import { useTasks } from './tasks/useTasks'
 import FocusPanel from './timer/FocusPanel'
 import { useTimer } from './timer/useTimer'
 import Grain from './visual/Grain'
+import Cycler from './visual/Cycler'
+import { SCENES } from './visual/scenes'
+import { TYPEFACES } from './visual/typefaces'
+import { useTypeface } from './visual/useTypeface'
 
 // three.js is ~150 kB gzip: load it after the first paint so the clock and tasks appear instantly.
-const Sphere = lazy(() => import('./visual/Sphere'))
+const Scene3D = lazy(() => import('./visual/Scene3D'))
 
 export default function App() {
   const timer = useTimer()
@@ -25,9 +29,10 @@ export default function App() {
   const { repo, synced } = useTaskRepo(supabase, session.user)
   const tasks = useTasks(repo)
   const activeTask = tasks.tasks.find((t) => t.active)
+  const displayFont = useTypeface(ambient.prefs.font)
 
   return (
-    <div className="app">
+    <div className="app" style={displayFont}>
       <header className="region-header" data-region="header">
         <Header sessionNumber={timer.sessionNumber} now={new Date()} accountSlot={<AccountMenu session={session} />} />
       </header>
@@ -56,9 +61,15 @@ export default function App() {
           onReset={timer.reset}
           onModeChange={timer.setMode}
           onFreeMinutes={timer.setFreeMinutes}
+          sceneControl={
+            <>
+              <Cycler label="Escena" noun="escena" options={SCENES} value={ambient.prefs.scene} onChange={ambient.setScene} />
+              <Cycler label="Tipo" noun="tipografía" options={TYPEFACES} value={ambient.prefs.font} onChange={ambient.setFont} />
+            </>
+          }
         >
           <Suspense fallback={null}>
-            <Sphere getLevels={ambient.getLevels} />
+            <Scene3D scene={ambient.prefs.scene} getLevels={ambient.getLevels} />
           </Suspense>
         </FocusPanel>
       </main>

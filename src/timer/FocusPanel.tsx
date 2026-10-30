@@ -14,6 +14,7 @@ type Props = {
   onReset: () => void
   onModeChange: (m: TimerMode) => void
   onFreeMinutes: (min: number) => void
+  sceneControl?: ReactNode
   children?: ReactNode
 }
 
@@ -34,29 +35,32 @@ export default function FocusPanel(p: Props) {
           <div className="num">02</div>
           <div className="lbl">{label}</div>
         </div>
-        <div className="focus-ctl">
-          <button className={p.mode === 'pomodoro' ? 'on' : ''} onClick={() => p.onModeChange('pomodoro')}>
-            Pomodoro
-          </button>
-          <button className={p.mode === 'free' ? 'on' : ''} onClick={() => p.onModeChange('free')}>
-            Libre
-          </button>
-          {p.mode === 'free' && (
-            <label className="focus-free">
-              <input
-                type="number"
-                min={1}
-                max={240}
-                value={p.freeMinutes}
-                aria-label="Minutos"
-                onChange={(e) => {
-                  const v = Math.round(Number(e.target.value))
-                  if (v >= 1 && v <= 240) p.onFreeMinutes(v)
-                }}
-              />
-              min
-            </label>
-          )}
+        <div className="focus-right">
+          {p.sceneControl}
+          <div className="focus-ctl">
+            <button className={p.mode === 'pomodoro' ? 'on' : ''} onClick={() => p.onModeChange('pomodoro')}>
+              Pomodoro
+            </button>
+            <button className={p.mode === 'free' ? 'on' : ''} onClick={() => p.onModeChange('free')}>
+              Libre
+            </button>
+            {p.mode === 'free' && (
+              <label className="focus-free">
+                <input
+                  type="number"
+                  min={1}
+                  max={240}
+                  value={p.freeMinutes}
+                  aria-label="Minutos"
+                  onChange={(e) => {
+                    const v = Math.round(Number(e.target.value))
+                    if (v >= 1 && v <= 240) p.onFreeMinutes(v)
+                  }}
+                />
+                min
+              </label>
+            )}
+          </div>
         </div>
       </div>
 
