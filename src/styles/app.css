@@ -1,0 +1,89 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.app {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: 44px 1fr 120px;
+  height: 100vh;
+  min-width: 1024px;
+  min-height: 640px;
+  overflow: hidden;
+}
+
+.region-header {
+  grid-column: 1 / -1;
+  border-bottom: 1px solid var(--line);
+}
+
+.region-tasks {
+  grid-column: 1 / 5;
+  border-right: 1px solid var(--line);
+  overflow: auto;
+}
+
+.region-focus {
+  grid-column: 5 / 13;
+  position: relative;
+  overflow: hidden;
+}
+
+.region-mixer {
+  grid-column: 1 / 9;
+  border-top: 1px solid var(--line);
+}
+
+.region-lofi {
+  grid-column: 9 / 13;
+  border-top: 1px solid var(--line);
+}
+
+/* Swiss label primitives shared by every region */
+.num {
+  font-size: 11px;
+  color: var(--accent);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.lbl {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.55;
+}
+
+.acc {
+  color: var(--accent);
+}
