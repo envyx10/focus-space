@@ -11,6 +11,11 @@ export function fibonacciSphere(n: number): [number, number, number][] {
   })
 }
 
+/** Envelope follower: jumps towards louder levels (beats punch) and eases back down. */
+export function follow(current: number, target: number): number {
+  return current + (target - current) * (target > current ? 0.55 : 0.08)
+}
+
 /** Exponential moving average step, so audio spikes don't make the sphere jitter. */
 export function smooth(current: number, target: number): number {
   return current + (target - current) * EMA
