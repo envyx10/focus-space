@@ -16,6 +16,12 @@ describe('MixerBar', () => {
     expect(onVariant).toHaveBeenLastCalledWith('rain', 'suave')
   })
 
+  it('variant button is not inside the slider (ARIA sliders hide their children from screen readers)', () => {
+    render(<MixerBar prefs={DEFAULT_PREFS} onVolume={() => {}} onVariant={() => {}} />)
+    const slider = screen.getByRole('slider', { name: /volumen lluvia/i })
+    expect(slider.contains(screen.getByRole('button', { name: /lluvia/i }))).toBe(false)
+  })
+
   it('shows volume as 00–100 and exposes a slider', () => {
     const prefs = { ...DEFAULT_PREFS, volumes: { ...DEFAULT_PREFS.volumes, rain: 0.65 } }
     render(<MixerBar prefs={prefs} onVolume={() => {}} onVariant={() => {}} />)

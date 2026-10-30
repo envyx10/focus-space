@@ -18,41 +18,43 @@ function Strip({ ch, volume, variant, onVolume, onVariant }: { ch: Channel; volu
   const variantLabel = ch.variants.find((x) => x.id === variant)?.label
 
   return (
-    <div
-      className={`mx${volume > 0 ? ' live' : ''}`}
-      role="slider"
-      tabIndex={0}
-      aria-label={`Volumen ${ch.label}`}
-      aria-valuemin={0}
-      aria-valuemax={100}
-      aria-valuenow={pct}
-      aria-valuetext={`${pct} %, ${variantLabel}`}
-      onKeyDown={(e) => {
-        const d = e.key === 'ArrowRight' || e.key === 'ArrowUp' ? STEP : e.key === 'ArrowLeft' || e.key === 'ArrowDown' ? -STEP : 0
-        if (!d) return
-        e.preventDefault()
-        onVolume(ch.id, round(volume + d))
-      }}
-      onWheel={(e) => onVolume(ch.id, round(volume + (e.deltaY < 0 ? STEP : -STEP)))}
-      onPointerDown={(e) => {
-        if ((e.target as HTMLElement).closest('button')) return
-        drag.current = { x: e.clientX, v: volume }
-        e.currentTarget.setPointerCapture(e.pointerId)
-      }}
-      onPointerMove={(e) => {
-        if (!drag.current) return
-        const w = e.currentTarget.getBoundingClientRect().width || 1
-        onVolume(ch.id, round(drag.current.v + (e.clientX - drag.current.x) / w))
-      }}
-      onPointerUp={() => (drag.current = null)}
-      onPointerCancel={() => (drag.current = null)}
-    >
+    <div className={`mx${volume > 0 ? ' live' : ''}`}>
       <button className="mx-name" onClick={() => onVariant(ch.id, nextVariant(ch.id, variant))} aria-label={`${ch.label}: ${variantLabel}. Cambiar variante`}>
         {ch.label}
         <span className="mx-variant">{variantLabel} ↻</span>
       </button>
-      <b>{String(pct).padStart(2, '0')}</b>
-      <div className="mx-line" style={{ ['--v' as string]: `${pct}%` }} />
+      {/* Sibling of the button: ARIA sliders make their children presentational. */}
+      <div
+        className="mx-slider"
+        role="slider"
+        tabIndex={0}
+        aria-label={`Volumen ${ch.label}`}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={pct}
+        aria-valuetext={`${pct} %, ${variantLabel}`}
+        onKeyDown={(e) => {
+          const d = e.key === 'ArrowRight' || e.key === 'ArrowUp' ? STEP : e.key === 'ArrowLeft' || e.key === 'ArrowDown' ? -STEP : 0
+          if (!d) return
+          e.preventDefault()
+          onVolume(ch.id, round(volume + d))
+        }}
+        onWheel={(e) => onVolume(ch.id, round(volume + (e.deltaY < 0 ? STEP : -STEP)))}
+        onPointerDown={(e) => {
+          drag.current = { x: e.clientX, v: volume }
+          e.currentTarget.setPointerCapture(e.pointerId)
+        }}
+        onPointerMove={(e) => {
+          if (!drag.current) return
+          const w = e.currentTarget.getBoundingClientRect().width || 1
+          onVolume(ch.id, round(drag.current.v + (e.clientX - drag.current.x) / w))
+        }}
+        onPointerUp={() => (drag.current = null)}
+        onPointerCancel={() => (drag.current = null)}
+      >
+        <b>{String(pct).padStart(2, '0')}</b>
+        <div className="mx-line" style={{ ['--v' as string]: `${pct}%` }} />
+      </div>
     </div>
   )
 }
