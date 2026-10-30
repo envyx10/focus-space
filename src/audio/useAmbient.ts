@@ -50,6 +50,8 @@ export function useAmbient() {
   }, [])
 
   const setLofiVolume = useCallback((v: number) => setPrefs((p) => ({ ...p, lofiVolume: v })), [])
+  const setScene = useCallback((scene: string) => setPrefs((p) => ({ ...p, scene })), [])
+  const setFont = useCallback((font: string) => setPrefs((p) => ({ ...p, font })), [])
 
   const getLevels = useCallback(() => {
     const engine = engineRef.current
@@ -59,5 +61,5 @@ export function useAmbient() {
     return bandLevels(freq.current, ctx.sampleRate, engine.analyser.fftSize)
   }, [])
 
-  return { prefs, setVolume, setVariant, setLofiVolume, getLevels }
+  return { prefs, setVolume, setVariant, setLofiVolume, setScene, setFont, getLevels }
 }

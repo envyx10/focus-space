@@ -24,6 +24,26 @@
   align-items: flex-start;
 }
 
+.focus-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.cycler {
+  gap: 10px;
+}
+
+.cycler .lbl {
+  margin-right: 4px;
+}
+
+.cycler-name {
+  min-width: 78px;
+  text-align: center;
+}
+
 .focus-ctl {
   display: flex;
   gap: 18px;
@@ -62,9 +82,12 @@
 .big {
   display: flex;
   align-items: center;
-  font-size: clamp(120px, 19vw, 300px);
-  font-weight: 700;
-  letter-spacing: -0.045em;
+  /* 17vw keeps "25:00 MIN" inside the 8-column focus panel down to the 1024px minimum */
+  font-size: calc(clamp(110px, 17vw, 290px) * var(--display-scale, 1));
+  font-family: var(--display, var(--font));
+  font-weight: var(--display-weight, 700);
+  font-style: var(--display-style, normal);
+  letter-spacing: var(--display-tracking, -0.045em);
   line-height: 0.74;
   margin-left: -0.05em;
   color: var(--fg);

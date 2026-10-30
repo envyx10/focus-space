@@ -1,5 +1,7 @@
 import { channel, CHANNEL_IDS, type ChannelId } from '../audio/channels'
 import { isRecord, readJSON, writeJSON } from '../lib/storage'
+import { SCENES } from '../visual/scenes'
+import { TYPEFACES } from '../visual/typefaces'
 
 export const PREFS_KEY = 'focus-space:prefs'
 
@@ -8,6 +10,8 @@ export type Prefs = {
   volumes: Record<ChannelId, number>
   variants: Record<ChannelId, string>
   lofiVolume: number
+  scene: string
+  font: string
 }
 
 export const DEFAULT_PREFS: Prefs = {
@@ -15,6 +19,8 @@ export const DEFAULT_PREFS: Prefs = {
   volumes: { rain: 0, fire: 0, cafe: 0, wind: 0 },
   variants: { rain: 'suave', fire: 'hoguera', cafe: 'cafeteria', wind: 'suave' },
   lofiVolume: 0.6,
+  scene: 'esfera',
+  font: 'syne',
 }
 
 const isVolume = (x: unknown): x is number => typeof x === 'number' && x >= 0 && x <= 1
@@ -31,7 +37,14 @@ export function loadPrefs(): Prefs {
     const want = vars[id]
     if (channel(id).variants.some((x) => x.id === want)) variants[id] = want as string
   }
-  return { v: 1, volumes, variants, lofiVolume: isVolume(r.lofiVolume) ? r.lofiVolume : DEFAULT_PREFS.lofiVolume }
+  return {
+    v: 1,
+    volumes,
+    variants,
+    lofiVolume: isVolume(r.lofiVolume) ? r.lofiVolume : DEFAULT_PREFS.lofiVolume,
+    scene: SCENES.some((s) => s.id === r.scene) ? (r.scene as string) : DEFAULT_PREFS.scene,
+    font: TYPEFACES.some((t) => t.id === r.font) ? (r.font as string) : DEFAULT_PREFS.font,
+  }
 }
 
 export function savePrefs(p: Prefs): void {

@@ -34,6 +34,8 @@
 }
 
 .pl-title {
+  font-family: var(--display, var(--font));
+  font-style: var(--display-style, normal);
   font-size: 22px;
   font-weight: 700;
   letter-spacing: -0.03em;

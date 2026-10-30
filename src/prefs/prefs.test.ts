@@ -26,6 +26,22 @@ describe('prefs', () => {
     expect(p.variants.rain).toBe('suave')
   })
 
+  it('scene defaults to the sphere and rejects unknown ids', () => {
+    expect(loadPrefs().scene).toBe('esfera')
+    localStorage.setItem(PREFS_KEY, JSON.stringify({ v: 1, scene: 'galaxia' }))
+    expect(loadPrefs().scene).toBe('galaxia')
+    localStorage.setItem(PREFS_KEY, JSON.stringify({ v: 1, scene: 'pirámide' }))
+    expect(loadPrefs().scene).toBe('esfera')
+  })
+
+  it('typeface defaults to Syne and rejects unknown ids', () => {
+    expect(loadPrefs().font).toBe('syne')
+    localStorage.setItem(PREFS_KEY, JSON.stringify({ v: 1, font: 'mono' }))
+    expect(loadPrefs().font).toBe('mono')
+    localStorage.setItem(PREFS_KEY, JSON.stringify({ v: 1, font: 'comic' }))
+    expect(loadPrefs().font).toBe('syne')
+  })
+
   it('round-trips', () => {
     const p = { ...DEFAULT_PREFS, lofiVolume: 0.3 }
     savePrefs(p)
