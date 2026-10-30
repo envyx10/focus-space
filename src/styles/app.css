@@ -39,7 +39,8 @@ button {
   height: 100vh;
   min-width: 1024px;
   min-height: 640px;
-  overflow: hidden;
+  /* clip, not hidden: focusing an input must never scroll the grid sideways */
+  overflow: clip;
 }
 
 .region-header {

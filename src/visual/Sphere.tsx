@@ -4,7 +4,7 @@ import { fibonacciSphere, smooth } from './sphereMath'
 type Levels = { bass: number; high: number }
 type Props = { getLevels: () => Levels | null }
 
-const POINTS = fibonacciSphere(2400)
+const POINTS = fibonacciSphere(3200)
 const FG = '236,235,230'
 const ACCENT = 'rgba(255,75,31,.95)'
 const TAU = Math.PI * 2
@@ -29,9 +29,10 @@ function draw(ctx: CanvasRenderingContext2D, w: number, h: number, t: number, lv
     Z = y * Math.sin(rx) + Z * Math.cos(rx)
     const s = 2.2 / (2.2 + Z)
     const depth = (1 - Z) / 2
-    ctx.fillStyle = depth > 0.82 && n > 0.04 ? ACCENT : `rgba(${FG},${0.1 + depth * 0.7})`
+    // Back hemisphere fades out so the front reads as a crisp shell.
+    ctx.fillStyle = depth > 0.82 && n > 0.04 ? ACCENT : `rgba(${FG},${0.06 + depth * depth * 0.94})`
     ctx.beginPath()
-    ctx.arc(cx + X * R * s, cy + Y * R * s, (0.6 + depth * 1.3) * dpr, 0, TAU)
+    ctx.arc(Math.round(cx + X * R * s), Math.round(cy + Y * R * s), Math.max(1, (0.7 + depth * 1.1) * dpr), 0, TAU)
     ctx.fill()
   }
 }

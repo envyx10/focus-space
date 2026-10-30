@@ -14,8 +14,10 @@ export default function Grain() {
     let raf = 0
 
     const draw = () => {
-      const w = innerWidth
-      const h = innerHeight
+      // Device pixels: CSS-pixel grain gets upscaled on HiDPI screens and blurs the text underneath.
+      const dpr = devicePixelRatio || 1
+      const w = Math.round(innerWidth * dpr)
+      const h = Math.round(innerHeight * dpr)
       if (canvas.width !== w || canvas.height !== h) {
         canvas.width = w
         canvas.height = h
@@ -52,7 +54,7 @@ export default function Grain() {
         height: '100%',
         pointerEvents: 'none',
         zIndex: 50,
-        opacity: 0.045,
+        opacity: 0.035,
         mixBlendMode: 'overlay',
       }}
     />
