@@ -1,0 +1,104 @@
+.tasks {
+  min-height: 100%;
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.tasks .lbl {
+  margin-bottom: 14px;
+}
+
+.tk-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tk {
+  display: grid;
+  grid-template-columns: 26px 1fr auto;
+  align-items: center;
+  padding: 9px 0;
+  border-top: 1px solid var(--line);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.tk-box {
+  font-size: 11px;
+  opacity: 0.4;
+  text-align: left;
+}
+
+.tk-box:hover {
+  opacity: 1;
+  color: var(--accent);
+}
+
+.tk-text {
+  cursor: text;
+  overflow-wrap: anywhere;
+}
+
+.tk.dn .tk-text {
+  opacity: 0.3;
+  text-decoration: line-through;
+}
+
+.tk.on .tk-text {
+  color: var(--fg);
+}
+
+.tk-act {
+  display: flex;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.tk-arrow,
+.tk-del {
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.tk:hover .tk-arrow,
+.tk:hover .tk-del,
+.tk-arrow:focus-visible,
+.tk-del:focus-visible {
+  opacity: 0.5;
+}
+
+.tk.on .tk-arrow {
+  opacity: 1;
+  color: var(--accent);
+}
+
+.tk-del:hover {
+  color: var(--accent);
+  opacity: 1;
+}
+
+.tk-edit,
+.tk-new input {
+  width: 100%;
+  background: none;
+  border: 0;
+  outline: none;
+  padding: 0;
+  font-weight: 500;
+}
+
+.tk-new input::placeholder {
+  color: var(--fg);
+  opacity: 0.35;
+}
+
+.tasks-note {
+  margin: auto 0 0;
+  padding-top: 18px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.4;
+}
