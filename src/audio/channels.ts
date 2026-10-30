@@ -2,8 +2,7 @@ export type ChannelId = 'rain' | 'fire' | 'cafe' | 'wind'
 export type Variant = { id: string; label: string; src: string }
 export type Channel = { id: ChannelId; label: string; variants: Variant[] }
 
-// shortcut: placeholder loops are generated .wav (scripts/gen-placeholder-sounds.mjs); swap for CC0 recordings listed in public/sounds/CREDITS.md
-const v = (ch: ChannelId, id: string, label: string): Variant => ({ id, label, src: `/sounds/${ch}-${id}.wav` })
+const v = (ch: ChannelId, id: string, label: string): Variant => ({ id, label, src: `/sounds/${ch}-${id}.mp3` })
 
 export const CHANNELS: Channel[] = [
   {
