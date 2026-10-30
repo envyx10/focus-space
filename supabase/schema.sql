@@ -1,0 +1,18 @@
+-- Focus/Space: tasks table. Run once in Supabase → SQL Editor.
+create table if not exists public.tasks (
+  id uuid primary key,
+  user_id uuid not null default auth.uid() references auth.users (id) on delete cascade,
+  text text not null check (char_length(text) between 1 and 500),
+  done boolean not null default false,
+  active boolean not null default false,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists tasks_user_id_idx on public.tasks (user_id);
+
+alter table public.tasks enable row level security;
+
+create policy "tasks: select own" on public.tasks for select using (user_id = auth.uid());
+create policy "tasks: insert own" on public.tasks for insert with check (user_id = auth.uid());
+create policy "tasks: update own" on public.tasks for update using (user_id = auth.uid()) with check (user_id = auth.uid());
+create policy "tasks: delete own" on public.tasks for delete using (user_id = auth.uid());
