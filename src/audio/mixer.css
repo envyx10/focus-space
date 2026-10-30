@@ -1,0 +1,67 @@
+.mixer {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  height: 100%;
+}
+
+.mx {
+  border-right: 1px solid var(--line);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 12px;
+  cursor: ew-resize;
+  user-select: none;
+  touch-action: none;
+}
+
+.mx:focus-visible {
+  outline-offset: -2px;
+}
+
+.mx-name {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mx-variant {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.45;
+}
+
+.mx-name:hover .mx-variant {
+  opacity: 1;
+  color: var(--accent);
+}
+
+.mx b {
+  font-size: 26px;
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  opacity: 0.45;
+  transition: opacity 0.2s;
+}
+
+.mx.live b {
+  opacity: 1;
+}
+
+.mx-line {
+  height: 2px;
+  background: var(--line);
+  position: relative;
+}
+
+.mx-line::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--v);
+  background: var(--fg);
+}

@@ -1,3 +1,5 @@
+import MixerBar from './audio/MixerBar'
+import { useAmbient } from './audio/useAmbient'
 import Header from './layout/Header'
 import { localRepo } from './tasks/localRepo'
 import TasksPanel from './tasks/TasksPanel'
@@ -8,6 +10,7 @@ import Grain from './visual/Grain'
 
 export default function App() {
   const timer = useTimer()
+  const ambient = useAmbient()
   const tasks = useTasks(localRepo)
   const activeTask = tasks.tasks.find((t) => t.active)
 
@@ -42,7 +45,9 @@ export default function App() {
           onFreeMinutes={timer.setFreeMinutes}
         />
       </main>
-      <section className="region-mixer" data-region="mixer" />
+      <section className="region-mixer" data-region="mixer">
+        <MixerBar prefs={ambient.prefs} onVolume={ambient.setVolume} onVariant={ambient.setVariant} />
+      </section>
       <section className="region-lofi" data-region="lofi" />
       <Grain />
     </div>
