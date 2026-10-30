@@ -1,0 +1,31 @@
+.hd {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  align-items: center;
+  height: 100%;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.hd > span {
+  padding: 0 16px;
+}
+
+.hd-brand {
+  grid-column: span 4;
+  font-weight: 700;
+}
+
+.hd-session {
+  grid-column: span 4;
+}
+
+.hd-date {
+  grid-column: span 2;
+}
+
+.hd-account {
+  grid-column: span 2;
+  text-align: right;
+}
