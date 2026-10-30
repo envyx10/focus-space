@@ -72,6 +72,11 @@
   pointer-events: none;
 }
 
+/* above the film grain (z 50) so the digits stay razor sharp */
+.focus > .big {
+  z-index: 60;
+}
+
 .big .colon {
   display: flex;
   flex-direction: column;

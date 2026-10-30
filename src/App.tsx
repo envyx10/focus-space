@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import MixerBar from './audio/MixerBar'
 import { useAmbient } from './audio/useAmbient'
 import Header from './layout/Header'
@@ -12,7 +13,9 @@ import { useTasks } from './tasks/useTasks'
 import FocusPanel from './timer/FocusPanel'
 import { useTimer } from './timer/useTimer'
 import Grain from './visual/Grain'
-import Sphere from './visual/Sphere'
+
+// three.js is ~150 kB gzip: load it after the first paint so the clock and tasks appear instantly.
+const Sphere = lazy(() => import('./visual/Sphere'))
 
 export default function App() {
   const timer = useTimer()
@@ -53,7 +56,9 @@ export default function App() {
           onModeChange={timer.setMode}
           onFreeMinutes={timer.setFreeMinutes}
         >
-          <Sphere getLevels={ambient.getLevels} />
+          <Suspense fallback={null}>
+            <Sphere getLevels={ambient.getLevels} />
+          </Suspense>
         </FocusPanel>
       </main>
       <section className="region-mixer" data-region="mixer">
