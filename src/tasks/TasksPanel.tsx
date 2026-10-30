@@ -2,9 +2,13 @@ import { useState } from 'react'
 import type { Task } from './types'
 import './tasks.css'
 
+// Matches the CHECK on tasks.text in supabase/schema.sql.
+const MAX_TEXT = 500
+
 type Props = {
   tasks: Task[]
   synced: boolean
+  saveError?: boolean
   add: (text: string) => Promise<void>
   toggle: (id: string) => Promise<void>
   edit: (id: string, text: string) => Promise<void>
@@ -12,7 +16,7 @@ type Props = {
   setActive: (id: string | null) => Promise<void>
 }
 
-function Row({ task, index, ...a }: { task: Task; index: number } & Omit<Props, 'tasks' | 'synced' | 'add'>) {
+function Row({ task, index, ...a }: { task: Task; index: number } & Omit<Props, 'tasks' | 'synced' | 'saveError' | 'add'>) {
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(task.text)
 
@@ -31,6 +35,7 @@ function Row({ task, index, ...a }: { task: Task; index: number } & Omit<Props, 
         <input
           className="tk-edit"
           autoFocus
+          maxLength={MAX_TEXT}
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           onBlur={() => {
@@ -74,7 +79,7 @@ function Row({ task, index, ...a }: { task: Task; index: number } & Omit<Props, 
   )
 }
 
-export default function TasksPanel({ tasks, synced, add, ...actions }: Props) {
+export default function TasksPanel({ tasks, synced, saveError, add, ...actions }: Props) {
   const [draft, setDraft] = useState('')
   const pending = tasks.filter((t) => !t.done).length
 
@@ -91,6 +96,7 @@ export default function TasksPanel({ tasks, synced, add, ...actions }: Props) {
           <input
             placeholder="+ Nueva tarea"
             aria-label="Nueva tarea"
+            maxLength={MAX_TEXT}
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={(e) => {
@@ -102,6 +108,11 @@ export default function TasksPanel({ tasks, synced, add, ...actions }: Props) {
           />
         </li>
       </ul>
+      {saveError && (
+        <p className="tasks-note acc" role="alert">
+          No se pudo guardar el último cambio · revisa tu conexión
+        </p>
+      )}
       {!synced && <p className="tasks-note">Guardado solo en este navegador · Inicia sesión para sincronizar</p>}
     </div>
   )

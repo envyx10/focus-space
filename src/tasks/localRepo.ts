@@ -37,7 +37,3 @@ export const localRepo: TaskRepo = {
     )
   },
 }
-
-export function clearLocalTasks(): void {
-  writeJSON(TASKS_KEY, [])
-}

@@ -11,13 +11,21 @@
   flex-direction: column;
   justify-content: space-between;
   font-size: 12px;
-  cursor: ew-resize;
   user-select: none;
+}
+
+.mx-slider {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 8px;
+  cursor: ew-resize;
   touch-action: none;
 }
 
-.mx:focus-visible {
-  outline-offset: -2px;
+.mx-slider:focus-visible {
+  outline-offset: 2px;
 }
 
 .mx-name {

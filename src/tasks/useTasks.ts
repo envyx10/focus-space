@@ -8,30 +8,53 @@ export function sortTasks(tasks: Task[]): Task[] {
 export function useTasks(repo: TaskRepo) {
   const [tasks, setTasks] = useState<Task[]>([])
   const [loaded, setLoaded] = useState(false)
+  const [error, setError] = useState(false)
   const tasksRef = useRef(tasks)
   tasksRef.current = tasks
+  // Bumped on every repo switch so a slow list() from the previous repo (e.g. the account
+  // after signing out) can never overwrite the current one.
+  const generation = useRef(0)
+
+  const show = (next: Task[]) => {
+    tasksRef.current = sortTasks(next)
+    setTasks(tasksRef.current)
+  }
 
   const reload = useCallback(async () => {
+    const gen = generation.current
     const list = await repo.list()
-    tasksRef.current = sortTasks(list)
-    setTasks(tasksRef.current)
+    if (gen !== generation.current) return
+    show(list)
     setLoaded(true)
   }, [repo])
 
   useEffect(() => {
+    generation.current++
     setLoaded(false)
     reload().catch(() => setLoaded(true))
   }, [reload])
 
-  // Optimistic: update the UI first, then persist only the tasks that changed.
+  // Optimistic: the UI updates first; if persisting fails, roll back to what the repo really holds.
+  const persist = useCallback(
+    async (work: () => Promise<unknown>) => {
+      try {
+        await work()
+        setError(false)
+      } catch {
+        setError(true)
+        await reload().catch(() => {})
+      }
+    },
+    [reload],
+  )
+
   const commit = useCallback(
     async (next: Task[]) => {
       const prev = new Map(tasksRef.current.map((t) => [t.id, t]))
-      tasksRef.current = sortTasks(next)
-      setTasks(tasksRef.current)
-      await Promise.all(next.filter((t) => prev.get(t.id) !== t).map((t) => repo.save(t)))
+      show(next)
+      await persist(() => Promise.all(next.filter((t) => prev.get(t.id) !== t).map((t) => repo.save(t))))
     },
-    [repo],
+    [repo, persist],
   )
 
   const add = useCallback(
@@ -72,12 +95,11 @@ export function useTasks(repo: TaskRepo) {
 
   const remove = useCallback(
     async (id: string) => {
-      tasksRef.current = tasksRef.current.filter((t) => t.id !== id)
-      setTasks(tasksRef.current)
-      await repo.remove(id)
+      show(tasksRef.current.filter((t) => t.id !== id))
+      await persist(() => repo.remove(id))
     },
-    [repo],
+    [repo, persist],
   )
 
-  return { tasks, loaded, reload, add, toggle, edit, remove, setActive }
+  return { tasks, loaded, error, reload, add, toggle, edit, remove, setActive }
 }

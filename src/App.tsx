@@ -35,6 +35,7 @@ export default function App() {
         <TasksPanel
           tasks={tasks.tasks}
           synced={synced}
+          saveError={tasks.error}
           add={tasks.add}
           toggle={tasks.toggle}
           edit={tasks.edit}

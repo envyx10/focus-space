@@ -26,6 +26,12 @@ describe('TasksPanel', () => {
     expect(screen.queryByText(/Guardado solo en este navegador/)).not.toBeInTheDocument()
   })
 
+  it('shows a save error and limits text to the 500 chars the database accepts', () => {
+    render(<TasksPanel tasks={[]} synced saveError {...actions} />)
+    expect(screen.getByRole('alert')).toHaveTextContent('No se pudo guardar')
+    expect(screen.getByPlaceholderText('+ Nueva tarea')).toHaveAttribute('maxLength', '500')
+  })
+
   it('numbers rows and counts pending', () => {
     render(<TasksPanel tasks={[task('1', 'Uno'), task('2', 'Dos', { done: true })]} synced {...actions} />)
     expect(screen.getAllByRole('checkbox').map((c) => c.textContent)).toEqual(['01', '02'])
