@@ -18,6 +18,14 @@ describe('sceneTargets', () => {
 })
 
 describe('SCENES', () => {
+  it('every scene has a brightness in (0, 1]; the dense galaxy is dimmed', () => {
+    for (const s of SCENES) {
+      expect(s.brightness).toBeGreaterThan(0)
+      expect(s.brightness).toBeLessThanOrEqual(1)
+    }
+    expect(SCENES.find((s) => s.id === 'galaxia')!.brightness).toBeLessThan(0.8)
+  })
+
   it('has the six scenes in order', () => {
     expect(SCENES.map((s) => s.id)).toEqual(['esfera', 'toro', 'ondas', 'galaxia', 'reticula', 'giroscopio'])
   })
