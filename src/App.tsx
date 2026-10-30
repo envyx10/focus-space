@@ -16,7 +16,6 @@ import FocusPanel from './timer/FocusPanel'
 import { useTimer } from './timer/useTimer'
 import Grain from './visual/Grain'
 import Cycler from './visual/Cycler'
-import { SCENES } from './visual/scenes'
 import { TYPEFACES } from './visual/typefaces'
 import { useTypeface } from './visual/useTypeface'
 
@@ -75,14 +74,11 @@ export default function App() {
           onModeChange={timer.setMode}
           onFreeMinutes={timer.setFreeMinutes}
           sceneControl={
-            <>
-              <Cycler label="Escena" noun="escena" options={SCENES} value={ambient.prefs.scene} onChange={ambient.setScene} />
-              <Cycler label="Tipo" noun="tipografía" options={TYPEFACES} value={ambient.prefs.font} onChange={ambient.setFont} />
-            </>
+            <Cycler label="Tipo" noun="tipografía" options={TYPEFACES} value={ambient.prefs.font} onChange={ambient.setFont} />
           }
         >
           <Suspense fallback={null}>
-            <Scene3D scene={ambient.prefs.scene} getLevels={getLevels} />
+            <Scene3D getLevels={getLevels} />
           </Suspense>
         </FocusPanel>
       </main>

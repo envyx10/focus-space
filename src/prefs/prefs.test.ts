@@ -26,13 +26,6 @@ describe('prefs', () => {
     expect(p.variants.rain).toBe('suave')
   })
 
-  it('scene defaults to the sphere and rejects unknown ids', () => {
-    expect(loadPrefs().scene).toBe('esfera')
-    localStorage.setItem(PREFS_KEY, JSON.stringify({ v: 1, scene: 'galaxia' }))
-    expect(loadPrefs().scene).toBe('galaxia')
-    localStorage.setItem(PREFS_KEY, JSON.stringify({ v: 1, scene: 'pirámide' }))
-    expect(loadPrefs().scene).toBe('esfera')
-  })
 
   it('typeface defaults to Syne and rejects unknown ids', () => {
     expect(loadPrefs().font).toBe('syne')
