@@ -7,6 +7,7 @@ import { useTasks } from './tasks/useTasks'
 import FocusPanel from './timer/FocusPanel'
 import { useTimer } from './timer/useTimer'
 import Grain from './visual/Grain'
+import Sphere from './visual/Sphere'
 
 export default function App() {
   const timer = useTimer()
@@ -43,7 +44,9 @@ export default function App() {
           onReset={timer.reset}
           onModeChange={timer.setMode}
           onFreeMinutes={timer.setFreeMinutes}
-        />
+        >
+          <Sphere getLevels={ambient.getLevels} />
+        </FocusPanel>
       </main>
       <section className="region-mixer" data-region="mixer">
         <MixerBar prefs={ambient.prefs} onVolume={ambient.setVolume} onVariant={ambient.setVariant} />
