@@ -11,5 +11,9 @@ bun run build
 
 - Sin configuración funciona en **modo solo local** (tareas en el navegador).
 - Cuentas y sincronización: ver [docs/SETUP.md](docs/SETUP.md).
-- Los sonidos de `public/sounds/` son provisionales; ver [public/sounds/CREDITS.md](public/sounds/CREDITS.md).
+- Los sonidos de `public/sounds/` son grabaciones CC0 de Freesound; ver [public/sounds/CREDITS.md](public/sounds/CREDITS.md).
 - Diseño y plan: [docs/superpowers/](docs/superpowers/).
+
+## Licencia
+
+Código bajo licencia [MIT](LICENSE). Los sonidos mantienen su propia licencia (CC0).
