@@ -18,7 +18,8 @@ export type Layer = {
   mode?: 'radial' | 'wave'
 }
 
-export type SceneDef = { id: string; label: string; build: () => Layer[] }
+/** brightness: per-scene light level so dense, flat shapes don't saturate to white under additive blending */
+export type SceneDef = { id: string; label: string; brightness: number; build: () => Layer[] }
 
 const TAU = Math.PI * 2
 
@@ -72,7 +73,8 @@ function plane(cols: number, rows: number, w: number, d: number): number[] {
 function galaxy(n: number, arms: number): number[] {
   const out: number[] = []
   for (let i = 0; i < n; i++) {
-    const t = Math.pow(Math.random(), 0.7)
+    // ~area-uniform radius: a 0.7 exponent piled particles into a white-hot core
+    const t = Math.pow(Math.random(), 0.55)
     const r = 0.08 + t * 1.3
     const arm = (i % arms) * (TAU / arms)
     const a = arm + r * 2.6 + (Math.random() - 0.5) * 0.5 * (1 - t * 0.5)
@@ -126,19 +128,21 @@ export const SCENES: SceneDef[] = [
   {
     id: 'esfera',
     label: 'Esfera',
+    brightness: 0.9,
     build: () => [
       { positions: fibonacciSphere(4200).flat() },
       // flatter perspective for the ring, otherwise its near side balloons out of the panel
       { positions: rotateX(ring(900, 1.3), 1.15), spin: -0.6, persp: 5 },
     ],
   },
-  { id: 'toro', label: 'Toro', build: () => [{ positions: torus(5200, 0.9, 0.34), spin: 0.8, tilt: 0.75, persp: 3.5, fade: 0.45 }] },
-  { id: 'ondas', label: 'Ondas', build: () => [{ positions: plane(110, 46, 3.2, 1.8), spin: 0, tilt: 0.45, persp: 3, mode: 'wave', fade: 0.6 }] },
-  { id: 'galaxia', label: 'Galaxia', build: () => [{ positions: galaxy(6000, 3), spin: 0.6, tilt: 0.55, persp: 4, fade: 0.3 }] },
-  { id: 'reticula', label: 'Retícula', build: () => [{ positions: lattice(6, 1.55, 110), spin: 0.8, persp: 3, fade: 0.55 }] },
+  { id: 'toro', label: 'Toro', brightness: 0.85, build: () => [{ positions: torus(5200, 0.9, 0.34), spin: 0.8, tilt: 0.75, persp: 3.5, fade: 0.45 }] },
+  { id: 'ondas', label: 'Ondas', brightness: 0.9, build: () => [{ positions: plane(110, 46, 3.2, 1.8), spin: 0, tilt: 0.45, persp: 3, mode: 'wave', fade: 0.6 }] },
+  { id: 'galaxia', label: 'Galaxia', brightness: 0.55, build: () => [{ positions: galaxy(6000, 3), spin: 0.6, tilt: 0.55, persp: 4, fade: 0.3 }] },
+  { id: 'reticula', label: 'Retícula', brightness: 1, build: () => [{ positions: lattice(6, 1.55, 110), spin: 0.8, persp: 3, fade: 0.55 }] },
   {
     id: 'giroscopio',
     label: 'Giroscopio',
+    brightness: 1,
     build: () => [
       { positions: rotateX(ring(800, 1.15, 0.03), 1.2), spin: 1, persp: 4 },
       { positions: rotateZ(rotateX(ring(700, 0.95, 0.03), 0.3), 0.9), spin: -0.8, persp: 4 },

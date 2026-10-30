@@ -13,7 +13,7 @@ import {
   WebGLRenderer,
 } from 'three'
 import { GPUComputationRenderer } from 'three/examples/jsm/misc/GPUComputationRenderer.js'
-import { sceneTargets } from './scenes'
+import { SCENES, sceneTargets } from './scenes'
 import { noiseGlsl } from './shaders/noise'
 import { follow, smooth } from './sphereMath'
 
@@ -67,6 +67,7 @@ const renderVertex = /* glsl */ `
   uniform sampler2D tVelocity;
   uniform float uPixelRatio;
   uniform float uBass;
+  uniform float uIntro;
   varying float vAlpha;
   varying float vHeat;
   varying float vAccent;
@@ -80,12 +81,15 @@ const renderVertex = /* glsl */ `
     gl_PointSize = (0.9 + seed * seed * 1.6) * (1.0 + uBass * 0.35) * uPixelRatio * (${CAMERA_Z.toFixed(1)} / -mv.z);
     float depth = clamp((${(CAMERA_Z + 1.4).toFixed(1)} + mv.z) / 2.8, 0.0, 1.0); // 1 = nearest
     vAlpha = 0.18 + depth * depth * 0.82;
-    vHeat = smoothstep(0.35, 1.6, length(v));
+    // no motion-colour while the field first assembles: it would read as stray orange sparks
+    vHeat = smoothstep(0.35, 1.6, length(v)) * uIntro * uIntro;
     vAccent = step(0.965, fract(seed * 91.7));
   }
 `
 
 const renderFragment = /* glsl */ `
+  uniform float uBrightness;
+  uniform float uIntro;
   varying float vAlpha;
   varying float vHeat;
   varying float vAccent;
@@ -97,8 +101,8 @@ const renderFragment = /* glsl */ `
     vec3 warm = vec3(0.93, 0.92, 0.89);
     vec3 ember = vec3(1.0, 0.33, 0.14);
     // fast-moving particles and a few seeds glow orange: motion reads as colour
-    vec3 col = mix(warm, ember, max(vHeat * 0.85, vAccent));
-    float a = disc * vAlpha * (0.55 + vHeat * 0.45);
+    vec3 col = mix(warm, ember, max(vHeat * 0.85, vAccent * uIntro));
+    float a = disc * vAlpha * (0.55 + vHeat * 0.45) * uBrightness * uIntro;
     gl_FragColor = vec4(col * a, a); // premultiplied
   }
 `
@@ -106,12 +110,17 @@ const renderFragment = /* glsl */ `
 function scattered(n: number): Float32Array {
   const out = new Float32Array(n * 4)
   for (let i = 0; i < n; i++) {
-    const r = 2.5 + Math.random() * 1.5
+    // close to the shape: a short, calm gather instead of a long fast flight
+    const r = 1.4 + Math.random() * 0.8
     const th = Math.random() * Math.PI * 2
     const ph = Math.acos(2 * Math.random() - 1)
     out.set([r * Math.sin(ph) * Math.cos(th), r * Math.cos(ph), r * Math.sin(ph) * Math.sin(th), Math.random()], i * 4)
   }
   return out
+}
+
+function brightnessOf(id: string): number {
+  return (SCENES.find((s) => s.id === id) ?? SCENES[0]).brightness
 }
 
 function targetTexture(id: string, tex?: DataTexture): DataTexture {
@@ -181,6 +190,8 @@ export default function Scene3D({ scene, getLevels }: Props) {
       tVelocity: { value: gpu.getCurrentRenderTarget(velVar).texture },
       uPixelRatio: { value: 1 },
       uBass: { value: 0 },
+      uIntro: { value: 0 },
+      uBrightness: { value: brightnessOf(current.current) },
     }
     const material = new ShaderMaterial({
       uniforms,
@@ -215,8 +226,10 @@ export default function Scene3D({ scene, getLevels }: Props) {
     ro.observe(el)
     resize()
 
+    let brightness = brightnessOf(current.current)
     morphTo.current = (id: string) => {
       targetTexture(id, target)
+      brightness = brightnessOf(id)
       sim.uStir.value = 1 // particles break loose, swirl, and stream into the new shape
     }
 
@@ -258,6 +271,9 @@ export default function Scene3D({ scene, getLevels }: Props) {
       sim.uFlow.value = 0.22 + lv.bass * 1.1 + lv.high * 0.35
       sim.uStir.value *= Math.pow(0.35, elapsed)
       uniforms.uBass.value = lv.bass
+      // fade in over ~2.5 s of real time while the particles assemble
+      uniforms.uIntro.value = Math.min(1, uniforms.uIntro.value + elapsed / 2.5)
+      uniforms.uBrightness.value = smooth(uniforms.uBrightness.value, brightness)
       // fixed-size steps keep the simulation stable even when the tab is throttled
       const steps = Math.max(1, Math.min(4, Math.round(elapsed / STEP)))
       for (let i = 0; i < steps; i++) step(t)
@@ -272,6 +288,7 @@ export default function Scene3D({ scene, getLevels }: Props) {
       // settle the particles onto the shape, then hold a single frame
       sim.uStir.value = 0
       for (let i = 0; i < 240; i++) step(i * STEP)
+      uniforms.uIntro.value = 1
       draw()
     } else raf = requestAnimationFrame(frame)
 
