@@ -1,66 +1,115 @@
 import { useEffect, useRef } from 'react'
+import { BufferGeometry, Camera, Float32BufferAttribute, Points, Scene, ShaderMaterial, Vector2, WebGLRenderer } from 'three'
 import { fibonacciSphere, smooth } from './sphereMath'
 
 type Levels = { bass: number; high: number }
 type Props = { getLevels: () => Levels | null }
 
-const POINTS = fibonacciSphere(3200)
-const FG = '236,235,230'
-const ACCENT = 'rgba(255,75,31,.95)'
-const TAU = Math.PI * 2
+const POINT_COUNT = 4200
 
-// dpr: dots keep a fixed CSS-pixel size so they stay fine however large the panel is.
-function draw(ctx: CanvasRenderingContext2D, w: number, h: number, t: number, lv: Levels, dpr: number) {
-  ctx.clearRect(0, 0, w, h)
-  const cx = w * 0.68
-  const cy = h * 0.48
-  const R = Math.min(w, h) * 0.34 * (1 + lv.bass * 0.12)
-  const ry = t * 0.25
-  const rx = 0.35
-  for (const [px, py, pz] of POINTS) {
-    // "bristle": surface noise driven by the high band (rain hiss)
-    const n = Math.sin(px * 6 + t * 2) * Math.cos(py * 5 - t * 1.4) * lv.high * 0.35
-    const x = px * (1 + n)
-    const y = py * (1 + n)
-    const z = pz * (1 + n)
-    const X = x * Math.cos(ry) - z * Math.sin(ry)
-    let Z = x * Math.sin(ry) + z * Math.cos(ry)
-    const Y = y * Math.cos(rx) - Z * Math.sin(rx)
-    Z = y * Math.sin(rx) + Z * Math.cos(rx)
-    const s = 2.2 / (2.2 + Z)
-    const depth = (1 - Z) / 2
-    // Back hemisphere fades out so the front reads as a crisp shell.
-    ctx.fillStyle = depth > 0.82 && n > 0.04 ? ACCENT : `rgba(${FG},${0.06 + depth * depth * 0.94})`
-    ctx.beginPath()
-    ctx.arc(Math.round(cx + X * R * s), Math.round(cy + Y * R * s), Math.max(1, (0.7 + depth * 1.1) * dpr), 0, TAU)
-    ctx.fill()
+// All projection happens in the shader in CSS pixels, mirroring the approved mockup's math:
+// rotate, perspective-scale by 2.2/(2.2+z), place at 68%/48% of the panel.
+const vertexShader = /* glsl */ `
+  uniform float uTime;
+  uniform float uBass;
+  uniform float uHigh;
+  uniform float uRadius;
+  uniform float uPixelRatio;
+  uniform vec2 uCenter;
+  uniform vec2 uRes;
+  varying float vDepth;
+  varying float vNoise;
+
+  void main() {
+    vec3 p = position;
+    float n = sin(p.x * 6.0 + uTime * 2.0) * cos(p.y * 5.0 - uTime * 1.4) * uHigh * 0.35;
+    p *= 1.0 + n;
+    float ry = uTime * 0.25;
+    float rx = 0.35;
+    float X = p.x * cos(ry) - p.z * sin(ry);
+    float Z = p.x * sin(ry) + p.z * cos(ry);
+    float Y = p.y * cos(rx) - Z * sin(rx);
+    Z = p.y * sin(rx) + Z * cos(rx);
+    float s = 2.2 / (2.2 + Z);
+    float depth = (1.0 - Z) / 2.0;
+    vec2 px = uCenter + vec2(X, Y) * uRadius * (1.0 + uBass * 0.12) * s;
+    gl_Position = vec4(px.x / uRes.x * 2.0 - 1.0, 1.0 - px.y / uRes.y * 2.0, 0.0, 1.0);
+    gl_PointSize = (1.5 + depth * 2.3) * uPixelRatio;
+    vDepth = depth;
+    vNoise = n;
   }
-}
+`
+
+const fragmentShader = /* glsl */ `
+  varying float vDepth;
+  varying float vNoise;
+
+  void main() {
+    float d = length(gl_PointCoord - 0.5);
+    float disc = 1.0 - smoothstep(0.3, 0.5, d);
+    bool hot = vDepth > 0.82 && vNoise > 0.04;
+    vec3 color = hot ? vec3(1.0, 0.294, 0.122) : vec3(0.925, 0.922, 0.902);
+    // Back hemisphere fades out so the front reads as a crisp shell.
+    float alpha = hot ? 0.95 : 0.05 + vDepth * vDepth * 0.95;
+    gl_FragColor = vec4(color, disc * alpha);
+  }
+`
 
 export default function Sphere({ getLevels }: Props) {
-  const ref = useRef<HTMLCanvasElement>(null)
+  const host = useRef<HTMLDivElement>(null)
   const levelsRef = useRef(getLevels)
   levelsRef.current = getLevels
 
   useEffect(() => {
-    const canvas = ref.current
-    const ctx = canvas?.getContext('2d')
-    if (!canvas || !ctx) return
+    const el = host.current
+    if (!el) return
+    let renderer: WebGLRenderer
+    try {
+      renderer = new WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'low-power' })
+    } catch {
+      return // no WebGL (old GPU, tests): the panel just shows the clock
+    }
+    renderer.setClearColor(0x000000, 0)
+    const canvas = renderer.domElement
+    canvas.setAttribute('aria-hidden', 'true')
+    canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%'
+    el.appendChild(canvas)
+
+    const geometry = new BufferGeometry()
+    geometry.setAttribute('position', new Float32BufferAttribute(fibonacciSphere(POINT_COUNT).flat(), 3))
+    const uniforms = {
+      uTime: { value: 0 },
+      uBass: { value: 0 },
+      uHigh: { value: 0 },
+      uRadius: { value: 1 },
+      uPixelRatio: { value: 1 },
+      uCenter: { value: new Vector2() },
+      uRes: { value: new Vector2(1, 1) },
+    }
+    const material = new ShaderMaterial({ uniforms, vertexShader, fragmentShader, transparent: true, depthTest: false })
+    const points = new Points(geometry, material)
+    points.frustumCulled = false
+    const scene = new Scene()
+    scene.add(points)
+    const camera = new Camera()
+
+    const resize = () => {
+      const { width, height } = el.getBoundingClientRect()
+      const pr = Math.min(devicePixelRatio || 1, 2)
+      renderer.setPixelRatio(pr)
+      renderer.setSize(width, height, false)
+      uniforms.uPixelRatio.value = pr
+      uniforms.uRes.value.set(width, height)
+      uniforms.uCenter.value.set(width * 0.68, height * 0.48)
+      uniforms.uRadius.value = Math.min(width, height) * 0.34
+    }
+    const ro = new ResizeObserver(resize)
+    ro.observe(el)
+    resize()
+
     const still = matchMedia('(prefers-reduced-motion: reduce)').matches
     const lv: Levels = { bass: 0, high: 0 }
     let raf = 0
-
-    const fit = () => {
-      const r = canvas.getBoundingClientRect()
-      const d = devicePixelRatio || 1
-      const w = Math.round(r.width * d)
-      const h = Math.round(r.height * d)
-      if (canvas.width !== w || canvas.height !== h) {
-        canvas.width = w
-        canvas.height = h
-      }
-    }
-
     const frame = (ms: number) => {
       raf = requestAnimationFrame(frame)
       if (document.hidden) return
@@ -71,16 +120,27 @@ export default function Sphere({ getLevels }: Props) {
       const target = idle ? { bass: (0.5 + 0.5 * Math.sin(t * 0.6)) * 0.3, high: 0.08 } : live
       lv.bass = smooth(lv.bass, target.bass)
       lv.high = smooth(lv.high, target.high)
-      fit()
-      draw(ctx, canvas.width, canvas.height, t, lv, devicePixelRatio || 1)
+      uniforms.uTime.value = t
+      uniforms.uBass.value = lv.bass
+      uniforms.uHigh.value = lv.high
+      renderer.render(scene, camera)
     }
 
     if (still) {
-      fit()
-      draw(ctx, canvas.width, canvas.height, 0, { bass: 0.1, high: 0.08 }, devicePixelRatio || 1)
+      uniforms.uBass.value = 0.1
+      uniforms.uHigh.value = 0.08
+      renderer.render(scene, camera)
     } else raf = requestAnimationFrame(frame)
-    return () => cancelAnimationFrame(raf)
+
+    return () => {
+      cancelAnimationFrame(raf)
+      ro.disconnect()
+      geometry.dispose()
+      material.dispose()
+      renderer.dispose()
+      canvas.remove()
+    }
   }, [])
 
-  return <canvas ref={ref} aria-hidden style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} />
+  return <div ref={host} style={{ position: 'absolute', inset: 0 }} />
 }
