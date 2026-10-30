@@ -1,6 +1,8 @@
 import MixerBar from './audio/MixerBar'
 import { useAmbient } from './audio/useAmbient'
 import Header from './layout/Header'
+import LofiBlock from './lofi/LofiBlock'
+import { useYouTubeLofi } from './lofi/useYouTubeLofi'
 import { localRepo } from './tasks/localRepo'
 import TasksPanel from './tasks/TasksPanel'
 import { useTasks } from './tasks/useTasks'
@@ -12,6 +14,7 @@ import Sphere from './visual/Sphere'
 export default function App() {
   const timer = useTimer()
   const ambient = useAmbient()
+  const lofi = useYouTubeLofi(ambient.prefs.lofiVolume)
   const tasks = useTasks(localRepo)
   const activeTask = tasks.tasks.find((t) => t.active)
 
@@ -51,7 +54,15 @@ export default function App() {
       <section className="region-mixer" data-region="mixer">
         <MixerBar prefs={ambient.prefs} onVolume={ambient.setVolume} onVariant={ambient.setVariant} />
       </section>
-      <section className="region-lofi" data-region="lofi" />
+      <section className="region-lofi" data-region="lofi">
+        <LofiBlock
+          status={lofi.status}
+          playing={lofi.playing}
+          volume={ambient.prefs.lofiVolume}
+          onToggle={lofi.toggle}
+          onVolume={ambient.setLofiVolume}
+        />
+      </section>
       <Grain />
     </div>
   )
