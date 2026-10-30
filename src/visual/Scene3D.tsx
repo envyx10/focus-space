@@ -13,12 +13,11 @@ import {
   WebGLRenderer,
 } from 'three'
 import { GPUComputationRenderer } from 'three/examples/jsm/misc/GPUComputationRenderer.js'
-import { SCENES, sceneTargets } from './scenes'
 import { noiseGlsl } from './shaders/noise'
-import { follow, smooth } from './sphereMath'
+import { fibonacciSphere, follow, smooth } from './sphereMath'
 
 type Levels = { bass: number; high: number }
-type Props = { scene: string; getLevels: () => Levels | null }
+type Props = { getLevels: () => Levels | null }
 
 // 256² = 65 536 particles, simulated entirely on the GPU (position + velocity textures).
 const SIDE = typeof navigator !== 'undefined' && (navigator.hardwareConcurrency ?? 8) <= 4 ? 180 : 256
@@ -27,7 +26,7 @@ const CAMERA_Z = 5.3
 const STEP = 1 / 60
 
 // Velocity: a spring towards the particle's spot on the shape + a curl-noise current. The
-// current is what draws the silky streams; beats and scene changes turn it up.
+// current is what draws the silky streams; beats turn it up.
 const velocityShader = /* glsl */ `
   uniform float uTime;
   uniform float uDelta;
@@ -78,9 +77,9 @@ const renderVertex = /* glsl */ `
     vec4 mv = modelViewMatrix * vec4(p.xyz, 1.0);
     gl_Position = projectionMatrix * mv;
     float seed = p.w;
-    gl_PointSize = (0.9 + seed * seed * 1.6) * (1.0 + uBass * 0.35) * uPixelRatio * (${CAMERA_Z.toFixed(1)} / -mv.z);
+    gl_PointSize = (0.7 + seed * seed * 0.8) * (1.0 + uBass * 0.35) * uPixelRatio * (${CAMERA_Z.toFixed(1)} / -mv.z);
     float depth = clamp((${(CAMERA_Z + 1.4).toFixed(1)} + mv.z) / 2.8, 0.0, 1.0); // 1 = nearest
-    vAlpha = 0.18 + depth * depth * 0.82;
+    vAlpha = 0.1 + depth * depth * 0.6; // dim far side: the shell never stacks up to white
     // no motion-colour while the field first assembles: it would read as stray orange sparks
     vHeat = smoothstep(0.35, 1.6, length(v)) * uIntro * uIntro;
     vAccent = step(0.965, fract(seed * 91.7));
@@ -88,7 +87,6 @@ const renderVertex = /* glsl */ `
 `
 
 const renderFragment = /* glsl */ `
-  uniform float uBrightness;
   uniform float uIntro;
   varying float vAlpha;
   varying float vHeat;
@@ -98,11 +96,11 @@ const renderFragment = /* glsl */ `
     vec2 c = gl_PointCoord - 0.5;
     float d = length(c);
     float disc = 1.0 - smoothstep(0.32, 0.5, d); // crisp dot, just antialiased
-    vec3 warm = vec3(0.93, 0.92, 0.89);
+    vec3 warm = vec3(0.86, 0.85, 0.81);
     vec3 ember = vec3(1.0, 0.33, 0.14);
     // fast-moving particles and a few seeds glow orange: motion reads as colour
     vec3 col = mix(warm, ember, max(vHeat * 0.85, vAccent * uIntro));
-    float a = disc * vAlpha * (0.55 + vHeat * 0.45) * uBrightness * uIntro;
+    float a = disc * vAlpha * (0.5 + vHeat * 0.4) * 0.7 * uIntro;
     gl_FragColor = vec4(col * a, a); // premultiplied
   }
 `
@@ -119,25 +117,22 @@ function scattered(n: number): Float32Array {
   return out
 }
 
-function brightnessOf(id: string): number {
-  return (SCENES.find((s) => s.id === id) ?? SCENES[0]).brightness
-}
-
-function targetTexture(id: string, tex?: DataTexture): DataTexture {
-  const xyz = sceneTargets(id, COUNT)
-  const data = (tex?.image.data as Float32Array | undefined) ?? new Float32Array(COUNT * 4)
-  for (let i = 0; i < COUNT; i++) data.set([xyz[i * 3], xyz[i * 3 + 1], xyz[i * 3 + 2], 1], i * 4)
-  const t = tex ?? new DataTexture(data, SIDE, SIDE, RGBAFormat, FloatType)
+// One particle per spot on the sphere, a hair of radial depth so it reads as a shell, not a grid.
+function sphereTexture(): DataTexture {
+  const data = new Float32Array(COUNT * 4)
+  fibonacciSphere(COUNT).forEach(([x, y, z], i) => {
+    const r = 1 + (Math.random() - 0.5) * 0.03
+    data.set([x * r, y * r, z * r, 1], i * 4)
+  })
+  const t = new DataTexture(data, SIDE, SIDE, RGBAFormat, FloatType)
   t.needsUpdate = true
   return t
 }
 
-export default function Scene3D({ scene, getLevels }: Props) {
+export default function Scene3D({ getLevels }: Props) {
   const host = useRef<HTMLDivElement>(null)
   const levelsRef = useRef(getLevels)
   levelsRef.current = getLevels
-  const morphTo = useRef<((id: string) => void) | null>(null)
-  const current = useRef(scene)
 
   useEffect(() => {
     const el = host.current
@@ -163,7 +158,7 @@ export default function Scene3D({ scene, getLevels }: Props) {
     const posVar = gpu.addVariable('texturePosition', positionShader, pos0)
     gpu.setVariableDependencies(velVar, [posVar, velVar])
     gpu.setVariableDependencies(posVar, [posVar, velVar])
-    const target = targetTexture(current.current)
+    const target = sphereTexture()
     const sim = {
       uTime: { value: 0 },
       uDelta: { value: STEP },
@@ -191,7 +186,6 @@ export default function Scene3D({ scene, getLevels }: Props) {
       uPixelRatio: { value: 1 },
       uBass: { value: 0 },
       uIntro: { value: 0 },
-      uBrightness: { value: brightnessOf(current.current) },
     }
     const material = new ShaderMaterial({
       uniforms,
@@ -225,13 +219,6 @@ export default function Scene3D({ scene, getLevels }: Props) {
     const ro = new ResizeObserver(resize)
     ro.observe(el)
     resize()
-
-    let brightness = brightnessOf(current.current)
-    morphTo.current = (id: string) => {
-      targetTexture(id, target)
-      brightness = brightnessOf(id)
-      sim.uStir.value = 1 // particles break loose, swirl, and stream into the new shape
-    }
 
     const pointer = { x: 0, y: 0 }
     const onMove = (e: PointerEvent) => {
@@ -268,12 +255,11 @@ export default function Scene3D({ scene, getLevels }: Props) {
       const goal = idle ? { bass: (0.5 + 0.5 * Math.sin(t * 0.5)) * 0.15, high: 0.04 } : live
       lv.bass = follow(lv.bass, goal.bass)
       lv.high = follow(lv.high, goal.high)
-      sim.uFlow.value = 0.22 + lv.bass * 1.1 + lv.high * 0.35
+      sim.uFlow.value = 0.14 + lv.bass * 0.9 + lv.high * 0.3
       sim.uStir.value *= Math.pow(0.35, elapsed)
       uniforms.uBass.value = lv.bass
       // fade in over ~2.5 s of real time while the particles assemble
       uniforms.uIntro.value = Math.min(1, uniforms.uIntro.value + elapsed / 2.5)
-      uniforms.uBrightness.value = smooth(uniforms.uBrightness.value, brightness)
       // fixed-size steps keep the simulation stable even when the tab is throttled
       const steps = Math.max(1, Math.min(4, Math.round(elapsed / STEP)))
       for (let i = 0; i < steps; i++) step(t)
@@ -296,7 +282,6 @@ export default function Scene3D({ scene, getLevels }: Props) {
       cancelAnimationFrame(raf)
       removeEventListener('pointermove', onMove)
       ro.disconnect()
-      morphTo.current = null
       target.dispose()
       gpu.dispose()
       geometry.dispose()
@@ -305,13 +290,6 @@ export default function Scene3D({ scene, getLevels }: Props) {
       canvas.remove()
     }
   }, [])
-
-  // Scene switch: particles break loose and stream into the new shape.
-  useEffect(() => {
-    if (current.current === scene) return
-    current.current = scene
-    morphTo.current?.(scene)
-  }, [scene])
 
   return <div ref={host} style={{ position: 'absolute', inset: 0 }} />
 }
