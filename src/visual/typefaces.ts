@@ -1,4 +1,4 @@
-/** Display typefaces for the clock and the big figures. UI labels always stay in Inter Tight. */
+/** Typefaces for the clock only. Everything else stays in Inter Tight. */
 export type Typeface = {
   id: string
   label: string
