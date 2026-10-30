@@ -37,29 +37,26 @@ export default function FocusPanel(p: Props) {
         </div>
         <div className="focus-right">
           {p.sceneControl}
-          <div className="focus-ctl">
-            <button className={p.mode === 'pomodoro' ? 'on' : ''} onClick={() => p.onModeChange('pomodoro')}>
-              Pomodoro
-            </button>
-            <button className={p.mode === 'free' ? 'on' : ''} onClick={() => p.onModeChange('free')}>
-              Libre
-            </button>
+          <div className="seg-row">
             {p.mode === 'free' && (
-              <label className="focus-free">
-                <input
-                  type="number"
-                  min={1}
-                  max={240}
-                  value={p.freeMinutes}
-                  aria-label="Minutos"
-                  onChange={(e) => {
-                    const v = Math.round(Number(e.target.value))
-                    if (v >= 1 && v <= 240) p.onFreeMinutes(v)
-                  }}
-                />
-                min
-              </label>
+              <div className="stepper" role="group" aria-label="Minutos">
+                <button aria-label="Menos minutos" onClick={() => p.onFreeMinutes(Math.max(1, p.freeMinutes - 5))}>
+                  −
+                </button>
+                <span>{p.freeMinutes} min</span>
+                <button aria-label="Más minutos" onClick={() => p.onFreeMinutes(Math.min(240, p.freeMinutes + 5))}>
+                  +
+                </button>
+              </div>
             )}
+            <div className="seg" role="group" aria-label="Modo del temporizador">
+              <button aria-pressed={p.mode === 'pomodoro'} onClick={() => p.onModeChange('pomodoro')}>
+                Pomodoro
+              </button>
+              <button aria-pressed={p.mode === 'free'} onClick={() => p.onModeChange('free')}>
+                Libre
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -78,15 +75,19 @@ export default function FocusPanel(p: Props) {
 
       <div className="focus-meta">
         <span>{p.activeTaskText ?? <span className="focus-dim">Sin tarea activa</span>}</span>
-        <span className="focus-ctl">
+        <span className="actions">
+          <button className="btn" onClick={p.onReset}>
+            ↺ Reiniciar
+          </button>
           {p.running ? (
-            <button onClick={p.onPause}>❚❚ Pausar</button>
+            <button className="btn primary" onClick={p.onPause}>
+              ❚❚ Pausar
+            </button>
           ) : (
-            <button className="acc" onClick={p.onStart}>
+            <button className="btn primary" onClick={p.onStart}>
               ▶ Iniciar
             </button>
           )}
-          <button onClick={p.onReset}>↺ Reiniciar</button>
         </span>
       </div>
     </div>

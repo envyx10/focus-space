@@ -65,18 +65,92 @@
   opacity: 1;
 }
 
-.focus-free {
+.seg-row {
   display: flex;
-  gap: 6px;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+/* Segmented control: one bordered strip, the active mode filled */
+.seg,
+.stepper {
+  display: flex;
+  border: 1px solid #3a3a3a;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.seg button {
+  padding: 9px 16px;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  color: #8a8984;
+  transition: background 0.15s, color 0.15s;
+}
+
+.seg button + button {
+  border-left: 1px solid #3a3a3a;
+}
+
+.seg button:hover {
+  color: var(--fg);
+}
+
+.seg button[aria-pressed='true'] {
+  background: var(--fg);
+  color: var(--bg);
+}
+
+.stepper {
   align-items: center;
 }
 
-.focus-free input {
-  width: 44px;
-  background: none;
-  border: 0;
-  border-bottom: 1px solid var(--line);
-  text-align: right;
+.stepper span {
+  padding: 0 10px;
+  min-width: 64px;
+  text-align: center;
+}
+
+.stepper button {
+  padding: 9px 12px;
+  font-size: 14px;
+}
+
+.stepper button:hover {
+  color: var(--accent);
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  padding: 14px 24px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border: 1px solid #3a3a3a;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.btn:hover {
+  border-color: var(--fg);
+}
+
+.btn.primary {
+  min-width: 150px;
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+}
+
+.btn.primary:hover {
+  background: var(--fg);
+  border-color: var(--fg);
 }
 
 .big {
@@ -130,8 +204,9 @@
 .focus-meta {
   display: flex;
   justify-content: space-between;
-  font-size: 12px;
-  padding-bottom: 14px;
+  align-items: flex-end;
+  font-size: 13px;
+  padding-bottom: 18px;
 }
 
 .focus-dim {

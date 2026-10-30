@@ -49,8 +49,6 @@
 }
 
 .mx b {
-  font-family: var(--display, var(--font));
-  font-style: var(--display-style, normal);
   font-size: 26px;
   font-weight: 300;
   letter-spacing: -0.03em;
