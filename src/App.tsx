@@ -3,8 +3,11 @@ import { useAmbient } from './audio/useAmbient'
 import Header from './layout/Header'
 import LofiBlock from './lofi/LofiBlock'
 import { useYouTubeLofi } from './lofi/useYouTubeLofi'
-import { localRepo } from './tasks/localRepo'
+import AccountMenu from './auth/AccountMenu'
+import { supabase } from './auth/supabase'
+import { useSession } from './auth/useSession'
 import TasksPanel from './tasks/TasksPanel'
+import { useTaskRepo } from './tasks/useTaskRepo'
 import { useTasks } from './tasks/useTasks'
 import FocusPanel from './timer/FocusPanel'
 import { useTimer } from './timer/useTimer'
@@ -15,18 +18,20 @@ export default function App() {
   const timer = useTimer()
   const ambient = useAmbient()
   const lofi = useYouTubeLofi(ambient.prefs.lofiVolume)
-  const tasks = useTasks(localRepo)
+  const session = useSession(supabase)
+  const { repo, synced } = useTaskRepo(supabase, session.user)
+  const tasks = useTasks(repo)
   const activeTask = tasks.tasks.find((t) => t.active)
 
   return (
     <div className="app">
       <header className="region-header" data-region="header">
-        <Header sessionNumber={timer.sessionNumber} now={new Date()} accountSlot={<span>Cuenta ↗</span>} />
+        <Header sessionNumber={timer.sessionNumber} now={new Date()} accountSlot={<AccountMenu session={session} />} />
       </header>
       <section className="region-tasks" data-region="tasks">
         <TasksPanel
           tasks={tasks.tasks}
-          synced={false}
+          synced={synced}
           add={tasks.add}
           toggle={tasks.toggle}
           edit={tasks.edit}

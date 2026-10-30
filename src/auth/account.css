@@ -1,0 +1,62 @@
+.acct {
+  position: relative;
+  display: inline-block;
+}
+
+.acct-btn {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 11px;
+}
+
+.acct-panel {
+  position: absolute;
+  right: -16px;
+  top: 30px;
+  z-index: 60;
+  width: 320px;
+  padding: 16px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  text-align: left;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 13px;
+}
+
+.acct-panel .lbl {
+  margin-bottom: 10px;
+}
+
+.acct-row {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 0;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+  text-align: left;
+}
+
+.acct-row input {
+  flex: 1;
+  min-width: 0;
+  background: none;
+  border: 0;
+  outline: none;
+}
+
+.acct-act:hover,
+.acct-row button:hover {
+  color: var(--accent);
+}
+
+.acct-dim {
+  opacity: 0.5;
+}
+
+.acct-msg {
+  color: var(--accent);
+  font-size: 12px;
+}
