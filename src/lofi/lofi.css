@@ -42,6 +42,35 @@
   line-height: 1;
 }
 
+.pl-mid {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.pl-sync {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+  padding: 5px 8px;
+  border: 1px solid currentColor;
+  text-align: right;
+  max-width: 50%;
+}
+
+.pl-sync.on {
+  background: var(--bg);
+  color: var(--accent);
+  border-color: var(--bg);
+}
+
+.pl-sync:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
 .pl-vol {
   display: grid;
   grid-template-columns: auto 1fr;

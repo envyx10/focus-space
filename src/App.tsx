@@ -1,5 +1,7 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useCallback, useRef } from 'react'
 import MixerBar from './audio/MixerBar'
+import { beatPulse, mergeLevels } from './audio/pulse'
+import { useMusicSync } from './audio/useMusicSync'
 import { useAmbient } from './audio/useAmbient'
 import Header from './layout/Header'
 import LofiBlock from './lofi/LofiBlock'
@@ -30,6 +32,17 @@ export default function App() {
   const tasks = useTasks(repo)
   const activeTask = tasks.tasks.find((t) => t.active)
   const displayFont = useTypeface(ambient.prefs.font)
+  const music = useMusicSync()
+  const lofiPlaying = useRef(lofi.playing)
+  lofiPlaying.current = lofi.playing
+
+  // What the 3D follows: ambient channels + the real music when the tab is shared,
+  // otherwise a synthetic lofi groove while the stream plays.
+  const getLevels = useCallback(() => {
+    const live = music.getLevels()
+    const groove = !live && lofiPlaying.current ? beatPulse(performance.now() / 1000) : null
+    return mergeLevels(ambient.getLevels(), live, groove)
+  }, [ambient.getLevels, music.getLevels])
 
   return (
     <div className="app" style={displayFont}>
@@ -69,7 +82,7 @@ export default function App() {
           }
         >
           <Suspense fallback={null}>
-            <Scene3D scene={ambient.prefs.scene} getLevels={ambient.getLevels} />
+            <Scene3D scene={ambient.prefs.scene} getLevels={getLevels} />
           </Suspense>
         </FocusPanel>
       </main>
@@ -83,6 +96,8 @@ export default function App() {
           volume={ambient.prefs.lofiVolume}
           onToggle={lofi.toggle}
           onVolume={ambient.setLofiVolume}
+          sync={music.state}
+          onSync={music.toggle}
         />
       </section>
       <Grain />

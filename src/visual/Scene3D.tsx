@@ -11,7 +11,7 @@ import {
   WebGLRenderer,
 } from 'three'
 import { SCENES, type SceneDef } from './scenes'
-import { smooth } from './sphereMath'
+import { follow, smooth } from './sphereMath'
 
 type Levels = { bass: number; high: number }
 type Props = { scene: string; getLevels: () => Levels | null }
@@ -60,7 +60,7 @@ const vertexShader = /* glsl */ `
     Z = p.y * sin(rx) + Z * cos(rx);
     float s = uPersp / (uPersp + Z);
     float depth = mix(1.0, clamp((1.0 - Z / uExtent) / 2.0, 0.0, 1.0), uFade);
-    vec2 px = uCenter + vec2(X, Y) * uRadius * (1.0 + uBass * 0.12) * s;
+    vec2 px = uCenter + vec2(X, Y) * uRadius * (1.0 + uBass * 0.16) * s;
     gl_Position = vec4(px.x / uRes.x * 2.0 - 1.0, 1.0 - px.y / uRes.y * 2.0, 0.0, 1.0);
     gl_PointSize = (1.2 + depth * 2.4) * (0.65 + aRand.y * 0.7) * uPixelRatio;
     vDepth = depth;
@@ -203,8 +203,8 @@ export default function Scene3D({ scene, getLevels }: Props) {
       const idle = !live || (live.bass < 0.01 && live.high < 0.01)
       // Without ambient audio (e.g. only the YouTube lofi plays) the scene breathes on its own.
       const target = idle ? { bass: (0.5 + 0.5 * Math.sin(t * 0.6)) * 0.3, high: 0.08 } : live
-      lv.bass = smooth(lv.bass, target.bass)
-      lv.high = smooth(lv.high, target.high)
+      lv.bass = follow(lv.bass, target.bass)
+      lv.high = follow(lv.high, target.high)
       shared.uTime.value = t
       shared.uBass.value = lv.bass
       shared.uHigh.value = lv.high
