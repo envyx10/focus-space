@@ -219,11 +219,14 @@ export default function Scene3D({ getLevels }: Props) {
       const pr = Math.min(devicePixelRatio || 1, 2)
       renderer.setPixelRatio(pr)
       renderer.setSize(width, height, false)
-      uniforms.uPixelRatio.value = pr
       camera.aspect = width / height
-      // Scene centre at 68% / 48% of the panel, beside the clock.
-      camera.setViewOffset(width, height, -0.18 * width, 0.02 * height, width, height)
+      // Zoom (narrower FOV, same perspective depth) until the sphere spans the whole panel width,
+      // centred behind the clock; top and bottom bleed off the edges.
+      const half = 1.08 / (CAMERA_Z * camera.aspect)
+      camera.fov = (2 * Math.atan(half) * 180) / Math.PI
       camera.updateProjectionMatrix()
+      // bigger dots as the sphere grows, so the shell stays dense rather than dusty
+      uniforms.uPixelRatio.value = pr * Math.sqrt(Math.tan((35 * Math.PI) / 360) / half)
     }
     const ro = new ResizeObserver(resize)
     ro.observe(el)
