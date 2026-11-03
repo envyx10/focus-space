@@ -12,7 +12,7 @@ One screen, no account, no setup.
 
 <br />
 
-[![License: MIT](https://img.shields.io/badge/code-MIT-ff4b1f?style=flat-square)](#credits-and-licenses)
+[![License: FSL-1.1-MIT](https://img.shields.io/badge/code-FSL--1.1--MIT-ff4b1f?style=flat-square)](#credits-and-licenses)
 [![Sounds: CC0](https://img.shields.io/badge/sounds-CC0-ff4b1f?style=flat-square)](public/sounds/CREDITS.md)
 [![React 19](https://img.shields.io/badge/React-19-0b0b0b?style=flat-square&logo=react&logoColor=61dafb)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-7-0b0b0b?style=flat-square&logo=typescript&logoColor=3178c6)](https://www.typescriptlang.org)
@@ -199,22 +199,24 @@ It's a small project and contributions are welcome: ambient sounds, typefaces, t
 2. Make your change and keep `bun run test` and `bun run lint` green.
 3. Open a pull request explaining what it changes and why.
 
-Adding a language means copying `src/i18n/en.ts`, translating it and registering it in `src/i18n/index.tsx`. New sounds must be **CC0** (or otherwise free to redistribute) and listed in [public/sounds/CREDITS.md](public/sounds/CREDITS.md). By contributing you agree your code is released under the project's MIT license.
+Adding a language means copying `src/i18n/en.ts`, translating it and registering it in `src/i18n/index.tsx`. New sounds must be **CC0** (or otherwise free to redistribute) and listed in [public/sounds/CREDITS.md](public/sounds/CREDITS.md). By contributing you agree your code is released under the project's license (FSL-1.1-MIT) and that the author may relicense it.
 
 Ideas or bugs? [Open an issue](https://github.com/envyx10/focus-space/issues).
 
 ## Credits and licenses
 
-Everything in this repository is free to use, but not everything is under the same license. Here is the whole picture.
+Everything in this repository is free to read and use, but not everything is under the same license. Here is the whole picture.
 
 | What | License | Details |
 |---|---|---|
-| **Source code** | [MIT](LICENSE), © 2026 envyx10 | Use it, modify it, ship it, commercially or not. Keep the copyright notice. |
+| **Source code** | [FSL-1.1-MIT](LICENSE), © 2026 envyx10 | Use it, modify it and self-host it for any purpose except a **competing commercial product or service**. Each version turns into plain MIT two years after its release. Versions published before this change remain under MIT. |
 | **Ambient and keyboard sounds**, chime | **CC0 1.0** (public domain) | Real recordings by [Freesound](https://freesound.org) authors. No attribution is required, but every file and author is listed in [public/sounds/CREDITS.md](public/sounds/CREDITS.md). The keyboard clips are trimmed, looped and level-matched. |
-| **Screenshots** (`docs/media`) | MIT, like the code | Captures of this app, taken for this README. |
+| **Screenshots** (`docs/media`) | FSL-1.1-MIT, like the code | Captures of this app, taken for this README. |
 | **Clock typefaces** | [SIL Open Font License 1.1](https://openfontlicense.org) | Inter Tight, Space Grotesk, Syne, JetBrains Mono and Unbounded, loaded from [Google Fonts](https://fonts.google.com) at run time. They are not bundled here. |
 | **Dependencies** | MIT (12) and 0BSD (1) in the shipped bundle | React, Three.js and Supabase's client, among others. Full list with versions in [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md). |
 | **Lofi radio** | Not part of this repository | An official YouTube embed. The streams belong to their owners and YouTube's terms apply. Focus/Space does not download, record or redistribute them. |
+
+**Name and branding.** The name *Focus/Space*, its logo and its visual identity are not licensed. You may fork the code under the license above, but not present your fork as the original or reuse the name or logo.
 
 **Trademarks.** *Cherry MX* is a trademark of Cherry GmbH and is used here only to describe the keyboard switches that were recorded. *Pomodoro Technique* is a registered trademark of Francesco Cirillo. React, Three.js, Supabase, Vite, TypeScript, YouTube and the other names and logos in the badges belong to their owners. Focus/Space is an independent project, not affiliated with or endorsed by any of them.
 

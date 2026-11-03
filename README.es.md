@@ -12,7 +12,7 @@ Una sola pantalla, sin cuenta, sin configurar nada.
 
 <br />
 
-[![Licencia: MIT](https://img.shields.io/badge/c%C3%B3digo-MIT-ff4b1f?style=flat-square)](#créditos-y-licencias)
+[![Licencia: FSL-1.1-MIT](https://img.shields.io/badge/c%C3%B3digo-FSL--1.1--MIT-ff4b1f?style=flat-square)](#créditos-y-licencias)
 [![Sonidos: CC0](https://img.shields.io/badge/sonidos-CC0-ff4b1f?style=flat-square)](public/sounds/CREDITS.md)
 [![React 19](https://img.shields.io/badge/React-19-0b0b0b?style=flat-square&logo=react&logoColor=61dafb)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-7-0b0b0b?style=flat-square&logo=typescript&logoColor=3178c6)](https://www.typescriptlang.org)
@@ -199,22 +199,24 @@ Es un proyecto pequeño y las contribuciones son bienvenidas: sonidos ambientale
 2. Haz tu cambio y mantén `bun run test` y `bun run lint` en verde.
 3. Abre una pull request explicando qué cambia y por qué.
 
-Añadir un idioma consiste en copiar `src/i18n/en.ts`, traducirlo y registrarlo en `src/i18n/index.tsx`. Los sonidos nuevos deben ser **CC0** (o libres de redistribuir) y constar en [public/sounds/CREDITS.md](public/sounds/CREDITS.md). Al contribuir aceptas que tu código se publique bajo la licencia MIT del proyecto.
+Añadir un idioma consiste en copiar `src/i18n/en.ts`, traducirlo y registrarlo en `src/i18n/index.tsx`. Los sonidos nuevos deben ser **CC0** (o libres de redistribuir) y constar en [public/sounds/CREDITS.md](public/sounds/CREDITS.md). Al contribuir aceptas que tu código se publique bajo la licencia del proyecto (FSL-1.1-MIT) y que el autor pueda relicenciarlo.
 
 ¿Ideas o errores? [Abre una issue](https://github.com/envyx10/focus-space/issues).
 
 ## Créditos y licencias
 
-Todo lo que hay en este repositorio es libre de usar, pero no todo tiene la misma licencia. Esta es la imagen completa.
+Todo lo que hay en este repositorio es libre de leer y usar, pero no todo tiene la misma licencia. Esta es la imagen completa.
 
 | Qué | Licencia | Detalles |
 |---|---|---|
-| **Código fuente** | [MIT](LICENSE), © 2026 envyx10 | Úsalo, modifícalo y distribúyelo, con fines comerciales o no. Conserva el aviso de copyright. |
+| **Código fuente** | [FSL-1.1-MIT](LICENSE), © 2026 envyx10 | Úsalo, modifícalo y alójalo tú mismo para cualquier fin salvo un **producto o servicio comercial que compita**. Cada versión pasa a MIT dos años después de publicarse. Las versiones anteriores a este cambio siguen bajo MIT. |
 | **Sonidos ambientales y de teclado**, campanilla | **CC0 1.0** (dominio público) | Grabaciones reales de autores de [Freesound](https://freesound.org). No exigen atribución, pero cada archivo y autor figura en [public/sounds/CREDITS.md](public/sounds/CREDITS.md). Los clips de teclado están recortados, en bucle y con el volumen igualado. |
-| **Capturas** (`docs/media`) | MIT, como el código | Capturas de esta app, hechas para este README. |
+| **Capturas** (`docs/media`) | FSL-1.1-MIT, como el código | Capturas de esta app, hechas para este README. |
 | **Tipografías del reloj** | [SIL Open Font License 1.1](https://openfontlicense.org) | Inter Tight, Space Grotesk, Syne, JetBrains Mono y Unbounded, cargadas desde [Google Fonts](https://fonts.google.com) en tiempo de ejecución. No se incluyen en este repositorio. |
 | **Dependencias** | MIT (12) y 0BSD (1) en el paquete que se publica | React, Three.js y el cliente de Supabase, entre otras. Lista completa con versiones en [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md). |
 | **Radio lofi** | No forma parte de este repositorio | Un embed oficial de YouTube. Los directos pertenecen a sus dueños y se aplican las condiciones de YouTube. Focus/Space no los descarga, graba ni redistribuye. |
+
+**Nombre e imagen.** El nombre *Focus/Space*, su logotipo y su identidad visual no están licenciados. Puedes hacer un fork del código con la licencia de arriba, pero no presentarlo como el original ni reutilizar el nombre o el logo.
 
 **Marcas.** *Cherry MX* es una marca de Cherry GmbH y aquí solo describe los interruptores de teclado que se grabaron. *Pomodoro Technique* es una marca registrada de Francesco Cirillo. React, Three.js, Supabase, Vite, TypeScript, YouTube y el resto de nombres y logotipos de las insignias pertenecen a sus propietarios. Focus/Space es un proyecto independiente, sin afiliación ni respaldo de ninguno de ellos.
 
