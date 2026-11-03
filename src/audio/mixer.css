@@ -84,7 +84,10 @@
   top: 50%;
   left: 16px;
   transform: translateY(-50%);
-  right: 16px;
+  width: fit-content;
+  max-width: calc(100% - 32px);
+  padding: 0 8px 0 0;
+  background: var(--bg);
   margin: 0;
   font-size: 10px;
   text-transform: uppercase;

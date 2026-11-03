@@ -35,7 +35,7 @@ button {
   position: relative;
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  grid-template-rows: 44px 1fr 120px;
+  grid-template-rows: 44px 1fr minmax(120px, auto);
   /* --zoom is the text-size setting: the whole grid scales and the viewport it must fit shrinks to match */
   zoom: var(--zoom, 1);
   height: calc(100vh / var(--zoom, 1));
@@ -53,8 +53,8 @@ button {
   z-index: 1;
 }
 
-.region-header {
-  /* above the other regions so the account panel can drop over them */
+.app > .region-header {
+  /* above the other regions so the account and settings panels can drop over them (needs the .app > prefix to beat the rule above) */
   z-index: 2;
   grid-column: 1 / -1;
   border-bottom: 1px solid var(--line);
@@ -129,4 +129,159 @@ button {
 .exit-immersive:focus-visible {
   opacity: 1;
   color: var(--accent);
+}
+
+/* Phones and small tablets: the grid becomes one column. The desktop layout is untouched above 1023px. */
+@media (max-width: 1023px) {
+  .app {
+    display: flex;
+    flex-direction: column;
+    zoom: 1;
+    height: auto;
+    min-width: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow: visible;
+  }
+
+  .app > .region-header {
+    order: 0;
+    height: 44px;
+    flex: none;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+  }
+
+  .app > .region-focus {
+    order: 1;
+    min-height: 560px;
+    flex: none;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .app > .region-tasks {
+    order: 2;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+    overflow: visible;
+  }
+
+  .app > .region-mixer {
+    order: 3;
+    height: 190px;
+    flex: none;
+    border-top: 0;
+  }
+
+  .app > .region-lofi {
+    order: 4;
+    height: 130px;
+    flex: none;
+  }
+
+  .app .mixer {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .app .mx {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .app > .region-mixer {
+    height: auto;
+  }
+
+  .app .mx {
+    min-height: 96px;
+  }
+
+  .app .focus {
+    padding: 14px 14px 0;
+  }
+
+  /* The header keeps brand, state and menus; the date makes no room on a phone. */
+  .app .hd {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .app .hd > span {
+    padding: 0 12px;
+  }
+
+  .app .hd-date {
+    display: none;
+  }
+
+  .app .hd-session {
+    flex: 1;
+    text-align: center;
+  }
+
+  .app .set-panel {
+    width: 100vw;
+  }
+}
+
+@media (max-width: 560px) {
+  .app .hd-session {
+    display: none;
+  }
+
+  .app .hd-brand {
+    flex: 1;
+  }
+
+  .app .focus-top {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .app .focus-right {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 1023px) {
+  /* min-height on the panel itself: a percentage height can't resolve against a min-height-only parent */
+  .app > .region-focus {
+    min-height: 0;
+  }
+
+  .app .focus {
+    min-height: 560px;
+    height: auto;
+    gap: 16px;
+  }
+
+  .app .hd-brand {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .app .hd-account {
+    flex: none;
+  }
+
+  .app .actions {
+    flex-wrap: wrap;
+  }
+
+  .app .actions .btn.primary {
+    flex: 1;
+  }
+}
+
+@media (max-width: 1023px) {
+  .app .mx-hint {
+    position: static;
+    transform: none;
+    grid-column: 1 / -1;
+    max-width: none;
+    width: auto;
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--line);
+  }
 }
