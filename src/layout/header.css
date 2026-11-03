@@ -29,3 +29,13 @@
   grid-column: span 2;
   text-align: right;
 }
+
+.hd-account {
+  display: flex;
+  justify-content: flex-end;
+  gap: 18px;
+}
+
+.hd-idle {
+  opacity: 0.55;
+}

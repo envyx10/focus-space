@@ -1,0 +1,59 @@
+import { useEffect, useRef } from 'react'
+
+export type ShortcutHandlers = {
+  /** Space on something that isn't a control. */
+  toggleTimer: () => void
+  newTask: () => void
+  mute: () => void
+  calm: () => void
+  immersive: () => void
+  settings: () => void
+  escape: () => void
+}
+
+const TYPING = new Set(['INPUT', 'TEXTAREA', 'SELECT'])
+
+/** True when a key press belongs to the thing being typed into, not to the app. */
+export function isTypingTarget(t: EventTarget | null): boolean {
+  const el = t as HTMLElement | null
+  return !!el && (TYPING.has(el.tagName) || el.isContentEditable)
+}
+
+/**
+ * App-wide keys. They never fire while typing, with a modifier held, or (for Space) on a focused
+ * button or slider, so a browser shortcut or a normal keyboard activation is never hijacked.
+ */
+export function useShortcuts(handlers: ShortcutHandlers): void {
+  const ref = useRef(handlers)
+  ref.current = handlers
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey) return
+      if (isTypingTarget(e.target)) return
+      const h = ref.current
+      if (e.key === 'Escape') return h.escape()
+      if (e.key === ' ') {
+        const el = e.target as HTMLElement | null
+        if (el && (el.tagName === 'BUTTON' || el.tagName === 'A' || el.getAttribute('role') === 'slider' || el.getAttribute('role') === 'checkbox')) return
+        e.preventDefault()
+        return h.toggleTimer()
+      }
+      switch (e.key.toLowerCase()) {
+        case 'n':
+          e.preventDefault()
+          return h.newTask()
+        case 'm':
+          return h.mute()
+        case 'c':
+          return h.calm()
+        case 'i':
+          return h.immersive()
+        case '?':
+          return h.settings()
+      }
+    }
+    addEventListener('keydown', onKey)
+    return () => removeEventListener('keydown', onKey)
+  }, [])
+}

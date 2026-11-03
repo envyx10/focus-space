@@ -1,10 +1,12 @@
-import { useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import type { Phase, TimerMode } from './timer'
+import type { TimerStatus } from './useTimer'
 import './focus.css'
 
 type Props = {
   remainingMs: number
   running: boolean
+  status: TimerStatus
   mode: TimerMode
   phase: Phase
   freeMinutes: number
@@ -12,9 +14,13 @@ type Props = {
   onStart: () => void
   onPause: () => void
   onReset: () => void
+  onSkip: () => void
+  onExtend: () => void
   onModeChange: (m: TimerMode) => void
   onFreeMinutes: (min: number) => void
   now: Date
+  /** Bumped by the Space shortcut: does what the main button does. */
+  toggleSignal?: number
   sceneControl?: ReactNode
   children?: ReactNode
 }
@@ -31,7 +37,11 @@ export default function FocusPanel(p: Props) {
     ? [pad(p.now.getHours()), pad(p.now.getMinutes())]
     : [pad(Math.floor(total / 60)), pad(total % 60)]
   const label = clock ? 'Hora local' : p.mode === 'free' ? 'Tiempo libre' : PHASE_LABEL[p.phase]
+  // A phase with time already spent is worth a second thought before it is thrown away.
+  const inProgress = p.running || p.status === 'paused'
+  const sure = (what: string) => !inProgress || window.confirm(`${what} Se perderá el tiempo de esta fase.`)
   const pick = (m: TimerMode) => {
+    if (m !== p.mode && !sure('¿Cambiar de modo?')) return
     setClock(false)
     p.onModeChange(m)
   }
@@ -39,6 +49,16 @@ export default function FocusPanel(p: Props) {
     setClock(false)
     if (!p.running) p.onStart()
   }
+  const live = useRef({ clock, running: p.running, start, pause: p.onPause })
+  live.current = { clock, running: p.running, start, pause: p.onPause }
+  const lastSignal = useRef(p.toggleSignal)
+  useEffect(() => {
+    if (p.toggleSignal === lastSignal.current) return
+    lastSignal.current = p.toggleSignal
+    const l = live.current
+    if (l.running && !l.clock) l.pause()
+    else l.start()
+  }, [p.toggleSignal])
 
   return (
     <div className="focus">
@@ -106,9 +126,19 @@ export default function FocusPanel(p: Props) {
         <span>{p.activeTaskText ?? <span className="focus-dim">Sin tarea activa</span>}</span>
         <span className="actions">
           {!clock && (
-            <button className="btn" onClick={p.onReset}>
+            <button className="btn" onClick={() => sure('¿Reiniciar?') && p.onReset()}>
               ↺ Reiniciar
             </button>
+          )}
+          {!clock && p.mode === 'pomodoro' && (
+            <>
+              <button className="btn" onClick={p.onExtend} title="Añadir 5 minutos a esta fase">
+                +5 min
+              </button>
+              <button className="btn" onClick={p.onSkip} title="Saltar a la siguiente fase">
+                ⏭ Saltar
+              </button>
+            </>
           )}
           {p.running && !clock ? (
             <button className="btn primary" onClick={p.onPause}>
@@ -116,7 +146,7 @@ export default function FocusPanel(p: Props) {
             </button>
           ) : (
             <button className="btn primary" onClick={start}>
-              {p.running ? '▶ Temporizador' : '▶ Iniciar'}
+              {p.running ? '▶ Temporizador' : p.status === 'waiting' ? `▶ Empezar ${label.toLowerCase()}` : p.status === 'paused' ? '▶ Seguir' : '▶ Iniciar'}
             </button>
           )}
         </span>

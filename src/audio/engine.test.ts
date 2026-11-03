@@ -55,3 +55,18 @@ describe('engine', () => {
     expect(storm.play).toHaveBeenCalled()
   })
 })
+
+describe('engine mute', () => {
+  it('mutes through the master gain and leaves channel volumes alone', async () => {
+    const ctx = fakeCtx()
+    const audio = fakeAudio()
+    const e = createEngine(ctx as unknown as AudioContext, { rain: 'suave', fire: 'hoguera', cafe: 'cafeteria', wind: 'suave' }, audio.factory)
+    e.setVolume('rain', 0.5)
+    await e.resume()
+    const master = ctx.createGain.mock.results[0].value
+    e.setMuted(true)
+    expect(master.gain.setTargetAtTime).toHaveBeenLastCalledWith(0, 0, expect.any(Number))
+    e.setMuted(false)
+    expect(master.gain.setTargetAtTime).toHaveBeenLastCalledWith(1, 0, expect.any(Number))
+  })
+})
