@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { LANGS, useI18n, type Key } from '../i18n'
 import { askNotificationPermission, chime, notificationsSupported } from '../timer/alerts'
 import { DEFAULT_CONFIG, type TimerConfig } from '../timer/timer'
 import { LIMITS } from '../timer/timerStore'
@@ -14,13 +15,14 @@ export const PRESETS: { label: string; cfg: Pick<TimerConfig, 'work' | 'short' |
   { label: '90 / 20', cfg: { work: 90 * MIN, short: 20 * MIN, long: 30 * MIN } },
 ]
 
-export const SHORTCUTS: [string, string][] = [
-  ['Espacio', 'Iniciar / pausar el temporizador'],
-  ['N', 'Nueva tarea'],
-  ['M', 'Silenciar todo'],
-  ['C', 'Modo calma'],
-  ['I', 'Modo inmersión (Esc para salir)'],
-  ['?', 'Abrir / cerrar ajustes'],
+/** The key is shown as is, except the space bar, which has a name in each language. */
+export const SHORTCUTS: [string, Key][] = [
+  ['key.space', 'key.space.desc'],
+  ['N', 'key.n.desc'],
+  ['M', 'key.m.desc'],
+  ['C', 'key.c.desc'],
+  ['F', 'key.f.desc'],
+  ['?', 'key.help.desc'],
 ]
 
 const SCALE_LABEL: Record<TextScale, string> = { m: 'A', l: 'A+', xl: 'A++' }
@@ -91,6 +93,7 @@ function Switch({ label, hint, checked, disabled, onChange }: { label: string; h
 }
 
 export default function SettingsMenu(p: Props) {
+  const { t, lang, setLang } = useI18n()
   const { open, onOpenChange, config: cfg, prefs } = p
   const [sceneName, setSceneName] = useState('')
   const [msg, setMsg] = useState<string | null>(null)
@@ -122,31 +125,31 @@ export default function SettingsMenu(p: Props) {
       return p.onNotify(false)
     }
     const ok = await askNotificationPermission()
-    setMsg(ok ? null : 'El navegador no permite notificaciones aquí. Puedes activarlas en los permisos del sitio.')
+    setMsg(ok ? null : t('settings.notifyDenied'))
     p.onNotify(ok)
   }
 
   return (
     <div className="set" ref={root}>
-      <button className="set-btn" aria-expanded={open} aria-haspopup="dialog" title="Ajustes (?)" onClick={() => onOpenChange(!open)}>
-        Ajustes ⚙
+      <button className="set-btn" aria-expanded={open} aria-haspopup="dialog" title={t('settings.openHint')} onClick={() => onOpenChange(!open)}>
+        {t('settings.open')}
       </button>
       {open && (
-        <div className="set-panel" role="dialog" aria-label="Ajustes">
+        <div className="set-panel" role="dialog" aria-label={t('settings.title')}>
           <header className="set-head">
             <div>
               <div className="num">04</div>
-              <div className="lbl">Ajustes</div>
+              <div className="lbl">{t('settings.title')}</div>
             </div>
-            <button className="set-close" onClick={() => onOpenChange(false)} aria-label="Cerrar ajustes" title="Cerrar (Esc)">
-              Cerrar ×
+            <button className="set-close" onClick={() => onOpenChange(false)} aria-label={t('settings.closeLabel')} title={t('settings.closeHint')}>
+              {t('settings.close')}
             </button>
           </header>
 
-          <Group title="Pomodoro">
+          <Group title={t('settings.pomodoro')}>
             <div className="set-row">
-              <span>Ritmo</span>
-              <span className="set-seg" role="group" aria-label="Duraciones predefinidas">
+              <span>{t('settings.rhythm')}</span>
+              <span className="set-seg" role="group" aria-label={t('settings.presets')}>
                 {PRESETS.map((x, i) => (
                   <button key={x.label} aria-pressed={preset === i} onClick={() => p.onConfig({ ...cfg, ...x.cfg })}>
                     {x.label}
@@ -154,23 +157,23 @@ export default function SettingsMenu(p: Props) {
                 ))}
               </span>
             </div>
-            <Minutes label="Focus (min)" value={cfg.work / MIN} limits={LIMITS.work} onCommit={(v) => setMin('work', v)} />
-            <Minutes label="Descanso (min)" value={cfg.short / MIN} limits={LIMITS.short} onCommit={(v) => setMin('short', v)} />
-            <Minutes label="Largo (min)" value={cfg.long / MIN} limits={LIMITS.long} onCommit={(v) => setMin('long', v)} />
-            <Minutes label="Largo cada" value={cfg.longEvery} limits={LIMITS.longEvery} onCommit={(v) => p.onConfig({ ...cfg, longEvery: v })} />
-            <Switch label="Empezar la siguiente fase automáticamente" checked={cfg.autoNext} onChange={(on) => p.onConfig({ ...cfg, autoNext: on })} />
+            <Minutes label={t('settings.focusMin')} value={cfg.work / MIN} limits={LIMITS.work} onCommit={(v) => setMin('work', v)} />
+            <Minutes label={t('settings.shortMin')} value={cfg.short / MIN} limits={LIMITS.short} onCommit={(v) => setMin('short', v)} />
+            <Minutes label={t('settings.longMin')} value={cfg.long / MIN} limits={LIMITS.long} onCommit={(v) => setMin('long', v)} />
+            <Minutes label={t('settings.longEvery')} value={cfg.longEvery} limits={LIMITS.longEvery} onCommit={(v) => p.onConfig({ ...cfg, longEvery: v })} />
+            <Switch label={t('settings.autoNext')} checked={cfg.autoNext} onChange={(on) => p.onConfig({ ...cfg, autoNext: on })} />
             {customized && (
               <button className="set-act" onClick={() => p.onConfig(DEFAULT_CONFIG)}>
-                Restablecer →
+                {t('settings.reset')}
               </button>
             )}
           </Group>
 
-          <Group title="Avisos">
+          <Group title={t('settings.alerts')}>
             <label className="set-row set-stack">
               <span>
-                Sonido al terminar
-                <output>{prefs.chimeVolume === 0 ? 'Apagado' : `${Math.round(prefs.chimeVolume * 100)} %`}</output>
+                {t('settings.chime')}
+                <output>{prefs.chimeVolume === 0 ? t('settings.chimeOff') : `${Math.round(prefs.chimeVolume * 100)} %`}</output>
               </span>
               <input
                 className="set-range"
@@ -180,21 +183,21 @@ export default function SettingsMenu(p: Props) {
                 step={5}
                 value={Math.round(prefs.chimeVolume * 100)}
                 style={{ ['--v' as string]: `${Math.round(prefs.chimeVolume * 100)}%` }}
-                aria-label="Volumen del aviso"
+                aria-label={t('settings.chimeLabel')}
                 onChange={(e) => p.onChime(Number(e.target.value) / 100)}
               />
             </label>
             <button className="set-act" disabled={prefs.chimeVolume === 0} onClick={() => chime(prefs.chimeVolume)}>
-              Probar sonido →
+              {t('settings.chimeTest')}
             </button>
             <Switch
-              label="Notificación del navegador"
-              hint={notificationsSupported() ? undefined : 'No disponible en este navegador'}
+              label={t('settings.notify')}
+              hint={notificationsSupported() ? undefined : t('settings.notifyNA')}
               checked={prefs.notify}
               disabled={!notificationsSupported()}
               onChange={toggleNotify}
             />
-            <p className="set-note">Mientras corre, la cuenta atrás aparece en el título de la pestaña.</p>
+            <p className="set-note">{t('settings.notifyNote')}</p>
             {msg && (
               <p className="set-note set-warn" role="status">
                 {msg}
@@ -202,11 +205,21 @@ export default function SettingsMenu(p: Props) {
             )}
           </Group>
 
-          <Group title="Pantalla">
-            <Switch label="Modo calma: sin esfera ni grano" checked={prefs.calm} onChange={p.onCalm} />
+          <Group title={t('settings.screen')}>
             <div className="set-row">
-              <span>Tamaño del texto</span>
-              <span className="set-seg" role="group" aria-label="Tamaño del texto">
+              <span>{t('settings.language')}</span>
+              <span className="set-seg" role="group" aria-label={t('settings.language')}>
+                {LANGS.map((l) => (
+                  <button key={l} aria-pressed={lang === l} onClick={() => setLang(l)} lang={l}>
+                    {l.toUpperCase()}
+                  </button>
+                ))}
+              </span>
+            </div>
+            <Switch label={t('settings.calm')} checked={prefs.calm} onChange={p.onCalm} />
+            <div className="set-row">
+              <span>{t('settings.textSize')}</span>
+              <span className="set-seg" role="group" aria-label={t('settings.textSize')}>
                 {TEXT_SCALES.map((s) => (
                   <button key={s} aria-pressed={prefs.textScale === s} onClick={() => p.onTextScale(s)}>
                     {SCALE_LABEL[s]}
@@ -221,12 +234,12 @@ export default function SettingsMenu(p: Props) {
                 p.onImmersive()
               }}
             >
-              Modo inmersión →
+              {t('settings.immersive')}
             </button>
           </Group>
 
-          <Group title="Sonido">
-            <Switch label="Silenciar todo (ambiente y radio)" checked={prefs.muted} onChange={p.onMuted} />
+          <Group title={t('settings.sound')}>
+            <Switch label={t('settings.muteAll')} checked={prefs.muted} onChange={p.onMuted} />
             <form
               className="set-row set-scene"
               onSubmit={(e) => {
@@ -235,52 +248,52 @@ export default function SettingsMenu(p: Props) {
                 setSceneName('')
               }}
             >
-              <input value={sceneName} maxLength={24} placeholder="Nombre de la mezcla actual" aria-label="Nombre de la mezcla" onChange={(e) => setSceneName(e.target.value)} />
+              <input value={sceneName} maxLength={24} placeholder={t('settings.mixName')} aria-label={t('settings.mixLabel')} onChange={(e) => setSceneName(e.target.value)} />
               <button type="submit" disabled={!sceneName.trim()}>
-                Guardar
+                {t('settings.mixSave')}
               </button>
             </form>
             {prefs.scenes.map((s) => (
               <div className="set-row set-scene-item" key={s.name}>
-                <button onClick={() => p.onApplyScene(s.name)} title="Aplicar esta mezcla">
+                <button onClick={() => p.onApplyScene(s.name)} title={t('settings.mixApply')}>
                   {s.name}
                 </button>
-                <button className="set-x" aria-label={`Borrar mezcla ${s.name}`} title="Borrar" onClick={() => p.onDeleteScene(s.name)}>
+                <button className="set-x" aria-label={t('settings.mixDelete', { name: s.name })} title={t('tasks.delete')} onClick={() => p.onDeleteScene(s.name)}>
                   ×
                 </button>
               </div>
             ))}
           </Group>
 
-          <Group title="Estadísticas">
+          <Group title={t('settings.stats')}>
             <dl className="set-list">
               <div>
-                <dt>Hoy</dt>
+                <dt>{t('settings.today')}</dt>
                 <dd>
-                  {formatDuration(today?.focusMs ?? 0)} · {today?.sessions ?? 0} sesiones
+                  {formatDuration(today?.focusMs ?? 0)} · {t('settings.sessions', { n: today?.sessions ?? 0 })}
                 </dd>
               </div>
               <div>
-                <dt>7 días</dt>
+                <dt>{t('settings.week')}</dt>
                 <dd>{formatDuration(week)}</dd>
               </div>
               <div>
-                <dt>Racha</dt>
+                <dt>{t('settings.streak')}</dt>
                 <dd>
-                  {days} {days === 1 ? 'día' : 'días'}
+                  {t(days === 1 ? 'settings.day' : 'settings.days', { n: days })}
                 </dd>
               </div>
             </dl>
           </Group>
 
-          <Group title="Atajos">
+          <Group title={t('settings.shortcuts')}>
             <dl className="set-list set-keys">
               {SHORTCUTS.map(([k, d]) => (
                 <div key={k}>
                   <dt>
-                    <kbd>{k}</kbd>
+                    <kbd>{k.startsWith('key.') ? t(k) : k}</kbd>
                   </dt>
-                  <dd>{d}</dd>
+                  <dd>{t(d)}</dd>
                 </div>
               ))}
             </dl>

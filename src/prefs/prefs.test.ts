@@ -4,7 +4,7 @@ import { DEFAULT_PREFS, loadPrefs, PREFS_KEY, savePrefs } from './prefs'
 describe('prefs', () => {
   it('defaults: every ambient channel silent until the user raises it', () => {
     expect(loadPrefs()).toEqual(DEFAULT_PREFS)
-    expect(DEFAULT_PREFS.volumes).toEqual({ rain: 0, fire: 0, cafe: 0, wind: 0 })
+    expect(DEFAULT_PREFS.volumes).toEqual({ rain: 0, fire: 0, cafe: 0, wind: 0, keys: 0 })
   })
 
   it('falls back on corrupt JSON', () => {
@@ -15,7 +15,7 @@ describe('prefs', () => {
   it('fills missing keys from defaults', () => {
     localStorage.setItem(PREFS_KEY, JSON.stringify({ v: 1, volumes: { rain: 0.2 } }))
     const p = loadPrefs()
-    expect(p.volumes).toEqual({ rain: 0.2, fire: 0, cafe: 0, wind: 0 })
+    expect(p.volumes).toEqual({ rain: 0.2, fire: 0, cafe: 0, wind: 0, keys: 0 })
     expect(p.variants).toEqual(DEFAULT_PREFS.variants)
   })
 
@@ -54,7 +54,7 @@ describe('prefs added from the beta feedback', () => {
       JSON.stringify({ v: 1, scenes: [{ name: ' Examen ', volumes: { rain: 0.5, fire: 9 }, variants: { rain: 'tienda', wind: 'lava' } }, { name: '' }, 3], textScale: 'huge', chimeVolume: 4 }),
     )
     const p = loadPrefs()
-    expect(p.scenes).toEqual([{ name: 'Examen', volumes: { rain: 0.5, fire: 0, cafe: 0, wind: 0 }, variants: { ...DEFAULT_PREFS.variants, rain: 'tienda' } }])
+    expect(p.scenes).toEqual([{ name: 'Examen', volumes: { rain: 0.5, fire: 0, cafe: 0, wind: 0, keys: 0 }, variants: { ...DEFAULT_PREFS.variants, rain: 'tienda' } }])
     expect(p.textScale).toBe('m')
     expect(p.chimeVolume).toBe(0.4)
   })

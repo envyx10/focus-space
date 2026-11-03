@@ -41,11 +41,12 @@ Most focus apps are either a bare timer or a dashboard full of things to configu
 | ⏱️ **Pomodoro & free timer** | Classic 25 / 5 min cycles with a 15 min long break every 4 sessions, or a free timer from 1 to 240 min. A soft chime marks the end of each phase. |
 | 🕐 **Local clock by default** | Opens on the time. When a timer is running, the time moves up small and the countdown takes the stage. |
 | ✅ **Tasks** | Add, edit, complete and delete. Mark one as *active* and it appears under the timer, so you always know what this session is for. |
-| 🌧️ **Ambient mixer** | Rain, fire, café and wind, each with variants (window, storm, tent, fireplace, library, forest…). Drag, scroll or use the arrow keys to mix them. |
+| 🌧️ **Ambient mixer** | Rain, fire, café, wind and keyboard typing, each with variants (window, storm, tent, fireplace, library, forest, Cherry MX Blue, Brown and Red…). Drag, scroll or use the arrow keys to mix them. |
 | 📻 **Lofi radio** | A live lofi stream with its own volume, with automatic fallback to other streams if one is down. |
 | 🔮 **Reactive particle sphere** | A Three.js shader sphere that follows the ambient channels. |
 | 🔤 **Six clock typefaces** | Suiza, Grotesk, Syne, Editorial, Mono and Unbounded, each tuned so the digits keep the same width. |
 | ☁️ **Optional sync** | Sign in with email (magic link), Google or GitHub through Supabase. Tasks you made before signing in are merged into your account. |
+| 🌐 **English and Spanish** | Pick the language in Settings. It starts in your browser's language and is remembered. |
 | ♿ **Accessible** | Real roles and labels on every control, keyboard-operable sliders, and a timer readable by screen readers. |
 
 <table>

@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useT, type T } from '../i18n'
 import type { Phase, TimerMode } from './timer'
 
 export function chime(volume: number): void {
@@ -29,18 +30,18 @@ export function notifyPhase(title: string, body: string): void {
   }
 }
 
-const LABEL: Record<Phase, string> = { work: 'Focus', short: 'Descanso', long: 'Descanso largo' }
-export const phaseLabel = (mode: TimerMode, phase: Phase): string => (mode === 'free' ? 'Tiempo libre' : LABEL[phase])
+export const phaseLabel = (t: T, mode: TimerMode, phase: Phase): string => t(mode === 'free' ? 'phase.free' : `phase.${phase}`)
 
 const BASE_TITLE = 'Focus/Space'
 const pad = (n: number) => String(n).padStart(2, '0')
 
 /** Puts the countdown in the tab title while it runs, so it is visible from any other tab. */
 export function useTabTitle(running: boolean, remainingMs: number, label: string, waiting: boolean): void {
+  const t = useT()
   const total = Math.ceil(remainingMs / 1000)
   const clock = `${pad(Math.floor(total / 60))}:${pad(total % 60)}`
   useEffect(() => {
-    document.title = running ? `${clock} · ${label} — ${BASE_TITLE}` : waiting ? `● ${label} listo — ${BASE_TITLE}` : BASE_TITLE
-  }, [running, clock, label, waiting])
+    document.title = running ? `${clock} · ${label} — ${BASE_TITLE}` : waiting ? `● ${t('alert.ready', { phase: label })} — ${BASE_TITLE}` : BASE_TITLE
+  }, [running, clock, label, waiting, t])
   useEffect(() => () => void (document.title = BASE_TITLE), [])
 }
