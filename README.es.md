@@ -99,7 +99,7 @@ Por debajo de 1024&nbsp;px el diseño pasa a una sola columna: reloj, tareas, me
 - **Radio lofi** con volumen propio, tres emisoras y cambio automático si una se cae.
 
 **Aspecto**
-- Una **esfera de partículas** en Three.js (65.536 partículas simuladas en la GPU) que sigue a los canales ambientales y al ritmo del lofi.
+- Una **esfera de partículas** en Three.js (65.536 partículas simuladas en la GPU, 32.400 en equipos con 4 núcleos o menos) que sigue a los canales ambientales y al ritmo del lofi.
 - Cinco tipografías para el reloj, grano de película, **modo calma** (sin esfera ni grano), tres tamaños de texto y un **modo focus** que agranda el reloj.
 
 <a id="español-e-inglés"></a>

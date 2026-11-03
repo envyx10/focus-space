@@ -99,7 +99,7 @@ Below 1024&nbsp;px the layout becomes a single column: clock, tasks, mixer and r
 - **Lofi radio** with its own volume, three stations and automatic fallback if one is down.
 
 **Look**
-- A Three.js **particle sphere** (65,536 particles simulated on the GPU) that follows the ambient channels and the lofi groove.
+- A Three.js **particle sphere** (65,536 particles simulated on the GPU, 32,400 on devices with 4 cores or fewer) that follows the ambient channels and the lofi groove.
 - Five clock typefaces, film grain, **calm mode** (no sphere or grain), three text sizes and a **focus mode** that grows the clock.
 
 <a id="english-and-spanish"></a>
