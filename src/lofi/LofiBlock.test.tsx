@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import LofiBlock from './LofiBlock'
 
-const base = { playing: false, volume: 0.6, onToggle: () => {}, onVolume: () => {}, sync: 'off' as const, onSync: () => {} }
+const base = { playing: false, volume: 0.6, onToggle: () => {}, onVolume: () => {} }
 
 describe('LofiBlock', () => {
   it('shows "No disponible" and disables play when unavailable', () => {
@@ -24,20 +24,16 @@ describe('LofiBlock', () => {
     expect(screen.getByRole('button', { name: /pausar lofi/i })).toBeInTheDocument()
   })
 
-  it('sync button starts syncing the 3D with the music, and turns it off when live', async () => {
-    const onSync = vi.fn()
-    const { rerender } = render(<LofiBlock {...base} status="ready" onSync={onSync} />)
-    const btn = screen.getByRole('button', { name: /sincronizar 3d con la música/i })
-    expect(btn).toHaveAttribute('aria-pressed', 'false')
-    await userEvent.click(btn)
-    expect(onSync).toHaveBeenCalled()
-    rerender(<LofiBlock {...base} status="ready" sync="on" onSync={onSync} />)
-    expect(screen.getByRole('button', { name: /sincronizar 3d con la música/i })).toHaveAttribute('aria-pressed', 'true')
+  it('no longer offers to sync the 3D by sharing the tab', () => {
+    render(<LofiBlock {...base} status="ready" />)
+    expect(screen.queryByText(/sincronizar/i)).not.toBeInTheDocument()
   })
 
-  it('explains when the tab audio was not shared', () => {
-    render(<LofiBlock {...base} status="ready" sync="no-audio" />)
-    expect(screen.getByText(/marca .*compartir audio/i)).toBeInTheDocument()
+  it('the station button asks for the next one', async () => {
+    const onStation = vi.fn()
+    render(<LofiBlock {...base} status="ready" station={0} onStation={onStation} />)
+    await userEvent.click(screen.getByRole('button', { name: /cambiar de emisora/i }))
+    expect(onStation).toHaveBeenCalledWith(1)
   })
 
   it('arrow keys on the volume change it in steps of 5', async () => {
