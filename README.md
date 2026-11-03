@@ -23,9 +23,9 @@ One screen, no account, no setup.
 
 <br />
 
-<img src="docs/media/hero.webp" alt="Focus/Space: adding tasks, starting a Pomodoro and turning up rain, café and keyboard sounds while the particle sphere reacts" width="900" />
+<img src="docs/media/hero.png" alt="Focus/Space on a desktop: three tasks, one marked active, a Pomodoro running at 24:57 and a soft mix of rain, café and keyboard sounds with the particle sphere behind the clock" width="900" />
 
-<sub>Typing tasks, starting a Pomodoro and building a soundscape. The sphere follows every channel you raise.</sub>
+<sub>A session in progress: tasks on the left, the clock and sphere in the middle, the mixer and radio below.</sub>
 
 </div>
 
@@ -43,28 +43,32 @@ Most focus apps are either a bare timer or a dashboard full of things to configu
 <br />
 
 <div align="center">
+<img src="docs/media/mixer.png" alt="The ambient mixer: five channels (rain, fire, café, wind and keyboard) with their variants, next to the lofi radio" width="900" />
+<br /><sub><b>Ambient mixer.</b> Five channels with variants, including real Cherry MX keyboard recordings, and the lofi radio.</sub>
+</div>
+
+<br />
+
+<div align="center">
 <table>
   <tr>
     <td width="50%" valign="top">
-      <img src="docs/media/mixer.webp" alt="Raising rain, fire and keyboard sounds and cycling through the Cherry MX Blue, Brown and Red recordings" />
-      <p align="center"><b>Ambient mixer</b><br /><sub>Five channels with variants, including real Cherry MX keyboard recordings.</sub></p>
-    </td>
-    <td width="50%" valign="top">
-      <img src="docs/media/focus.webp" alt="Focus mode: the interface fades away and the clock grows next to the sphere" />
+      <img src="docs/media/focus.png" alt="Focus mode: the interface is gone and the clock fills the width next to the sphere" />
       <p align="center"><b>Focus mode</b> <kbd>F</kbd><br /><sub>Everything disappears except the clock and the sphere.</sub></p>
     </td>
-  </tr>
-  <tr>
     <td width="50%" valign="top">
-      <img src="docs/media/settings.webp" alt="The settings panel: Pomodoro presets, alerts, and switching the whole interface between English and Spanish" />
-      <p align="center"><b>Settings</b><br /><sub>Pomodoro rhythm, alerts, text size, calm mode and language.</sub></p>
-    </td>
-    <td width="50%" valign="top">
-      <img src="docs/media/typefaces.webp" alt="Cycling through the five clock typefaces" />
-      <p align="center"><b>Five typefaces for the clock</b><br /><sub>Each one tuned so the digits keep the same width.</sub></p>
+      <img src="docs/media/settings.png" alt="The settings panel: Pomodoro presets and durations, alerts, language, calm mode and text size" />
+      <p align="center"><b>Settings</b><br /><sub>Pomodoro rhythm, alerts, language, text size and calm mode.</sub></p>
     </td>
   </tr>
 </table>
+</div>
+
+<br />
+
+<div align="center">
+<img src="docs/media/typefaces.png" alt="The same clock in the five typefaces: Swiss, Grotesk, Syne, Mono and Unbounded" width="900" />
+<br /><sub><b>Five typefaces for the clock.</b> Each one tuned so the digits keep the same width.</sub>
 </div>
 
 ## On your phone too
@@ -72,7 +76,7 @@ Most focus apps are either a bare timer or a dashboard full of things to configu
 Below 1024&nbsp;px the layout becomes a single column: clock, tasks, mixer and radio, with full-width controls and touch-sized targets. It has a web app manifest, so it can sit on your home screen.
 
 <div align="center">
-<img src="docs/media/mobile.webp" alt="Focus/Space on a phone: start a Pomodoro, scroll to the tasks, add one, and raise rain and keyboard sounds in the mixer" width="300" />
+<img src="docs/media/phones.png" alt="Focus/Space on a phone, in three screens: the running Pomodoro with the sphere, the task list, and the mixer with the radio" width="820" />
 </div>
 
 ## Features
@@ -207,7 +211,7 @@ Everything in this repository is free to use, but not everything is under the sa
 |---|---|---|
 | **Source code** | [MIT](LICENSE), © 2026 envyx10 | Use it, modify it, ship it, commercially or not. Keep the copyright notice. |
 | **Ambient and keyboard sounds**, chime | **CC0 1.0** (public domain) | Real recordings by [Freesound](https://freesound.org) authors. No attribution is required, but every file and author is listed in [public/sounds/CREDITS.md](public/sounds/CREDITS.md). The keyboard clips are trimmed, looped and level-matched. |
-| **Demo images** (`docs/media`) | MIT, like the code | Silent recordings of this app, made for this README. |
+| **Screenshots** (`docs/media`) | MIT, like the code | Captures of this app, taken for this README. |
 | **Clock typefaces** | [SIL Open Font License 1.1](https://openfontlicense.org) | Inter Tight, Space Grotesk, Syne, JetBrains Mono and Unbounded, loaded from [Google Fonts](https://fonts.google.com) at run time. They are not bundled here. |
 | **Dependencies** | MIT (12) and 0BSD (1) in the shipped bundle | React, Three.js and Supabase's client, among others. Full list with versions in [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md). |
 | **Lofi radio** | Not part of this repository | An official YouTube embed. The streams belong to their owners and YouTube's terms apply. Focus/Space does not download, record or redistribute them. |

@@ -23,9 +23,9 @@ Una sola pantalla, sin cuenta, sin configurar nada.
 
 <br />
 
-<img src="docs/media/hero-es.webp" alt="Focus/Space: añadir tareas, iniciar un Pomodoro y subir los sonidos de lluvia, café y teclado mientras la esfera de partículas reacciona" width="900" />
+<img src="docs/media/hero-es.png" alt="Focus/Space en escritorio: tres tareas, una marcada como activa, un Pomodoro en marcha a 24:57 y una mezcla suave de lluvia, café y teclado con la esfera de partículas tras el reloj" width="900" />
 
-<sub>Escribir tareas, iniciar un Pomodoro y montar un ambiente sonoro. La esfera sigue cada canal que subes.</sub>
+<sub>Una sesión en marcha: tareas a la izquierda, reloj y esfera en el centro, mezclador y radio abajo.</sub>
 
 </div>
 
@@ -43,28 +43,32 @@ La mayoría de apps de concentración son un simple temporizador o un panel llen
 <br />
 
 <div align="center">
+<img src="docs/media/mixer.png" alt="El mezclador de ambientes: cinco canales (lluvia, fuego, café, viento y teclado) con sus variantes, junto a la radio lofi" width="900" />
+<br /><sub><b>Mezclador de ambientes.</b> Cinco canales con variantes, incluidas grabaciones reales de teclados Cherry MX, y la radio lofi.</sub>
+</div>
+
+<br />
+
+<div align="center">
 <table>
   <tr>
     <td width="50%" valign="top">
-      <img src="docs/media/mixer.webp" alt="Subir sonidos de lluvia, fuego y teclado y pasar por las grabaciones Cherry MX Blue, Brown y Red" />
-      <p align="center"><b>Mezclador de ambientes</b><br /><sub>Cinco canales con variantes, incluidas grabaciones reales de teclados Cherry MX.</sub></p>
-    </td>
-    <td width="50%" valign="top">
-      <img src="docs/media/focus.webp" alt="Modo focus: la interfaz se desvanece y el reloj crece junto a la esfera" />
+      <img src="docs/media/focus.png" alt="Modo focus: la interfaz desaparece y el reloj ocupa todo el ancho junto a la esfera" />
       <p align="center"><b>Modo focus</b> <kbd>F</kbd><br /><sub>Desaparece todo menos el reloj y la esfera.</sub></p>
     </td>
-  </tr>
-  <tr>
     <td width="50%" valign="top">
-      <img src="docs/media/settings.webp" alt="El panel de ajustes: ritmos de Pomodoro, avisos y cambio de toda la interfaz entre inglés y español" />
-      <p align="center"><b>Ajustes</b><br /><sub>Ritmo del Pomodoro, avisos, tamaño de texto, modo calma e idioma.</sub></p>
-    </td>
-    <td width="50%" valign="top">
-      <img src="docs/media/typefaces.webp" alt="Pasando por las cinco tipografías del reloj" />
-      <p align="center"><b>Cinco tipografías para el reloj</b><br /><sub>Cada una ajustada para que los dígitos ocupen el mismo ancho.</sub></p>
+      <img src="docs/media/settings-es.png" alt="El panel de ajustes: ritmos y duraciones del Pomodoro, avisos, idioma, modo calma y tamaño de texto" />
+      <p align="center"><b>Ajustes</b><br /><sub>Ritmo del Pomodoro, avisos, idioma, tamaño de texto y modo calma.</sub></p>
     </td>
   </tr>
 </table>
+</div>
+
+<br />
+
+<div align="center">
+<img src="docs/media/typefaces.png" alt="El mismo reloj en las cinco tipografías: Swiss, Grotesk, Syne, Mono y Unbounded" width="900" />
+<br /><sub><b>Cinco tipografías para el reloj.</b> Cada una ajustada para que los dígitos ocupen el mismo ancho.</sub>
 </div>
 
 ## También en el móvil
@@ -72,7 +76,7 @@ La mayoría de apps de concentración son un simple temporizador o un panel llen
 Por debajo de 1024&nbsp;px el diseño pasa a una sola columna: reloj, tareas, mezclador y radio, con controles a todo el ancho y zonas táctiles cómodas. Tiene un manifiesto de app web, así que puede vivir en tu pantalla de inicio.
 
 <div align="center">
-<img src="docs/media/mobile-es.webp" alt="Focus/Space en un móvil: iniciar un Pomodoro, bajar a las tareas, añadir una y subir lluvia y teclado en el mezclador" width="300" />
+<img src="docs/media/phones-es.png" alt="Focus/Space en un móvil, en tres pantallas: el Pomodoro en marcha con la esfera, la lista de tareas y el mezclador con la radio" width="820" />
 </div>
 
 ## Funciones
@@ -207,7 +211,7 @@ Todo lo que hay en este repositorio es libre de usar, pero no todo tiene la mism
 |---|---|---|
 | **Código fuente** | [MIT](LICENSE), © 2026 envyx10 | Úsalo, modifícalo y distribúyelo, con fines comerciales o no. Conserva el aviso de copyright. |
 | **Sonidos ambientales y de teclado**, campanilla | **CC0 1.0** (dominio público) | Grabaciones reales de autores de [Freesound](https://freesound.org). No exigen atribución, pero cada archivo y autor figura en [public/sounds/CREDITS.md](public/sounds/CREDITS.md). Los clips de teclado están recortados, en bucle y con el volumen igualado. |
-| **Imágenes de demostración** (`docs/media`) | MIT, como el código | Grabaciones silenciosas de esta app, hechas para este README. |
+| **Capturas** (`docs/media`) | MIT, como el código | Capturas de esta app, hechas para este README. |
 | **Tipografías del reloj** | [SIL Open Font License 1.1](https://openfontlicense.org) | Inter Tight, Space Grotesk, Syne, JetBrains Mono y Unbounded, cargadas desde [Google Fonts](https://fonts.google.com) en tiempo de ejecución. No se incluyen en este repositorio. |
 | **Dependencias** | MIT (12) y 0BSD (1) en el paquete que se publica | React, Three.js y el cliente de Supabase, entre otras. Lista completa con versiones en [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md). |
 | **Radio lofi** | No forma parte de este repositorio | Un embed oficial de YouTube. Los directos pertenecen a sus dueños y se aplican las condiciones de YouTube. Focus/Space no los descarga, graba ni redistribuye. |
