@@ -235,3 +235,17 @@
     animation: none;
   }
 }
+
+/* Four actions now share the row with the task name: tighter side buttons, never broken across lines. */
+.actions .btn {
+  white-space: nowrap;
+}
+
+.actions .btn:not(.primary) {
+  padding: 14px 16px;
+}
+
+.focus-meta {
+  flex-wrap: wrap;
+  gap: 12px 16px;
+}
