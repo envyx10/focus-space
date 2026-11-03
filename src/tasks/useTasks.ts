@@ -101,5 +101,30 @@ export function useTasks(repo: TaskRepo) {
     [repo, persist],
   )
 
-  return { tasks, loaded, error, reload, add, toggle, edit, remove, setActive }
+  // Puts a deleted task back exactly as it was (undo).
+  const restore = useCallback(
+    async (task: Task) => {
+      if (tasksRef.current.some((t) => t.id === task.id)) return
+      await commit([...tasksRef.current, task])
+    },
+    [commit],
+  )
+
+  const clearDone = useCallback(async () => {
+    const done = tasksRef.current.filter((t) => t.done)
+    if (!done.length) return
+    show(tasksRef.current.filter((t) => !t.done))
+    await persist(() => Promise.all(done.map((t) => repo.remove(t.id))))
+  }, [repo, persist])
+
+  const addMany = useCallback(
+    async (incoming: Task[]) => {
+      const have = new Set(tasksRef.current.map((t) => t.id))
+      const fresh = incoming.filter((t) => !have.has(t.id))
+      if (fresh.length) await commit([...tasksRef.current, ...fresh])
+    },
+    [commit],
+  )
+
+  return { tasks, loaded, error, reload, add, toggle, edit, remove, setActive, restore, clearDone, addMany }
 }

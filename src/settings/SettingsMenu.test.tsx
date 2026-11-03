@@ -1,0 +1,81 @@
+import { describe, expect, it, vi } from 'vitest'
+import { fireEvent, render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import SettingsMenu from './SettingsMenu'
+import { DEFAULT_PREFS } from '../prefs/prefs'
+import { DEFAULT_CONFIG } from '../timer/timer'
+
+const MIN = 60_000
+
+function setup(over: Partial<Parameters<typeof SettingsMenu>[0]> = {}) {
+  const fns = {
+    onOpenChange: vi.fn(),
+    onConfig: vi.fn(),
+    onChime: vi.fn(),
+    onNotify: vi.fn(),
+    onCalm: vi.fn(),
+    onMuted: vi.fn(),
+    onTextScale: vi.fn(),
+    onSaveScene: vi.fn(),
+    onApplyScene: vi.fn(),
+    onDeleteScene: vi.fn(),
+    onImmersive: vi.fn(),
+  }
+  render(<SettingsMenu prefs={DEFAULT_PREFS} config={DEFAULT_CONFIG} stats={{}} today="2026-10-30" open {...fns} {...over} />)
+  return fns
+}
+
+describe('SettingsMenu', () => {
+  it('stays closed until opened', () => {
+    setup({ open: false })
+    expect(screen.queryByRole('dialog', { name: 'Ajustes' })).not.toBeInTheDocument()
+  })
+
+  it('presets set the three durations at once', async () => {
+    const f = setup()
+    await userEvent.click(screen.getByRole('button', { name: '50 / 10' }))
+    expect(f.onConfig).toHaveBeenCalledWith({ ...DEFAULT_CONFIG, work: 50 * MIN, short: 10 * MIN, long: 20 * MIN })
+  })
+
+  it('a typed duration is clamped to the allowed range', () => {
+    const f = setup()
+    const input = screen.getByLabelText(/^Focus/)
+    fireEvent.change(input, { target: { value: '9999' } })
+    fireEvent.blur(input)
+    expect(f.onConfig).toHaveBeenCalledWith({ ...DEFAULT_CONFIG, work: 180 * MIN })
+  })
+
+  it('auto-start, calm, mute and text size reach their handlers', async () => {
+    const f = setup()
+    await userEvent.click(screen.getByLabelText(/siguiente fase automáticamente/i))
+    expect(f.onConfig).toHaveBeenCalledWith({ ...DEFAULT_CONFIG, autoNext: false })
+    await userEvent.click(screen.getByLabelText(/modo calma/i))
+    expect(f.onCalm).toHaveBeenCalledWith(true)
+    await userEvent.click(screen.getByLabelText(/silenciar todo/i))
+    expect(f.onMuted).toHaveBeenCalledWith(true)
+    await userEvent.click(screen.getByRole('button', { name: 'A+' }))
+    expect(f.onTextScale).toHaveBeenCalledWith('l')
+  })
+
+  it('the chime can be turned off', () => {
+    const f = setup()
+    fireEvent.change(screen.getByLabelText('Volumen del aviso'), { target: { value: '0' } })
+    expect(f.onChime).toHaveBeenCalledWith(0)
+  })
+
+  it('saves a named mix, and lists and applies saved ones', async () => {
+    const mix = { name: 'Examen', volumes: DEFAULT_PREFS.volumes, variants: DEFAULT_PREFS.variants }
+    const f = setup({ prefs: { ...DEFAULT_PREFS, scenes: [mix] } })
+    await userEvent.type(screen.getByLabelText('Nombre de la mezcla'), 'Noche{Enter}')
+    expect(f.onSaveScene).toHaveBeenCalledWith('Noche')
+    await userEvent.click(screen.getByRole('button', { name: 'Examen' }))
+    expect(f.onApplyScene).toHaveBeenCalledWith('Examen')
+  })
+
+  it('shows today, the last 7 days and the streak', () => {
+    setup({ stats: { '2026-10-30': { focusMs: 85 * MIN, sessions: 3 }, '2026-10-29': { focusMs: 25 * MIN, sessions: 1 } } })
+    expect(screen.getByText('1 h 25 · 3 sesiones')).toBeInTheDocument()
+    expect(screen.getByText('1 h 50')).toBeInTheDocument()
+    expect(screen.getByText('2 días')).toBeInTheDocument()
+  })
+})

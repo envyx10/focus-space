@@ -73,3 +73,22 @@
   width: var(--v);
   background: var(--fg);
 }
+
+/* First-run nudge: floats over the empty strips so the grid keeps its size. */
+.mixer {
+  position: relative;
+}
+
+.mx-hint {
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  transform: translateY(-50%);
+  right: 16px;
+  margin: 0;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.4;
+  pointer-events: none;
+}

@@ -9,6 +9,8 @@ type Voice = { el: HTMLAudioElement; gain: GainNode }
 export type Engine = {
   setVolume(ch: ChannelId, v: number): void
   setVariant(ch: ChannelId, variantId: string): void
+  /** Silences the whole mix without touching the per-channel volumes. */
+  setMuted(muted: boolean): void
   resume(): Promise<void>
   analyser: AnalyserNode
 }
@@ -20,7 +22,9 @@ export function createEngine(
 ): Engine {
   const analyser = ctx.createAnalyser()
   analyser.fftSize = 1024
-  analyser.connect(ctx.destination)
+  const master = ctx.createGain()
+  master.connect(ctx.destination)
+  analyser.connect(master)
 
   const volumes = Object.fromEntries(CHANNEL_IDS.map((id) => [id, 0])) as Record<ChannelId, number>
   const variants = { ...initialVariants }
@@ -82,6 +86,9 @@ export function createEngine(
 
   return {
     analyser,
+    setMuted(muted) {
+      master.gain.setTargetAtTime(muted ? 0 : 1, ctx.currentTime, TAU)
+    },
     setVolume(ch, v) {
       const clamped = Math.min(1, Math.max(0, v))
       const wasAudible = volumes[ch] > 0
