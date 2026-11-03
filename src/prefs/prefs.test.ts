@@ -35,6 +35,11 @@ describe('prefs', () => {
     expect(loadPrefs().font).toBe('syne')
   })
 
+  it('a saved typeface that no longer exists falls back to the default', () => {
+    localStorage.setItem(PREFS_KEY, JSON.stringify({ v: 1, font: 'editorial' }))
+    expect(loadPrefs().font).toBe('syne')
+  })
+
   it('round-trips', () => {
     const p = { ...DEFAULT_PREFS, lofiVolume: 0.3 }
     savePrefs(p)
