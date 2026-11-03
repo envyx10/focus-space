@@ -8,4 +8,13 @@ describe('Header', () => {
     expect(screen.getByText(/Sesión 03/)).toBeInTheDocument()
     expect(screen.getByText('Vie 30.10')).toBeInTheDocument()
   })
+
+  it('reflects the real timer state instead of always saying "En curso"', () => {
+    const { rerender } = render(<Header sessionNumber={1} now={new Date()} status="idle" accountSlot={null} />)
+    expect(screen.getByText('Parado')).toBeInTheDocument()
+    rerender(<Header sessionNumber={1} now={new Date()} status="running" accountSlot={null} />)
+    expect(screen.getByText('En curso')).toBeInTheDocument()
+    rerender(<Header sessionNumber={1} now={new Date()} status="paused" accountSlot={null} />)
+    expect(screen.getByText('En pausa')).toBeInTheDocument()
+  })
 })

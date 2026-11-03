@@ -36,9 +36,11 @@ button {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   grid-template-rows: 44px 1fr 120px;
-  height: 100vh;
-  min-width: 1024px;
-  min-height: 640px;
+  /* --zoom is the text-size setting: the whole grid scales and the viewport it must fit shrinks to match */
+  zoom: var(--zoom, 1);
+  height: calc(100vh / var(--zoom, 1));
+  min-width: calc(1024px / var(--zoom, 1));
+  min-height: calc(640px / var(--zoom, 1));
   /* clip, not hidden: focusing an input must never scroll the grid sideways */
   overflow: clip;
 }
@@ -96,5 +98,35 @@ button {
 }
 
 .acc {
+  color: var(--accent);
+}
+
+/* Immersion: only the clock and the sphere stay. */
+.app[data-immersive] > .region-header,
+.app[data-immersive] > .region-tasks,
+.app[data-immersive] > .region-mixer,
+.app[data-immersive] > .region-lofi {
+  display: none;
+}
+
+.app[data-immersive] > .region-focus {
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
+}
+
+.exit-immersive {
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  z-index: 3;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.35;
+}
+
+.exit-immersive:hover,
+.exit-immersive:focus-visible {
+  opacity: 1;
   color: var(--accent);
 }

@@ -102,3 +102,67 @@
   letter-spacing: 0.06em;
   opacity: 0.4;
 }
+
+.tk-pen {
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.tk:hover .tk-pen,
+.tk-pen:focus-visible {
+  opacity: 0.5;
+}
+
+.tk-pen:hover {
+  color: var(--accent);
+  opacity: 1;
+}
+
+/* Touch screens have no hover: keep the row actions reachable there. */
+@media (hover: none) {
+  .tk-arrow,
+  .tk-pen,
+  .tk-del {
+    opacity: 0.5;
+  }
+}
+
+.tasks-undo {
+  display: flex;
+  justify-content: space-between;
+  margin: 14px 0 0;
+  padding: 8px 0;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+}
+
+.tasks-undo button,
+.tasks-tools button {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 10px;
+  color: var(--accent);
+}
+
+.tasks-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: auto;
+  padding-top: 18px;
+}
+
+.tasks-tools button {
+  color: var(--fg);
+  opacity: 0.45;
+}
+
+.tasks-tools button:hover {
+  color: var(--accent);
+  opacity: 1;
+}
+
+.tasks-tools + .tasks-note,
+.tasks-tools ~ .tasks-note {
+  margin-top: 0;
+}

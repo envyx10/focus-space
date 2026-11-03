@@ -97,3 +97,14 @@
   width: var(--v);
   background: currentColor;
 }
+
+.pl-station {
+  margin-left: 10px;
+  font-weight: 700;
+  text-transform: inherit;
+  letter-spacing: inherit;
+}
+
+.pl-station:hover {
+  text-decoration: underline;
+}

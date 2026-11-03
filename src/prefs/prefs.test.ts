@@ -41,3 +41,21 @@ describe('prefs', () => {
     expect(loadPrefs().lofiVolume).toBe(0.3)
   })
 })
+
+describe('prefs added from the beta feedback', () => {
+  it('new options default to the old behaviour', () => {
+    const p = loadPrefs()
+    expect(p).toMatchObject({ chimeVolume: 0.4, notify: false, calm: false, muted: false, textScale: 'm', lofiStation: 0, scenes: [] })
+  })
+
+  it('keeps a saved scene, trimming junk and unknown variants', () => {
+    localStorage.setItem(
+      PREFS_KEY,
+      JSON.stringify({ v: 1, scenes: [{ name: ' Examen ', volumes: { rain: 0.5, fire: 9 }, variants: { rain: 'tienda', wind: 'lava' } }, { name: '' }, 3], textScale: 'huge', chimeVolume: 4 }),
+    )
+    const p = loadPrefs()
+    expect(p.scenes).toEqual([{ name: 'Examen', volumes: { rain: 0.5, fire: 0, cafe: 0, wind: 0 }, variants: { ...DEFAULT_PREFS.variants, rain: 'tienda' } }])
+    expect(p.textScale).toBe('m')
+    expect(p.chimeVolume).toBe(0.4)
+  })
+})
