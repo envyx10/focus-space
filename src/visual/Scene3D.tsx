@@ -210,7 +210,7 @@ export default function Scene3D({ getLevels }: Props) {
     points.frustumCulled = false
     const three = new Scene()
     three.add(points)
-    const camera = new PerspectiveCamera(35, 1, 0.1, 50)
+    const camera = new PerspectiveCamera(30, 1, 0.1, 50) // 30° (was 35°): the sphere a touch bigger
     camera.position.set(0, 0, CAMERA_Z)
 
     const resize = () => {
@@ -220,13 +220,10 @@ export default function Scene3D({ getLevels }: Props) {
       renderer.setPixelRatio(pr)
       renderer.setSize(width, height, false)
       camera.aspect = width / height
-      // Zoom (narrower FOV, same perspective depth) until the sphere spans the whole panel width,
-      // centred behind the clock; top and bottom bleed off the edges.
-      const half = 1.08 / (CAMERA_Z * camera.aspect)
-      camera.fov = (2 * Math.atan(half) * 180) / Math.PI
+      // Scene centre at 68% / 48% of the panel, beside the clock.
+      camera.setViewOffset(width, height, -0.18 * width, 0.02 * height, width, height)
       camera.updateProjectionMatrix()
-      // bigger dots as the sphere grows, so the shell stays dense rather than dusty
-      uniforms.uPixelRatio.value = pr * Math.sqrt(Math.tan((35 * Math.PI) / 360) / half)
+      uniforms.uPixelRatio.value = pr * 1.08 // dots grow with the sphere so it stays as dense
     }
     const ro = new ResizeObserver(resize)
     ro.observe(el)

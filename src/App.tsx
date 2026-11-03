@@ -1,4 +1,4 @@
-import { lazy, Suspense, useCallback, useRef } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import MixerBar from './audio/MixerBar'
 import { beatPulse, mergeLevels } from './audio/pulse'
 import { useMusicSync } from './audio/useMusicSync'
@@ -31,6 +31,11 @@ export default function App() {
   const tasks = useTasks(repo)
   const activeTask = tasks.tasks.find((t) => t.active)
   const displayFont = useTypeface(ambient.prefs.font)
+  const [now, setNow] = useState(() => new Date())
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000)
+    return () => clearInterval(id)
+  }, [])
   const music = useMusicSync()
   const lofiPlaying = useRef(lofi.playing)
   lofiPlaying.current = lofi.playing
@@ -46,7 +51,7 @@ export default function App() {
   return (
     <div className="app" style={displayFont}>
       <header className="region-header" data-region="header">
-        <Header sessionNumber={timer.sessionNumber} now={new Date()} accountSlot={<AccountMenu session={session} />} />
+        <Header sessionNumber={timer.sessionNumber} now={now} accountSlot={<AccountMenu session={session} />} />
       </header>
       <section className="region-tasks" data-region="tasks">
         <TasksPanel
@@ -73,6 +78,7 @@ export default function App() {
           onReset={timer.reset}
           onModeChange={timer.setMode}
           onFreeMinutes={timer.setFreeMinutes}
+          now={now}
           sceneControl={
             <Cycler label="Tipo" noun="tipografía" options={TYPEFACES} value={ambient.prefs.font} onChange={ambient.setFont} />
           }
