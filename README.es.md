@@ -44,7 +44,7 @@ Casi todas las apps de concentración son o un temporizador pelado o un panel ll
 | 🌧️ **Mezclador de ambientes** | Lluvia, fuego, café, viento y teclado, cada uno con variantes (ventana, tormenta, tienda, chimenea, biblioteca, bosque, Cherry MX Blue, Brown y Red…). Arrastra, usa la rueda o las flechas para mezclarlos. |
 | 📻 **Radio lofi** | Un directo de lofi con su propio volumen y cambio automático a otro directo si uno se cae. |
 | 🔮 **Esfera de partículas reactiva** | Una esfera con shaders en Three.js que sigue a los canales de ambiente. |
-| 🔤 **Seis tipografías para el reloj** | Suiza, Grotesk, Syne, Editorial, Mono y Unbounded, ajustadas para que los dígitos ocupen siempre el mismo ancho. |
+| 🔤 **Cinco tipografías para el reloj** | Suiza, Grotesk, Syne, Mono y Unbounded, ajustadas para que los dígitos ocupen siempre el mismo ancho. |
 | ☁️ **Sincronización opcional** | Inicia sesión con email (enlace mágico), Google o GitHub mediante Supabase. Las tareas que creaste antes de entrar se fusionan con tu cuenta. |
 | 🌐 **Español e inglés** | Elige el idioma en Ajustes. Empieza con el de tu navegador y se recuerda. |
 | ♿ **Accesible** | Roles y etiquetas reales en cada control, deslizadores manejables con teclado y un temporizador legible por lectores de pantalla. |
@@ -63,7 +63,7 @@ Casi todas las apps de concentración son o un temporizador pelado o un panel ll
   <tr>
     <td colspan="2">
       <img src="docs/media/typefaces.gif" alt="Recorriendo las seis tipografías del reloj" />
-      <p align="center"><b>Seis tipografías para el reloj</b><br /><sub>Elige la que mejor encaje con tu mesa.</sub></p>
+      <p align="center"><b>Cinco tipografías para el reloj</b><br /><sub>Elige la que mejor encaje con tu mesa.</sub></p>
     </td>
   </tr>
 </table>

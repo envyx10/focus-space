@@ -44,7 +44,7 @@ Most focus apps are either a bare timer or a dashboard full of things to configu
 | 🌧️ **Ambient mixer** | Rain, fire, café, wind and keyboard typing, each with variants (window, storm, tent, fireplace, library, forest, Cherry MX Blue, Brown and Red…). Drag, scroll or use the arrow keys to mix them. |
 | 📻 **Lofi radio** | A live lofi stream with its own volume, with automatic fallback to other streams if one is down. |
 | 🔮 **Reactive particle sphere** | A Three.js shader sphere that follows the ambient channels. |
-| 🔤 **Six clock typefaces** | Suiza, Grotesk, Syne, Editorial, Mono and Unbounded, each tuned so the digits keep the same width. |
+| 🔤 **Five clock typefaces** | Suiza, Grotesk, Syne, Mono and Unbounded, each tuned so the digits keep the same width. |
 | ☁️ **Optional sync** | Sign in with email (magic link), Google or GitHub through Supabase. Tasks you made before signing in are merged into your account. |
 | 🌐 **English and Spanish** | Pick the language in Settings. It starts in your browser's language and is remembered. |
 | ♿ **Accessible** | Real roles and labels on every control, keyboard-operable sliders, and a timer readable by screen readers. |
@@ -63,7 +63,7 @@ Most focus apps are either a bare timer or a dashboard full of things to configu
   <tr>
     <td colspan="2">
       <img src="docs/media/typefaces.gif" alt="Cycling through the six clock typefaces" />
-      <p align="center"><b>Six typefaces for the clock</b><br /><sub>Pick the one that fits your desk.</sub></p>
+      <p align="center"><b>Five typefaces for the clock</b><br /><sub>Pick the one that fits your desk.</sub></p>
     </td>
   </tr>
 </table>
