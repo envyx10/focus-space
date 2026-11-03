@@ -4,12 +4,12 @@ import userEvent from '@testing-library/user-event'
 import Cycler from './Cycler'
 import { TYPEFACES } from './typefaces'
 
-const props = { label: 'Tipo', noun: 'tipografía', options: TYPEFACES }
+const props = { label: 'Tipo', options: TYPEFACES }
 
 describe('Cycler', () => {
   it('shows position and name of the current option', () => {
     render(<Cycler {...props} value="syne" onChange={() => {}} />)
-    expect(screen.getByText('03/06')).toBeInTheDocument()
+    expect(screen.getByText('03/05')).toBeInTheDocument()
     expect(screen.getByText('Syne')).toBeInTheDocument()
   })
 

@@ -47,27 +47,8 @@
   gap: 12px;
 }
 
-.pl-sync {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-weight: 700;
-  padding: 5px 8px;
-  border: 1px solid currentColor;
-  text-align: right;
-  max-width: 50%;
-}
 
-.pl-sync.on {
-  background: var(--bg);
-  color: var(--accent);
-  border-color: var(--bg);
-}
 
-.pl-sync:disabled {
-  opacity: 0.5;
-  cursor: default;
-}
 
 .pl-vol {
   display: grid;
@@ -96,4 +77,15 @@
   inset: 0 auto 0 0;
   width: var(--v);
   background: currentColor;
+}
+
+.pl-station {
+  margin-left: 10px;
+  font-weight: 700;
+  text-transform: inherit;
+  letter-spacing: inherit;
+}
+
+.pl-station:hover {
+  text-decoration: underline;
 }

@@ -16,7 +16,6 @@ export const TYPEFACES: Typeface[] = [
   { id: 'suiza', label: 'Suiza', family: 'Inter Tight', weight: 700, letterSpacing: '-0.045em', scale: 1, fallback: 'sans-serif' },
   { id: 'grotesk', label: 'Grotesk', family: 'Space Grotesk', weight: 600, letterSpacing: '-0.05em', scale: 1.1, fallback: 'sans-serif' },
   { id: 'syne', label: 'Syne', family: 'Syne', weight: 700, letterSpacing: '-0.03em', scale: 0.91, fallback: 'sans-serif' },
-  { id: 'editorial', label: 'Editorial', family: 'Instrument Serif', weight: 400, italic: true, letterSpacing: '-0.02em', scale: 1.44, fallback: 'serif' },
   { id: 'mono', label: 'Mono', family: 'JetBrains Mono', weight: 700, letterSpacing: '-0.06em', scale: 1.1, fallback: 'monospace' },
   { id: 'unbounded', label: 'Unbounded', family: 'Unbounded', weight: 600, letterSpacing: '-0.04em', scale: 0.85, fallback: 'sans-serif' },
 ]

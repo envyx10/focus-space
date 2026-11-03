@@ -1,9 +1,12 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useT } from '../i18n'
+import { parseImport, serializeTasks } from './transfer'
 import type { Task } from './types'
 import './tasks.css'
 
 // Matches the CHECK on tasks.text in supabase/schema.sql.
 const MAX_TEXT = 500
+const UNDO_MS = 8000
 
 type Props = {
   tasks: Task[]
@@ -14,11 +17,21 @@ type Props = {
   edit: (id: string, text: string) => Promise<void>
   remove: (id: string) => Promise<void>
   setActive: (id: string | null) => Promise<void>
+  restore?: (task: Task) => Promise<void>
+  clearDone?: () => Promise<void>
+  addMany?: (tasks: Task[]) => Promise<void>
 }
 
-function Row({ task, index, ...a }: { task: Task; index: number } & Omit<Props, 'tasks' | 'synced' | 'saveError' | 'add'>) {
+type RowProps = { task: Task; index: number; onDelete: (task: Task) => void } & Pick<Props, 'toggle' | 'edit' | 'setActive'>
+
+function Row({ task, index, onDelete, ...a }: RowProps) {
+  const t = useT()
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(task.text)
+  const startEdit = () => {
+    setDraft(task.text)
+    setEditing(true)
+  }
 
   return (
     <li className={`tk${task.done ? ' dn' : ''}${task.active ? ' on' : ''}`}>
@@ -26,7 +39,8 @@ function Row({ task, index, ...a }: { task: Task; index: number } & Omit<Props, 
         className="tk-box"
         role="checkbox"
         aria-checked={task.done}
-        aria-label={`Completar ${task.text}`}
+        aria-label={t('tasks.complete', { text: task.text })}
+        title={task.done ? t('tasks.markPending') : t('tasks.markDone')}
         onClick={() => a.toggle(task.id)}
       >
         {String(index + 1).padStart(2, '0')}
@@ -51,27 +65,27 @@ function Row({ task, index, ...a }: { task: Task; index: number } & Omit<Props, 
           }}
         />
       ) : (
-        <span
-          className="tk-text"
-          onDoubleClick={() => {
-            setDraft(task.text)
-            setEditing(true)
-          }}
-        >
+        <span className="tk-text" onDoubleClick={startEdit}>
           {task.text}
         </span>
       )}
       <span className="tk-act">
         {!task.done && (
           <button
-            aria-label={task.active ? 'Quitar tarea activa' : 'Marcar como activa'}
+            aria-label={task.active ? t('tasks.removeActive') : t('tasks.setActive')}
+            title={task.active ? t('tasks.removeNow') : t('tasks.doNow')}
             className="tk-arrow"
             onClick={() => a.setActive(task.active ? null : task.id)}
           >
             →
           </button>
         )}
-        <button aria-label={`Borrar ${task.text}`} className="tk-del" onClick={() => a.remove(task.id)}>
+        {!editing && (
+          <button aria-label={t('tasks.editLabel', { text: task.text })} title={t('tasks.edit')} className="tk-pen" onClick={startEdit}>
+            ✎
+          </button>
+        )}
+        <button aria-label={t('tasks.deleteLabel', { text: task.text })} title={t('tasks.delete')} className="tk-del" onClick={() => onDelete(task)}>
           ×
         </button>
       </span>
@@ -79,23 +93,57 @@ function Row({ task, index, ...a }: { task: Task; index: number } & Omit<Props, 
   )
 }
 
-export default function TasksPanel({ tasks, synced, saveError, add, ...actions }: Props) {
+export default function TasksPanel({ tasks, synced, saveError, add, restore, clearDone, addMany, ...actions }: Props) {
+  const t = useT()
   const [draft, setDraft] = useState('')
+  const [undo, setUndo] = useState<Task | null>(null)
+  const [note, setNote] = useState<string | null>(null)
+  const file = useRef<HTMLInputElement>(null)
   const pending = tasks.filter((t) => !t.done).length
+  const done = tasks.length - pending
+
+  useEffect(() => {
+    if (!undo) return
+    const id = setTimeout(() => setUndo(null), UNDO_MS)
+    return () => clearTimeout(id)
+  }, [undo])
+
+  const del = (task: Task) => {
+    actions.remove(task.id)
+    if (restore) setUndo(task)
+  }
+
+  const exportTasks = () => {
+    const url = URL.createObjectURL(new Blob([serializeTasks(tasks)], { type: 'application/json' }))
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'focus-space-tareas.json'
+    a.click()
+    setTimeout(() => URL.revokeObjectURL(url), 0)
+  }
+
+  const importFile = async (f: File | undefined) => {
+    if (!f || !addMany) return
+    const found = parseImport(await f.text())
+    await addMany(found)
+    setNote(found.length ? t('tasks.imported', { n: found.length }) : t('tasks.importedNone'))
+    if (file.current) file.current.value = ''
+  }
 
   return (
     <div className="tasks">
       <div className="num">01</div>
-      <div className="lbl">Pendientes / {pending}</div>
+      <div className="lbl">{t('tasks.pending', { n: pending })}</div>
       <ul className="tk-list">
         {tasks.map((t, i) => (
-          <Row key={t.id} task={t} index={i} {...actions} />
+          <Row key={t.id} task={t} index={i} onDelete={del} toggle={actions.toggle} edit={actions.edit} setActive={actions.setActive} />
         ))}
         <li className="tk tk-new">
           <span className="tk-box">+</span>
           <input
-            placeholder="+ Nueva tarea"
-            aria-label="Nueva tarea"
+            data-new-task
+            placeholder={t('tasks.new')}
+            aria-label={t('tasks.newLabel')}
             maxLength={MAX_TEXT}
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
@@ -108,12 +156,38 @@ export default function TasksPanel({ tasks, synced, saveError, add, ...actions }
           />
         </li>
       </ul>
-      {saveError && (
-        <p className="tasks-note acc" role="alert">
-          No se pudo guardar el último cambio · revisa tu conexión
+      {undo && restore && (
+        <p className="tasks-undo" role="status">
+          {t('tasks.deleted')}
+          <button
+            onClick={() => {
+              restore(undo)
+              setUndo(null)
+            }}
+          >
+            {t('tasks.undo')}
+          </button>
         </p>
       )}
-      {!synced && <p className="tasks-note">Guardado solo en este navegador · Inicia sesión para sincronizar</p>}
+      {saveError && (
+        <p className="tasks-note acc" role="alert">
+          {t('tasks.saveError')}
+        </p>
+      )}
+      {(clearDone || addMany) && (
+        <div className="tasks-tools">
+          {clearDone && done > 0 && <button onClick={() => clearDone()}>{t('tasks.clearDone', { n: done })}</button>}
+          {tasks.length > 0 && <button onClick={exportTasks}>{t('tasks.export')}</button>}
+          {addMany && <button onClick={() => file.current?.click()}>{t('tasks.import')}</button>}
+          <input ref={file} type="file" accept=".json,.txt,.md,text/plain,application/json" hidden aria-label={t('tasks.importLabel')} onChange={(e) => importFile(e.target.files?.[0])} />
+        </div>
+      )}
+      {note && (
+        <p className="tasks-note" role="status">
+          {note}
+        </p>
+      )}
+      {!synced && <p className="tasks-note">{t('tasks.localOnly')}</p>}
     </div>
   )
 }

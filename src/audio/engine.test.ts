@@ -33,7 +33,7 @@ describe('engine', () => {
   it('setVolume before resume does not throw nor play; resume() resumes ctx and starts audible channels', async () => {
     const ctx = fakeCtx()
     const audio = fakeAudio()
-    const e = createEngine(ctx as unknown as AudioContext, { rain: 'suave', fire: 'hoguera', cafe: 'cafeteria', wind: 'suave' }, audio.factory)
+    const e = createEngine(ctx as unknown as AudioContext, { rain: 'suave', fire: 'hoguera', cafe: 'cafeteria', wind: 'suave', keys: 'azul' }, audio.factory)
     expect(() => e.setVolume('rain', 0.65)).not.toThrow()
     expect(audio.made.every((a) => a.play.mock.calls.length === 0)).toBe(true)
     await e.resume()
@@ -47,11 +47,26 @@ describe('engine', () => {
   it('setVariant switches the playing element of an audible channel', async () => {
     const ctx = fakeCtx()
     const audio = fakeAudio()
-    const e = createEngine(ctx as unknown as AudioContext, { rain: 'suave', fire: 'hoguera', cafe: 'cafeteria', wind: 'suave' }, audio.factory)
+    const e = createEngine(ctx as unknown as AudioContext, { rain: 'suave', fire: 'hoguera', cafe: 'cafeteria', wind: 'suave', keys: 'azul' }, audio.factory)
     e.setVolume('rain', 0.5)
     await e.resume()
     e.setVariant('rain', 'tormenta')
     const storm = audio.made.find((a) => a.src.endsWith('/sounds/rain-tormenta.mp3'))!
     expect(storm.play).toHaveBeenCalled()
+  })
+})
+
+describe('engine mute', () => {
+  it('mutes through the master gain and leaves channel volumes alone', async () => {
+    const ctx = fakeCtx()
+    const audio = fakeAudio()
+    const e = createEngine(ctx as unknown as AudioContext, { rain: 'suave', fire: 'hoguera', cafe: 'cafeteria', wind: 'suave', keys: 'azul' }, audio.factory)
+    e.setVolume('rain', 0.5)
+    await e.resume()
+    const master = ctx.createGain.mock.results[0].value
+    e.setMuted(true)
+    expect(master.gain.setTargetAtTime).toHaveBeenLastCalledWith(0, 0, expect.any(Number))
+    e.setMuted(false)
+    expect(master.gain.setTargetAtTime).toHaveBeenLastCalledWith(1, 0, expect.any(Number))
   })
 })

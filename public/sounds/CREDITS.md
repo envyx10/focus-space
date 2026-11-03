@@ -15,6 +15,11 @@ de Freesound. CC0 no exige atribución; se listan igualmente por trazabilidad.
 | cafe-biblioteca.mp3 | Library AMB.wav | PasekaM | https://freesound.org/people/PasekaM/sounds/408514/ | CC0 1.0 | 2:32 · 3.5 MB |
 | wind-suave.mp3 | breeze.wav | keweldog | https://freesound.org/people/keweldog/sounds/181801/ | CC0 1.0 | 1:04 · 1.5 MB |
 | wind-bosque.mp3 | Leaves in wind.WAV | Sandermotions | https://freesound.org/people/Sandermotions/sounds/276294/ | CC0 1.0 | 1:30 · 2.0 MB |
+| keys-azul.mp3 | Mechanical Keyboard 'Cherry Blue Switches' | EricsSoundschmiede | https://freesound.org/people/EricsSoundschmiede/sounds/382057/ | CC0 1.0 | 0:45 (tramo 0:35–1:21 del original, bucle con fundido) · 0.7 MB |
+| keys-azul2.mp3 | Typing on a keyboard (Cherry MX Blue) | SamsterBirdies | https://freesound.org/people/SamsterBirdies/sounds/489424/ | CC0 1.0 | 0:45 (tramo 0:10–0:56 del original, bucle con fundido) · 0.7 MB |
+| keys-marron.mp3 | Kinesis Cherry MX Brown Typing.wav | DarcyConroy | https://freesound.org/people/DarcyConroy/sounds/249889/ | CC0 1.0 | 0:30 (tramo 0:01–0:32 del original, bucle con fundido, +6.5 dB) · 0.5 MB |
+| keys-marron2.mp3 | Mechanical Keyboard Cherry MX Brown | majod | https://freesound.org/people/majod/sounds/400167/ | CC0 1.0 | 0:45 (tramo 0:08–0:54 del original, bucle con fundido) · 0.7 MB |
+| keys-rojo.mp3 | Keyboard clicking typing Cherry Red Mechanical | handygaber | https://freesound.org/people/handygaber/sounds/499773/ | CC0 1.0 | 0:45 (tramo 0:10–0:56 del original, bucle con fundido, +3.5 dB) · 0.7 MB |
 | chime.mp3 | bell ding 1.wav | 5ro4 | https://freesound.org/people/5ro4/sounds/611113/ | CC0 1.0 | 0:02 · 60 KB |
 
 Para cambiar un sonido: sustituye el archivo manteniendo el nombre `<canal>-<variante>.mp3`

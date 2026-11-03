@@ -2,13 +2,15 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { CHANNEL_IDS, type ChannelId } from './channels'
 import { createEngine, type Engine } from './engine'
 import { bandLevels } from './levels'
-import { loadPrefs, savePrefs, type Prefs } from '../prefs/prefs'
+import { loadPrefs, MAX_SCENES, savePrefs, type Prefs, type Scene, type TextScale } from '../prefs/prefs'
 
 export function useAmbient() {
   const [prefs, setPrefs] = useState<Prefs>(loadPrefs)
   const engineRef = useRef<Engine | null>(null)
   const ctxRef = useRef<AudioContext | null>(null)
   const freq = useRef<Uint8Array<ArrayBuffer> | null>(null)
+  const prefsRef = useRef(prefs)
+  prefsRef.current = prefs
 
   useEffect(() => savePrefs(prefs), [prefs])
 
@@ -17,6 +19,7 @@ export function useAmbient() {
     const ctx = new AudioContext()
     const engine = createEngine(ctx, prefs.variants)
     for (const id of CHANNEL_IDS) engine.setVolume(id, prefs.volumes[id])
+    engine.setMuted(prefs.muted)
     ctxRef.current = ctx
     engineRef.current = engine
     freq.current = new Uint8Array(engine.analyser.frequencyBinCount)
@@ -49,8 +52,40 @@ export function useAmbient() {
     setPrefs((p) => ({ ...p, variants: { ...p.variants, [ch]: id } }))
   }, [])
 
+  const setMuted = useCallback((muted: boolean) => {
+    engineRef.current?.setMuted(muted)
+    setPrefs((p) => ({ ...p, muted }))
+  }, [])
+
+  const saveScene = useCallback((name: string) => {
+    const clean = name.trim().slice(0, 24)
+    if (!clean) return
+    setPrefs((p) => {
+      const scene: Scene = { name: clean, volumes: p.volumes, variants: p.variants }
+      const rest = p.scenes.filter((s) => s.name !== clean)
+      return { ...p, scenes: [...rest, scene].slice(-MAX_SCENES) }
+    })
+  }, [])
+
+  const applyScene = useCallback((name: string) => {
+    const scene = prefsRef.current.scenes.find((s) => s.name === name)
+    if (!scene) return
+    for (const id of CHANNEL_IDS) {
+      engineRef.current?.setVariant(id, scene.variants[id])
+      engineRef.current?.setVolume(id, scene.volumes[id])
+    }
+    setPrefs((p) => ({ ...p, volumes: scene.volumes, variants: scene.variants }))
+  }, [])
+
+  const deleteScene = useCallback((name: string) => setPrefs((p) => ({ ...p, scenes: p.scenes.filter((s) => s.name !== name) })), [])
+
   const setLofiVolume = useCallback((v: number) => setPrefs((p) => ({ ...p, lofiVolume: v })), [])
   const setFont = useCallback((font: string) => setPrefs((p) => ({ ...p, font })), [])
+  const setChimeVolume = useCallback((chimeVolume: number) => setPrefs((p) => ({ ...p, chimeVolume })), [])
+  const setNotify = useCallback((notify: boolean) => setPrefs((p) => ({ ...p, notify })), [])
+  const setCalm = useCallback((calm: boolean) => setPrefs((p) => ({ ...p, calm })), [])
+  const setTextScale = useCallback((textScale: TextScale) => setPrefs((p) => ({ ...p, textScale })), [])
+  const setLofiStation = useCallback((lofiStation: number) => setPrefs((p) => ({ ...p, lofiStation })), [])
 
   const getLevels = useCallback(() => {
     const engine = engineRef.current
@@ -60,5 +95,21 @@ export function useAmbient() {
     return bandLevels(freq.current, ctx.sampleRate, engine.analyser.fftSize)
   }, [])
 
-  return { prefs, setVolume, setVariant, setLofiVolume, setFont, getLevels }
+  return {
+    prefs,
+    setVolume,
+    setVariant,
+    setMuted,
+    saveScene,
+    applyScene,
+    deleteScene,
+    setLofiVolume,
+    setFont,
+    setChimeVolume,
+    setNotify,
+    setCalm,
+    setTextScale,
+    setLofiStation,
+    getLevels,
+  }
 }
