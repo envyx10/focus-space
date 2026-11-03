@@ -41,11 +41,12 @@ Casi todas las apps de concentración son o un temporizador pelado o un panel ll
 | ⏱️ **Pomodoro y temporizador libre** | Ciclos clásicos de 25 / 5 min con un descanso largo de 15 min cada 4 sesiones, o un temporizador libre de 1 a 240 min. Un aviso suave marca el final de cada fase. |
 | 🕐 **Hora local por defecto** | Abre mostrando la hora. Con un temporizador en marcha, la hora sube en pequeño y la cuenta atrás pasa al centro. |
 | ✅ **Tareas** | Añade, edita, completa y borra. Marca una como *activa* y aparece bajo el temporizador, para saber siempre para qué es esta sesión. |
-| 🌧️ **Mezclador de ambientes** | Lluvia, fuego, café y viento, cada uno con variantes (ventana, tormenta, tienda, chimenea, biblioteca, bosque…). Arrastra, usa la rueda o las flechas para mezclarlos. |
+| 🌧️ **Mezclador de ambientes** | Lluvia, fuego, café, viento y teclado, cada uno con variantes (ventana, tormenta, tienda, chimenea, biblioteca, bosque, Cherry MX Blue, Brown y Red…). Arrastra, usa la rueda o las flechas para mezclarlos. |
 | 📻 **Radio lofi** | Un directo de lofi con su propio volumen y cambio automático a otro directo si uno se cae. |
 | 🔮 **Esfera de partículas reactiva** | Una esfera con shaders en Three.js que sigue a los canales de ambiente. |
 | 🔤 **Seis tipografías para el reloj** | Suiza, Grotesk, Syne, Editorial, Mono y Unbounded, ajustadas para que los dígitos ocupen siempre el mismo ancho. |
 | ☁️ **Sincronización opcional** | Inicia sesión con email (enlace mágico), Google o GitHub mediante Supabase. Las tareas que creaste antes de entrar se fusionan con tu cuenta. |
+| 🌐 **Español e inglés** | Elige el idioma en Ajustes. Empieza con el de tu navegador y se recuerda. |
 | ♿ **Accesible** | Roles y etiquetas reales en cada control, deslizadores manejables con teclado y un temporizador legible por lectores de pantalla. |
 
 <table>

@@ -22,7 +22,7 @@ describe('useShortcuts', () => {
     await userEvent.keyboard('m')
     expect(h.mute).toHaveBeenCalledTimes(1)
     await userEvent.click(getByLabelText('campo'))
-    await userEvent.keyboard('mnc i')
+    await userEvent.keyboard('mncf')
     expect(h.mute).toHaveBeenCalledTimes(1)
     expect(h.toggleTimer).not.toHaveBeenCalled()
   })

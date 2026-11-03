@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useT } from '../i18n'
 import { parseImport, serializeTasks } from './transfer'
 import type { Task } from './types'
 import './tasks.css'
@@ -24,6 +25,7 @@ type Props = {
 type RowProps = { task: Task; index: number; onDelete: (task: Task) => void } & Pick<Props, 'toggle' | 'edit' | 'setActive'>
 
 function Row({ task, index, onDelete, ...a }: RowProps) {
+  const t = useT()
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(task.text)
   const startEdit = () => {
@@ -37,8 +39,8 @@ function Row({ task, index, onDelete, ...a }: RowProps) {
         className="tk-box"
         role="checkbox"
         aria-checked={task.done}
-        aria-label={`Completar ${task.text}`}
-        title={task.done ? 'Marcar como pendiente' : 'Marcar como hecha'}
+        aria-label={t('tasks.complete', { text: task.text })}
+        title={task.done ? t('tasks.markPending') : t('tasks.markDone')}
         onClick={() => a.toggle(task.id)}
       >
         {String(index + 1).padStart(2, '0')}
@@ -70,8 +72,8 @@ function Row({ task, index, onDelete, ...a }: RowProps) {
       <span className="tk-act">
         {!task.done && (
           <button
-            aria-label={task.active ? 'Quitar tarea activa' : 'Marcar como activa'}
-            title={task.active ? 'Quitar de «Ahora»' : 'Hacer ahora'}
+            aria-label={task.active ? t('tasks.removeActive') : t('tasks.setActive')}
+            title={task.active ? t('tasks.removeNow') : t('tasks.doNow')}
             className="tk-arrow"
             onClick={() => a.setActive(task.active ? null : task.id)}
           >
@@ -79,11 +81,11 @@ function Row({ task, index, onDelete, ...a }: RowProps) {
           </button>
         )}
         {!editing && (
-          <button aria-label={`Editar ${task.text}`} title="Editar" className="tk-pen" onClick={startEdit}>
+          <button aria-label={t('tasks.editLabel', { text: task.text })} title={t('tasks.edit')} className="tk-pen" onClick={startEdit}>
             ✎
           </button>
         )}
-        <button aria-label={`Borrar ${task.text}`} title="Borrar" className="tk-del" onClick={() => onDelete(task)}>
+        <button aria-label={t('tasks.deleteLabel', { text: task.text })} title={t('tasks.delete')} className="tk-del" onClick={() => onDelete(task)}>
           ×
         </button>
       </span>
@@ -92,6 +94,7 @@ function Row({ task, index, onDelete, ...a }: RowProps) {
 }
 
 export default function TasksPanel({ tasks, synced, saveError, add, restore, clearDone, addMany, ...actions }: Props) {
+  const t = useT()
   const [draft, setDraft] = useState('')
   const [undo, setUndo] = useState<Task | null>(null)
   const [note, setNote] = useState<string | null>(null)
@@ -123,14 +126,14 @@ export default function TasksPanel({ tasks, synced, saveError, add, restore, cle
     if (!f || !addMany) return
     const found = parseImport(await f.text())
     await addMany(found)
-    setNote(found.length ? `${found.length} tareas importadas` : 'No se encontró ninguna tarea en el archivo')
+    setNote(found.length ? t('tasks.imported', { n: found.length }) : t('tasks.importedNone'))
     if (file.current) file.current.value = ''
   }
 
   return (
     <div className="tasks">
       <div className="num">01</div>
-      <div className="lbl">Pendientes / {pending}</div>
+      <div className="lbl">{t('tasks.pending', { n: pending })}</div>
       <ul className="tk-list">
         {tasks.map((t, i) => (
           <Row key={t.id} task={t} index={i} onDelete={del} toggle={actions.toggle} edit={actions.edit} setActive={actions.setActive} />
@@ -139,8 +142,8 @@ export default function TasksPanel({ tasks, synced, saveError, add, restore, cle
           <span className="tk-box">+</span>
           <input
             data-new-task
-            placeholder="+ Nueva tarea"
-            aria-label="Nueva tarea"
+            placeholder={t('tasks.new')}
+            aria-label={t('tasks.newLabel')}
             maxLength={MAX_TEXT}
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
@@ -155,28 +158,28 @@ export default function TasksPanel({ tasks, synced, saveError, add, restore, cle
       </ul>
       {undo && restore && (
         <p className="tasks-undo" role="status">
-          Tarea borrada
+          {t('tasks.deleted')}
           <button
             onClick={() => {
               restore(undo)
               setUndo(null)
             }}
           >
-            Deshacer
+            {t('tasks.undo')}
           </button>
         </p>
       )}
       {saveError && (
         <p className="tasks-note acc" role="alert">
-          No se pudo guardar el último cambio · revisa tu conexión
+          {t('tasks.saveError')}
         </p>
       )}
       {(clearDone || addMany) && (
         <div className="tasks-tools">
-          {clearDone && done > 0 && <button onClick={() => clearDone()}>Limpiar hechas ({done})</button>}
-          {tasks.length > 0 && <button onClick={exportTasks}>Exportar</button>}
-          {addMany && <button onClick={() => file.current?.click()}>Importar</button>}
-          <input ref={file} type="file" accept=".json,.txt,.md,text/plain,application/json" hidden aria-label="Importar tareas" onChange={(e) => importFile(e.target.files?.[0])} />
+          {clearDone && done > 0 && <button onClick={() => clearDone()}>{t('tasks.clearDone', { n: done })}</button>}
+          {tasks.length > 0 && <button onClick={exportTasks}>{t('tasks.export')}</button>}
+          {addMany && <button onClick={() => file.current?.click()}>{t('tasks.import')}</button>}
+          <input ref={file} type="file" accept=".json,.txt,.md,text/plain,application/json" hidden aria-label={t('tasks.importLabel')} onChange={(e) => importFile(e.target.files?.[0])} />
         </div>
       )}
       {note && (
@@ -184,7 +187,7 @@ export default function TasksPanel({ tasks, synced, saveError, add, restore, cle
           {note}
         </p>
       )}
-      {!synced && <p className="tasks-note">Guardado solo en este navegador · Inicia sesión para sincronizar</p>}
+      {!synced && <p className="tasks-note">{t('tasks.localOnly')}</p>}
     </div>
   )
 }

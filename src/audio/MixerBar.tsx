@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import { useT } from '../i18n'
 import { CHANNELS, nextVariant, type Channel, type ChannelId } from './channels'
 import type { Prefs } from '../prefs/prefs'
 import './mixer.css'
@@ -15,12 +16,14 @@ const round = (v: number) => Math.round(Math.min(1, Math.max(0, v)) * 100) / 100
 function Strip({ ch, volume, variant, onVolume, onVariant }: { ch: Channel; volume: number; variant: string } & Omit<Props, 'prefs'>) {
   const drag = useRef<{ x: number; v: number; moved: boolean } | null>(null)
   const pct = Math.round(volume * 100)
-  const variantLabel = ch.variants.find((x) => x.id === variant)?.label
+  const t = useT()
+  const chLabel = t(`channel.${ch.id}`)
+  const variantLabel = t(`variant.${ch.id}.${variant}`)
 
   return (
     <div className={`mx${volume > 0 ? ' live' : ''}`}>
-      <button className="mx-name" onClick={() => onVariant(ch.id, nextVariant(ch.id, variant))} aria-label={`${ch.label}: ${variantLabel}. Cambiar variante`}>
-        {ch.label}
+      <button className="mx-name" onClick={() => onVariant(ch.id, nextVariant(ch.id, variant))} aria-label={t('mixer.changeVariant', { channel: chLabel, variant: variantLabel })}>
+        {chLabel}
         <span className="mx-variant">{variantLabel} ↻</span>
       </button>
       {/* Sibling of the button: ARIA sliders make their children presentational. */}
@@ -28,11 +31,11 @@ function Strip({ ch, volume, variant, onVolume, onVariant }: { ch: Channel; volu
         className="mx-slider"
         role="slider"
         tabIndex={0}
-        aria-label={`Volumen ${ch.label}`}
+        aria-label={t('mixer.volume', { channel: chLabel })}
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={pct}
-        aria-valuetext={`${pct} %, ${variantLabel}`}
+        aria-valuetext={t('mixer.valueText', { pct, variant: variantLabel })}
         onKeyDown={(e) => {
           const d = e.key === 'ArrowRight' || e.key === 'ArrowUp' ? STEP : e.key === 'ArrowLeft' || e.key === 'ArrowDown' ? -STEP : 0
           if (!d) return
@@ -68,12 +71,13 @@ function Strip({ ch, volume, variant, onVolume, onVariant }: { ch: Channel; volu
 }
 
 export default function MixerBar({ prefs, onVolume, onVariant }: Props) {
+  const t = useT()
   const silent = CHANNELS.every((ch) => prefs.volumes[ch.id] === 0)
   return (
     <div className="mixer">
       {silent && !prefs.muted && (
         <p className="mx-hint" aria-live="polite">
-          Todo en silencio · haz clic o arrastra una barra para subir un sonido
+          {t('mixer.silent')}
         </p>
       )}
       {CHANNELS.map((ch) => (

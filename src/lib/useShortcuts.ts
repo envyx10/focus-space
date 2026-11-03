@@ -47,7 +47,7 @@ export function useShortcuts(handlers: ShortcutHandlers): void {
           return h.mute()
         case 'c':
           return h.calm()
-        case 'i':
+        case 'f':
           return h.immersive()
         case '?':
           return h.settings()

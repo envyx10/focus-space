@@ -32,8 +32,8 @@ export type Prefs = {
 
 export const DEFAULT_PREFS: Prefs = {
   v: 1,
-  volumes: { rain: 0, fire: 0, cafe: 0, wind: 0 },
-  variants: { rain: 'suave', fire: 'hoguera', cafe: 'cafeteria', wind: 'suave' },
+  volumes: { rain: 0, fire: 0, cafe: 0, wind: 0, keys: 0 },
+  variants: { rain: 'suave', fire: 'hoguera', cafe: 'cafeteria', wind: 'suave', keys: 'marron' },
   lofiVolume: 0.6,
   font: 'syne',
   chimeVolume: 0.4,
