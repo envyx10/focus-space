@@ -38,48 +38,77 @@
 .focus-right {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  gap: 10px;
+  /* the controls share one width: the cycler and the mode switch line up edge to edge */
+  align-items: stretch;
+  gap: 8px;
 }
 
+/* Same bordered strip as .seg below it: arrow | label, position and name | arrow. */
 .cycler {
-  gap: 10px;
-}
-
-.cycler .lbl {
-  margin-right: 4px;
-}
-
-.cycler-name {
-  min-width: 78px;
-  text-align: center;
-}
-
-.focus-ctl {
   display: flex;
-  gap: 18px;
-  align-items: center;
+  align-items: stretch;
+  border: 1px solid #3a3a3a;
   font-size: 11px;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
 }
 
-.focus-ctl button {
-  opacity: 0.5;
-  text-transform: inherit;
-  letter-spacing: inherit;
+.cycler button {
+  width: 34px;
+  font-size: 15px;
+  line-height: 1;
+  color: #8a8984;
+  transition: background 0.15s, color 0.15s;
 }
 
-.focus-ctl button:hover,
-.focus-ctl button.on,
-.focus-ctl button.acc {
-  opacity: 1;
+.cycler button:hover {
+  background: var(--fg);
+  color: var(--bg);
+}
+
+.cycler button:active {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.cycler button:first-child {
+  border-right: 1px solid #3a3a3a;
+}
+
+.cycler button:last-child {
+  border-left: 1px solid #3a3a3a;
+}
+
+.cycler-mid {
+  flex: 1;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 10px;
+  padding: 9px 14px;
+  white-space: nowrap;
+}
+
+.cycler-label {
+  opacity: 0.45;
+}
+
+.cycler-count {
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+
+/* A fixed width so the strip doesn't resize while stepping from "Mono" to "Unbounded" */
+.cycler-name {
+  min-width: 82px;
+  text-align: left;
+  font-weight: 600;
 }
 
 .seg-row {
   display: flex;
+  justify-content: flex-end;
   gap: 10px;
-  margin-top: 4px;
 }
 
 /* Segmented control: one bordered strip, the active mode filled */
@@ -248,4 +277,13 @@
 .focus-meta {
   flex-wrap: wrap;
   gap: 12px 16px;
+}
+
+/* The mode switch fills the width the cycler sets, so both strips share their left and right edges. */
+.seg-row .seg {
+  flex: 1;
+}
+
+.seg-row .seg button {
+  flex: 1;
 }
