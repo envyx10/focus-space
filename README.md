@@ -1,76 +1,122 @@
 <div align="center">
 
+<img src="docs/media/logo.svg" alt="" width="84" height="84" />
+
 # Focus/Space
 
-**A desktop focus room: tasks, a Pomodoro timer, mixable ambient sounds, lofi radio and a particle sphere that reacts to what you hear.**
+**A focus room for your browser.**<br />
+Tasks, a Pomodoro timer, mixable ambient sounds, lofi radio and a particle sphere that breathes with what you hear.<br />
+One screen, no account, no setup.
 
 **English** · [Español](README.es.md)
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-ff4f1f?style=flat-square)](LICENSE)
-[![React 19](https://img.shields.io/badge/React-19-61dafb?style=flat-square&logo=react&logoColor=white)](https://react.dev)
-[![TypeScript](https://img.shields.io/badge/TypeScript-7-3178c6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
-[![Vite](https://img.shields.io/badge/Vite-8-646cff?style=flat-square&logo=vite&logoColor=white)](https://vite.dev)
-[![Three.js](https://img.shields.io/badge/Three.js-WebGL-000000?style=flat-square&logo=threedotjs&logoColor=white)](https://threejs.org)
-[![Supabase](https://img.shields.io/badge/Supabase-optional_sync-3ecf8e?style=flat-square&logo=supabase&logoColor=white)](https://supabase.com)
-[![Bun](https://img.shields.io/badge/Bun-runtime-f9f1e1?style=flat-square&logo=bun&logoColor=black)](https://bun.sh)
-[![Tests: Vitest](https://img.shields.io/badge/tests-83_passing-2ea44f?style=flat-square&logo=vitest&logoColor=white)](#scripts)
-[![Pomodoro](https://img.shields.io/badge/Pomodoro-timer-ff4f1f?style=flat-square)](#features)
-[![Lofi](https://img.shields.io/badge/lofi-ambient_sounds-8a63d2?style=flat-square)](#features)
-[![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](#contributing)
+<br />
+
+[![License: MIT](https://img.shields.io/badge/code-MIT-ff4b1f?style=flat-square)](#credits-and-licenses)
+[![Sounds: CC0](https://img.shields.io/badge/sounds-CC0-ff4b1f?style=flat-square)](public/sounds/CREDITS.md)
+[![React 19](https://img.shields.io/badge/React-19-0b0b0b?style=flat-square&logo=react&logoColor=61dafb)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-7-0b0b0b?style=flat-square&logo=typescript&logoColor=3178c6)](https://www.typescriptlang.org)
+[![Three.js](https://img.shields.io/badge/Three.js-WebGL-0b0b0b?style=flat-square&logo=threedotjs&logoColor=white)](https://threejs.org)
+[![Vite](https://img.shields.io/badge/Vite-8-0b0b0b?style=flat-square&logo=vite&logoColor=646cff)](https://vite.dev)
+[![English and Spanish](https://img.shields.io/badge/EN%20%C2%B7%20ES-bilingual-0b0b0b?style=flat-square)](#english-and-spanish)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-0b0b0b?style=flat-square)](#contributing)
 
 <br />
 
-<img src="docs/media/hero.gif" alt="Focus/Space: adding tasks, starting a Pomodoro and turning up the rain while the particle sphere reacts" width="880" />
+<img src="docs/media/hero.webp" alt="Focus/Space: adding tasks, starting a Pomodoro and turning up rain, café and keyboard sounds while the particle sphere reacts" width="900" />
+
+<sub>Typing tasks, starting a Pomodoro and building a soundscape. The sphere follows every channel you raise.</sub>
 
 </div>
 
----
+<br />
 
 ## Why
 
-Most focus apps are either a bare timer or a dashboard full of things to configure. Focus/Space sits in between: **one screen** with everything you need to get into a session, no account required, and a look that's calm enough to keep open all day on a second monitor.
+Most focus apps are either a bare timer or a dashboard full of things to configure. Focus/Space sits in between: **everything you need to start a session on one screen**, calm enough to keep open all day on a second monitor.
 
 - **Zero setup.** Clone, install, run. Without any config it works in *local-only mode* and saves to your browser.
 - **Nothing to sign up for.** Accounts are optional and only add sync between devices.
-- **Built to be left open.** Dark, quiet, editorial typography, and a 3D scene that breathes with the sound.
+- **Reliable.** The timer survives a reload and stays exact in background tabs, and its countdown shows in the tab title.
+- **Built to be left open.** Dark, quiet, with a 3D scene that follows the sound. Too much? Switch on *calm mode*.
 
-## Features
+<br />
 
-| | |
-|---|---|
-| ⏱️ **Pomodoro & free timer** | Classic 25 / 5 min cycles with a 15 min long break every 4 sessions, or a free timer from 1 to 240 min. A soft chime marks the end of each phase. |
-| 🕐 **Local clock by default** | Opens on the time. When a timer is running, the time moves up small and the countdown takes the stage. |
-| ✅ **Tasks** | Add, edit, complete and delete. Mark one as *active* and it appears under the timer, so you always know what this session is for. |
-| 🌧️ **Ambient mixer** | Rain, fire, café, wind and keyboard typing, each with variants (window, storm, tent, fireplace, library, forest, Cherry MX Blue, Brown and Red…). Drag, scroll or use the arrow keys to mix them. |
-| 📻 **Lofi radio** | A live lofi stream with its own volume, with automatic fallback to other streams if one is down. |
-| 🔮 **Reactive particle sphere** | A Three.js shader sphere that follows the ambient channels. |
-| 🔤 **Five clock typefaces** | Suiza, Grotesk, Syne, Mono and Unbounded, each tuned so the digits keep the same width. |
-| ☁️ **Optional sync** | Sign in with email (magic link), Google or GitHub through Supabase. Tasks you made before signing in are merged into your account. |
-| 🌐 **English and Spanish** | Pick the language in Settings. It starts in your browser's language and is remembered. |
-| ♿ **Accessible** | Real roles and labels on every control, keyboard-operable sliders, and a timer readable by screen readers. |
-
+<div align="center">
 <table>
   <tr>
     <td width="50%" valign="top">
-      <img src="docs/media/tasks.gif" alt="Adding tasks, marking one as active and starting a 40 minute free timer" />
-      <p align="center"><b>Tasks + free timer</b><br /><sub>The active task follows you into the session.</sub></p>
+      <img src="docs/media/mixer.webp" alt="Raising rain, fire and keyboard sounds and cycling through the Cherry MX Blue, Brown and Red recordings" />
+      <p align="center"><b>Ambient mixer</b><br /><sub>Five channels with variants, including real Cherry MX keyboard recordings.</sub></p>
     </td>
     <td width="50%" valign="top">
-      <img src="docs/media/mixer.gif" alt="Mixing rain, fire and café sounds while the sphere reacts" />
-      <p align="center"><b>Ambient mixer</b><br /><sub>The sphere moves with every channel you turn up.</sub></p>
+      <img src="docs/media/focus.webp" alt="Focus mode: the interface fades away and the clock grows next to the sphere" />
+      <p align="center"><b>Focus mode</b> <kbd>F</kbd><br /><sub>Everything disappears except the clock and the sphere.</sub></p>
     </td>
   </tr>
   <tr>
-    <td colspan="2">
-      <img src="docs/media/typefaces.gif" alt="Cycling through the six clock typefaces" />
-      <p align="center"><b>Five typefaces for the clock</b><br /><sub>Pick the one that fits your desk.</sub></p>
+    <td width="50%" valign="top">
+      <img src="docs/media/settings.webp" alt="The settings panel: Pomodoro presets, alerts, and switching the whole interface between English and Spanish" />
+      <p align="center"><b>Settings</b><br /><sub>Pomodoro rhythm, alerts, text size, calm mode and language.</sub></p>
+    </td>
+    <td width="50%" valign="top">
+      <img src="docs/media/typefaces.webp" alt="Cycling through the five clock typefaces" />
+      <p align="center"><b>Five typefaces for the clock</b><br /><sub>Each one tuned so the digits keep the same width.</sub></p>
     </td>
   </tr>
 </table>
+</div>
+
+## On your phone too
+
+Below 1024&nbsp;px the layout becomes a single column: clock, tasks, mixer and radio, with full-width controls and touch-sized targets. It has a web app manifest, so it can sit on your home screen.
+
+<div align="center">
+<img src="docs/media/mobile.webp" alt="Focus/Space on a phone: start a Pomodoro, scroll to the tasks, add one, and raise rain and keyboard sounds in the mixer" width="300" />
+</div>
+
+## Features
+
+**Timer**
+- **Pomodoro and free timer.** 25 / 5 min with a long break every 4, or presets 50 / 10 and 90 / 20, or your own durations. A free timer runs from 1 to 240 min.
+- **Yours to steer.** Add 5 minutes, skip a phase, or stop the next phase from starting by itself.
+- **Reload-proof.** The running phase is saved with its end time, so closing the tab does not lose it.
+- **Alerts that fit how you work.** A countdown in the tab title, an optional browser notification (permission is asked only when you switch it on) and a chime with its own volume, down to *off*.
+- **Stats.** Focus time today and over 7 days, and your streak.
+
+**Tasks**
+- Add, edit (<kbd>✎</kbd> or double click), complete and delete, with **undo**. Mark one as *active* and it follows you under the clock.
+- Clear completed tasks, **export** them as JSON and **import** JSON or a plain list (one task per line, `- [x]` checkboxes work too).
+- Local-first: saved in your browser. Sign in (optional) to sync.
+
+**Sound**
+- **Five ambient channels:** rain, fire, café, wind and keyboard typing, each with variants (window, storm, tent, fireplace, library, forest, Cherry MX Blue, Brown and Red…).
+- Mix with a click, a drag, the wheel or the arrow keys. **Save mixes** by name, **mute everything** in one go.
+- **Lofi radio** with its own volume, three stations and automatic fallback if one is down.
+
+**Look**
+- A Three.js **particle sphere** (65,536 particles simulated on the GPU) that follows the ambient channels and the lofi groove.
+- Five clock typefaces, film grain, **calm mode** (no sphere or grain), three text sizes and a **focus mode** that grows the clock.
+
+<a id="english-and-spanish"></a>
+**English and Spanish.** Pick the language in Settings. It starts in your browser's language and is remembered. Accessible by design: real roles and labels on every control, keyboard-operable sliders and a timer readable by screen readers.
+
+### Keyboard shortcuts
+
+They never fire while you type, with a modifier held, or on a focused button or slider.
+
+| Key | Action |
+|---|---|
+| <kbd>Space</kbd> | Start / pause the timer |
+| <kbd>N</kbd> | New task |
+| <kbd>M</kbd> | Mute everything |
+| <kbd>C</kbd> | Calm mode |
+| <kbd>F</kbd> | Focus mode (<kbd>Esc</kbd> to leave) |
+| <kbd>?</kbd> | Open / close settings |
 
 ## Quick start
 
-You need a recent version of [Bun](https://bun.sh). The interface is in Spanish.
+You need a recent version of [Bun](https://bun.sh).
 
 ```bash
 git clone https://github.com/envyx10/focus-space.git
@@ -79,9 +125,9 @@ bun install
 bun run dev
 ```
 
-Open <http://localhost:5173>. That's it: tasks and preferences are stored in your browser.
+Open <http://localhost:5173>. That's it: tasks and preferences live in your browser.
 
-> **Tip:** browsers block audio until you interact with the page. Click anywhere once and the ambient sounds will start.
+> **Tip:** browsers block audio until you interact with the page. Click anywhere once and your saved mix will start.
 
 ### Accounts and sync (optional)
 
@@ -95,7 +141,7 @@ To sync tasks between devices you need a free [Supabase](https://supabase.com) p
    VITE_SUPABASE_ANON_KEY=<anon-public-key>
    ```
 
-3. Restart `bun run dev`. The **Cuenta** (account) menu now lets you sign in.
+3. Restart `bun run dev`. The **Account** menu now lets you sign in.
 
 The full guide (email, Google, GitHub and deploying to Netlify) is in [docs/SETUP.md](docs/SETUP.md).
 
@@ -113,44 +159,60 @@ The full guide (email, Google, GitHub and deploying to Netlify) is in [docs/SETU
 
 ```
 src/
-├── timer/    Pomodoro and free timer: pure state machine + React hook
-├── tasks/    Task list with a local repo (localStorage) and a Supabase repo
-├── audio/    Web Audio engine, mixer, level analysis and tab-audio capture
-├── lofi/     YouTube lofi player with stream fallback
-├── visual/   Three.js particle sphere, GLSL shaders, typefaces, film grain
-├── auth/     Supabase session and account menu
-├── prefs/    Volumes, variants and typeface, persisted in the browser
-└── layout/   Header
+├── timer/      Pomodoro and free timer: pure state machine, persistence, alerts
+├── tasks/      Task list with a local repo (localStorage) and a Supabase repo
+├── audio/      Web Audio engine, mixer, channels and level analysis
+├── lofi/       YouTube lofi player with station fallback
+├── visual/     Three.js particle sphere, GLSL shaders, typefaces, film grain
+├── settings/   Settings panel
+├── stats/      Focus time per day and streaks
+├── i18n/       Dictionaries (es, en), provider and language detection
+├── auth/       Supabase session and account menu
+├── prefs/      Volumes, mixes and display options, persisted in the browser
+├── lib/        Storage helpers and keyboard shortcuts
+└── layout/     Header
 ```
 
-- **The timer** stores the wall-clock end time instead of counting ticks, so it stays exact in background tabs and survives a reload.
+- **The timer** keeps the wall-clock end time instead of counting ticks, so it stays exact in background tabs, and the whole state is saved so it survives a reload.
 - **The sphere** reads levels from a Web Audio `AnalyserNode` on each ambient channel. YouTube's iframe can't be analysed directly, so while lofi plays it follows a synthetic groove.
 - **Three.js is lazy-loaded** after the first paint, so the clock and tasks show up instantly.
 - **Tasks are local-first.** On your first sign-in your browser tasks are merged into your account (the remote copy wins conflicts and duplicates are dropped).
+- **Translations are plain objects.** `src/i18n/es.ts` is the source; `en.ts` must have every key (the compiler and a test enforce it).
 
 ## Tech stack
 
 [React 19](https://react.dev) · [TypeScript](https://www.typescriptlang.org) · [Vite](https://vite.dev) · [Three.js](https://threejs.org) + GLSL · Web Audio API · [Supabase](https://supabase.com) (Auth + Postgres with RLS) · [Vitest](https://vitest.dev) + [Testing Library](https://testing-library.com) · [oxlint](https://oxc.rs) · [Bun](https://bun.sh) · [Netlify](https://netlify.com)
 
+## Privacy
+
+There is no analytics and no tracking. Everything stays in your browser unless you configure Supabase and sign in. Two things load from third parties, as in any site that uses them: the clock typefaces come from **Google Fonts**, and the lofi radio is an official **YouTube** embed.
+
 ## Contributing
 
-It's a small project and contributions are welcome: new ambient sounds, typefaces, scenes, translations or bug fixes.
+It's a small project and contributions are welcome: ambient sounds, typefaces, translations or bug fixes.
 
 1. Fork the repo and create a branch: `git checkout -b feat/my-idea`
-2. Make your change and keep `bun run test` and `bun run lint` green
-3. Open a pull request explaining what it changes and why
+2. Make your change and keep `bun run test` and `bun run lint` green.
+3. Open a pull request explaining what it changes and why.
+
+Adding a language means copying `src/i18n/en.ts`, translating it and registering it in `src/i18n/index.tsx`. New sounds must be **CC0** (or otherwise free to redistribute) and listed in [public/sounds/CREDITS.md](public/sounds/CREDITS.md). By contributing you agree your code is released under the project's MIT license.
 
 Ideas or bugs? [Open an issue](https://github.com/envyx10/focus-space/issues).
 
-## Credits
+## Credits and licenses
 
-- Ambient sounds are real **CC0** recordings from [Freesound](https://freesound.org). Every file and author is listed in [public/sounds/CREDITS.md](public/sounds/CREDITS.md).
-- The lofi radio is streamed from YouTube and belongs to its creators.
-- Fonts from [Google Fonts](https://fonts.google.com).
+Everything in this repository is free to use, but not everything is under the same license. Here is the whole picture.
 
-## License
+| What | License | Details |
+|---|---|---|
+| **Source code** | [MIT](LICENSE), © 2026 envyx10 | Use it, modify it, ship it, commercially or not. Keep the copyright notice. |
+| **Ambient and keyboard sounds**, chime | **CC0 1.0** (public domain) | Real recordings by [Freesound](https://freesound.org) authors. No attribution is required, but every file and author is listed in [public/sounds/CREDITS.md](public/sounds/CREDITS.md). The keyboard clips are trimmed, looped and level-matched. |
+| **Demo images** (`docs/media`) | MIT, like the code | Silent recordings of this app, made for this README. |
+| **Clock typefaces** | [SIL Open Font License 1.1](https://openfontlicense.org) | Inter Tight, Space Grotesk, Syne, JetBrains Mono and Unbounded, loaded from [Google Fonts](https://fonts.google.com) at run time. They are not bundled here. |
+| **Dependencies** | MIT (12) and 0BSD (1) in the shipped bundle | React, Three.js and Supabase's client, among others. Full list with versions in [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md). |
+| **Lofi radio** | Not part of this repository | An official YouTube embed. The streams belong to their owners and YouTube's terms apply. Focus/Space does not download, record or redistribute them. |
 
-Code under the [MIT](LICENSE) license. The sounds keep their own license (CC0).
+**Trademarks.** *Cherry MX* is a trademark of Cherry GmbH and is used here only to describe the keyboard switches that were recorded. *Pomodoro Technique* is a registered trademark of Francesco Cirillo. React, Three.js, Supabase, Vite, TypeScript, YouTube and the other names and logos in the badges belong to their owners. Focus/Space is an independent project, not affiliated with or endorsed by any of them.
 
 <div align="center">
 <sub>Made for long focus sessions. If it helps you, a ⭐ helps others find it.</sub>
