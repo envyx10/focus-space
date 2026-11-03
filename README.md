@@ -43,7 +43,7 @@ Most focus apps are either a bare timer or a dashboard full of things to configu
 | ✅ **Tasks** | Add, edit, complete and delete. Mark one as *active* and it appears under the timer, so you always know what this session is for. |
 | 🌧️ **Ambient mixer** | Rain, fire, café and wind, each with variants (window, storm, tent, fireplace, library, forest…). Drag, scroll or use the arrow keys to mix them. |
 | 📻 **Lofi radio** | A live lofi stream with its own volume, with automatic fallback to other streams if one is down. |
-| 🔮 **Reactive particle sphere** | A Three.js shader sphere that follows the ambient channels. Hit **3D ↯ Sincronizar** and it follows the real music too, by capturing the tab's audio (Chrome / Edge / Brave desktop). |
+| 🔮 **Reactive particle sphere** | A Three.js shader sphere that follows the ambient channels. |
 | 🔤 **Six clock typefaces** | Suiza, Grotesk, Syne, Editorial, Mono and Unbounded, each tuned so the digits keep the same width. |
 | ☁️ **Optional sync** | Sign in with email (magic link), Google or GitHub through Supabase. Tasks you made before signing in are merged into your account. |
 | ♿ **Accessible** | Real roles and labels on every control, keyboard-operable sliders, and a timer readable by screen readers. |
@@ -123,7 +123,7 @@ src/
 ```
 
 - **The timer** stores the wall-clock end time instead of counting ticks, so it stays exact in background tabs and survives a reload.
-- **The sphere** reads levels from a Web Audio `AnalyserNode` on each ambient channel. YouTube's iframe can't be analysed directly, so while lofi plays it follows a synthetic groove. With **Sincronizar** on, it captures the tab's own audio with `getDisplayMedia` and reacts to the real track.
+- **The sphere** reads levels from a Web Audio `AnalyserNode` on each ambient channel. YouTube's iframe can't be analysed directly, so while lofi plays it follows a synthetic groove.
 - **Three.js is lazy-loaded** after the first paint, so the clock and tasks show up instantly.
 - **Tasks are local-first.** On your first sign-in your browser tasks are merged into your account (the remote copy wins conflicts and duplicates are dropped).
 
