@@ -1,7 +1,6 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState, type CSSProperties } from 'react'
 import MixerBar from './audio/MixerBar'
 import { beatPulse, mergeLevels } from './audio/pulse'
-import { useMusicSync } from './audio/useMusicSync'
 import { useAmbient } from './audio/useAmbient'
 import Header from './layout/Header'
 import LofiBlock from './lofi/LofiBlock'
@@ -50,7 +49,6 @@ export default function App() {
     const id = setInterval(() => setNow(new Date()), 1000)
     return () => clearInterval(id)
   }, [])
-  const music = useMusicSync()
   const lofiPlaying = useRef(lofi.playing)
   lofiPlaying.current = lofi.playing
 
@@ -85,13 +83,12 @@ export default function App() {
     escape: () => (immersive ? exitImmersive() : setSettingsOpen(false)),
   })
 
-  // What the 3D follows: ambient channels + the real music when the tab is shared,
-  // otherwise a synthetic lofi groove while the stream plays.
+  // What the 3D follows: the ambient channels, plus a synthetic lofi groove while the stream plays
+  // (YouTube's iframe audio can't be analysed).
   const getLevels = useCallback(() => {
-    const live = music.getLevels()
-    const groove = !live && lofiPlaying.current ? beatPulse(performance.now() / 1000) : null
-    return mergeLevels(ambient.getLevels(), live, groove)
-  }, [ambient.getLevels, music.getLevels])
+    const groove = lofiPlaying.current ? beatPulse(performance.now() / 1000) : null
+    return mergeLevels(ambient.getLevels(), null, groove)
+  }, [ambient.getLevels])
 
   const zoom = ZOOM[prefs.textScale]
 
@@ -182,8 +179,6 @@ export default function App() {
           volume={prefs.lofiVolume}
           onToggle={lofi.toggle}
           onVolume={ambient.setLofiVolume}
-          sync={music.state}
-          onSync={music.toggle}
           station={lofi.station}
           onStation={(i) => {
             lofi.select(i)

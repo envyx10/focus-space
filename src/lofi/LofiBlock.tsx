@@ -1,4 +1,3 @@
-import type { SyncState } from '../audio/useMusicSync'
 import { STATIONS, type LofiStatus } from './useYouTubeLofi'
 import './lofi.css'
 
@@ -8,24 +7,14 @@ type Props = {
   volume: number
   onToggle: () => void
   onVolume: (v: number) => void
-  sync: SyncState
-  onSync: () => void
   station?: number
   onStation?: (i: number) => void
-}
-
-const SYNC_LABEL: Record<SyncState, string> = {
-  off: '3D ↯ Sincronizar',
-  on: '3D ● En directo',
-  'no-audio': 'Marca «Compartir audio de la pestaña»',
-  unsupported: 'Tu navegador no permite capturar audio',
-  denied: '3D ↯ Sincronizar',
 }
 
 const STEP = 0.05
 const round = (v: number) => Math.round(Math.min(1, Math.max(0, v)) * 100) / 100
 
-export default function LofiBlock({ status, playing, volume, onToggle, onVolume, sync, onSync, station = 0, onStation }: Props) {
+export default function LofiBlock({ status, playing, volume, onToggle, onVolume, station = 0, onStation }: Props) {
   const pct = Math.round(volume * 100)
   const unavailable = status === 'unavailable'
   const current = STATIONS[station] ?? STATIONS[0]
@@ -59,16 +48,6 @@ export default function LofiBlock({ status, playing, volume, onToggle, onVolume,
             </span>
           ))}
         </div>
-        <button
-          className={`pl-sync${sync === 'on' ? ' on' : ''}`}
-          aria-pressed={sync === 'on'}
-          aria-label="Sincronizar 3D con la música"
-          title="Comparte el audio de esta pestaña para que el 3D siga la música real"
-          onClick={onSync}
-          disabled={sync === 'unsupported'}
-        >
-          {SYNC_LABEL[sync]}
-        </button>
       </div>
       <div
         className="pl-vol"

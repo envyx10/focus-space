@@ -43,7 +43,7 @@ Casi todas las apps de concentración son o un temporizador pelado o un panel ll
 | ✅ **Tareas** | Añade, edita, completa y borra. Marca una como *activa* y aparece bajo el temporizador, para saber siempre para qué es esta sesión. |
 | 🌧️ **Mezclador de ambientes** | Lluvia, fuego, café y viento, cada uno con variantes (ventana, tormenta, tienda, chimenea, biblioteca, bosque…). Arrastra, usa la rueda o las flechas para mezclarlos. |
 | 📻 **Radio lofi** | Un directo de lofi con su propio volumen y cambio automático a otro directo si uno se cae. |
-| 🔮 **Esfera de partículas reactiva** | Una esfera con shaders en Three.js que sigue a los canales de ambiente. Pulsa **3D ↯ Sincronizar** y seguirá también a la música real, capturando el audio de la pestaña (Chrome / Edge / Brave de escritorio). |
+| 🔮 **Esfera de partículas reactiva** | Una esfera con shaders en Three.js que sigue a los canales de ambiente. |
 | 🔤 **Seis tipografías para el reloj** | Suiza, Grotesk, Syne, Editorial, Mono y Unbounded, ajustadas para que los dígitos ocupen siempre el mismo ancho. |
 | ☁️ **Sincronización opcional** | Inicia sesión con email (enlace mágico), Google o GitHub mediante Supabase. Las tareas que creaste antes de entrar se fusionan con tu cuenta. |
 | ♿ **Accesible** | Roles y etiquetas reales en cada control, deslizadores manejables con teclado y un temporizador legible por lectores de pantalla. |
@@ -123,7 +123,7 @@ src/
 ```
 
 - **El temporizador** guarda la hora de fin real en lugar de contar ticks, así que sigue exacto en pestañas en segundo plano y sobrevive a una recarga.
-- **La esfera** lee los niveles de un `AnalyserNode` de Web Audio en cada canal de ambiente. El iframe de YouTube no se puede analizar directamente, así que mientras suena el lofi sigue un ritmo sintético. Con **Sincronizar** activado, captura el audio de la propia pestaña con `getDisplayMedia` y reacciona a la canción real.
+- **La esfera** lee los niveles de un `AnalyserNode` de Web Audio en cada canal de ambiente. El iframe de YouTube no se puede analizar directamente, así que mientras suena el lofi sigue un ritmo sintético.
 - **Three.js se carga después del primer pintado**, así que el reloj y las tareas aparecen al instante.
 - **Las tareas funcionan primero en local.** La primera vez que inicias sesión, las tareas del navegador se fusionan con tu cuenta (en caso de conflicto gana la copia remota y se descartan los duplicados).
 
