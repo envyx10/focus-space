@@ -14,6 +14,7 @@ import { addFocus, loadStats, saveStats } from './stats/stats'
 import TasksPanel from './tasks/TasksPanel'
 import { useTaskRepo } from './tasks/useTaskRepo'
 import { useTasks } from './tasks/useTasks'
+import { useI18n } from './i18n'
 import { phaseLabel, useTabTitle } from './timer/alerts'
 import FocusPanel from './timer/FocusPanel'
 import { todayKey } from './timer/timerStore'
@@ -29,6 +30,7 @@ const Scene3D = lazy(() => import('./visual/Scene3D'))
 const ZOOM = { m: 1, l: 1.15, xl: 1.3 }
 
 export default function App() {
+  const { t } = useI18n()
   const ambient = useAmbient()
   const { prefs } = ambient
   const [stats, setStats] = useState(loadStats)
@@ -56,7 +58,7 @@ export default function App() {
   const [immersive, setImmersive] = useState(false)
   const [toggleSignal, setToggleSignal] = useState(0)
 
-  useTabTitle(timer.running, timer.remainingMs, phaseLabel(timer.state.mode, timer.state.phase), timer.status === 'waiting')
+  useTabTitle(timer.running, timer.remainingMs, phaseLabel(t, timer.state.mode, timer.state.phase), timer.status === 'waiting')
 
   const enterImmersive = useCallback(() => {
     setImmersive(true)
@@ -155,7 +157,12 @@ export default function App() {
           onFreeMinutes={timer.setFreeMinutes}
           now={now}
           toggleSignal={toggleSignal}
-          sceneControl={<Cycler label="Tipo" noun="tipografía" options={TYPEFACES} value={prefs.font} onChange={ambient.setFont} />}
+          sceneControl={<Cycler
+              label={t('type.label')}
+              options={TYPEFACES.map((f) => ({ id: f.id, label: f.id === 'suiza' ? t('typeface.suiza') : f.label }))}
+              value={prefs.font}
+              onChange={ambient.setFont}
+            />}
         >
           {!prefs.calm && (
             <Suspense fallback={null}>
@@ -165,7 +172,7 @@ export default function App() {
         </FocusPanel>
         {immersive && (
           <button className="exit-immersive" onClick={exitImmersive}>
-            Esc · salir
+            {t('immersive.exit')}
           </button>
         )}
       </main>

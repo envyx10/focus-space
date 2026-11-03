@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useT } from '../i18n'
 import { chime, notifyPhase, phaseLabel } from './alerts'
 import { advance, extend, initialState, pause, remaining, reset, skip, start, withConfig, type TimerConfig, type TimerMode, type TimerState } from './timer'
 import { loadTimerStore, saveTimerStore, todayKey } from './timerStore'
@@ -16,6 +17,9 @@ type Options = {
 }
 
 export function useTimer({ chimeVolume, notify, onFocus }: Options) {
+  const t = useT()
+  const tRef = useRef(t)
+  tRef.current = t
   const [store, setStore] = useState(() => loadTimerStore(todayKey()))
   const [state, setState] = useState<TimerState>(() => store.timer ?? initialState('pomodoro', store.freeMinutes * MIN, store.config))
   const [now, setNow] = useState(() => Date.now())
@@ -38,7 +42,13 @@ export function useTimer({ chimeVolume, notify, onFocus }: Options) {
       if (r.phasesEnded === 0) return
       const o = opts.current
       chime(o.chimeVolume)
-      if (o.notify) notifyPhase(`${phaseLabel(r.state.mode, s.phase)} terminado`, r.state.mode === 'free' ? 'Sesión completada.' : `Siguiente: ${phaseLabel(r.state.mode, r.state.phase)}`)
+      if (o.notify) {
+        const tt = tRef.current
+        notifyPhase(
+          tt('alert.ended', { phase: phaseLabel(tt, r.state.mode, s.phase) }),
+          r.state.mode === 'free' ? tt('alert.sessionDone') : tt('alert.next', { phase: phaseLabel(tt, r.state.mode, r.state.phase) }),
+        )
+      }
       if (r.focusedMs > 0 || r.focusSessions > 0) o.onFocus?.(r.focusedMs, r.focusSessions)
       const worked = r.state.completedWork - s.completedWork
       if (worked > 0) setStore((st) => ({ ...st, completedWork: st.completedWork + worked }))

@@ -1,3 +1,4 @@
+import { useT } from '../i18n'
 import { STATIONS, type LofiStatus } from './useYouTubeLofi'
 import './lofi.css'
 
@@ -15,6 +16,7 @@ const STEP = 0.05
 const round = (v: number) => Math.round(Math.min(1, Math.max(0, v)) * 100) / 100
 
 export default function LofiBlock({ status, playing, volume, onToggle, onVolume, station = 0, onStation }: Props) {
+  const t = useT()
   const pct = Math.round(volume * 100)
   const unavailable = status === 'unavailable'
   const current = STATIONS[station] ?? STATIONS[0]
@@ -22,16 +24,16 @@ export default function LofiBlock({ status, playing, volume, onToggle, onVolume,
   return (
     <div className={`pl${unavailable ? ' off' : ''}`}>
       <div className="pl-row">
-        <button className="pl-play" onClick={onToggle} disabled={status !== 'ready'} aria-label={playing ? 'Pausar lofi' : 'Reproducir lofi'}>
-          {playing ? '❚❚' : '▶'} Radio lofi — en directo
+        <button className="pl-play" onClick={onToggle} disabled={status !== 'ready'} aria-label={playing ? t('lofi.pauseLabel') : t('lofi.play')}>
+          {playing ? '❚❚' : '▶'} {t('lofi.radio')}
         </button>
         <span>
-          {unavailable ? 'No disponible' : status === 'loading' ? 'Cargando…' : playing ? 'Sonando' : 'En pausa'}
+          {unavailable ? t('lofi.unavailable') : status === 'loading' ? t('lofi.loading') : playing ? t('lofi.playing') : t('lofi.paused')}
           {onStation && !unavailable && (
             <button
               className="pl-station"
-              aria-label={`Cambiar de emisora. Ahora: ${current.name}`}
-              title={`Emisora: ${current.name} · clic para cambiar`}
+              aria-label={t('lofi.station', { name: current.name })}
+              title={t('lofi.stationHint', { name: current.name })}
               onClick={() => onStation(station + 1)}
             >
               ↻ {station + 1}/{STATIONS.length}
@@ -53,7 +55,7 @@ export default function LofiBlock({ status, playing, volume, onToggle, onVolume,
         className="pl-vol"
         role="slider"
         tabIndex={0}
-        aria-label="Volumen lofi"
+        aria-label={t('lofi.volume')}
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={pct}
@@ -69,7 +71,7 @@ export default function LofiBlock({ status, playing, volume, onToggle, onVolume,
           onVolume(round((e.clientX - r.left) / (r.width || 1)))
         }}
       >
-        <span>Vol {String(pct).padStart(2, '0')}</span>
+        <span>{t('lofi.vol', { n: String(pct).padStart(2, '0') })}</span>
         <i style={{ ['--v' as string]: `${pct}%` }} />
       </div>
     </div>

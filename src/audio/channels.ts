@@ -1,18 +1,19 @@
-export type ChannelId = 'rain' | 'fire' | 'cafe' | 'wind'
-export type Variant = { id: string; label: string; src: string }
-export type Channel = { id: ChannelId; label: string; variants: Variant[] }
+export type ChannelId = 'rain' | 'fire' | 'cafe' | 'wind' | 'keys'
+/** Display names live in the i18n dictionaries: `channel.<id>` and `variant.<channel>.<id>`. */
+export type Variant = { id: string; src: string }
+export type Channel = { id: ChannelId; variants: Variant[] }
 
-const v = (ch: ChannelId, id: string, label: string): Variant => ({ id, label, src: `/sounds/${ch}-${id}.mp3` })
+const channelOf = (id: ChannelId, variantIds: string[]): Channel => ({
+  id,
+  variants: variantIds.map((v) => ({ id: v, src: `/sounds/${id}-${v}.mp3` })),
+})
 
 export const CHANNELS: Channel[] = [
-  {
-    id: 'rain',
-    label: 'Lluvia',
-    variants: [v('rain', 'suave', 'Suave'), v('rain', 'ventana', 'Ventana'), v('rain', 'tormenta', 'Tormenta'), v('rain', 'tienda', 'Tienda')],
-  },
-  { id: 'fire', label: 'Fuego', variants: [v('fire', 'hoguera', 'Hoguera'), v('fire', 'chimenea', 'Chimenea')] },
-  { id: 'cafe', label: 'Café', variants: [v('cafe', 'cafeteria', 'Cafetería'), v('cafe', 'biblioteca', 'Biblioteca')] },
-  { id: 'wind', label: 'Viento', variants: [v('wind', 'suave', 'Suave'), v('wind', 'bosque', 'Bosque')] },
+  channelOf('rain', ['suave', 'ventana', 'tormenta', 'tienda']),
+  channelOf('fire', ['hoguera', 'chimenea']),
+  channelOf('cafe', ['cafeteria', 'biblioteca']),
+  channelOf('wind', ['suave', 'bosque']),
+  channelOf('keys', ['azul', 'azul2', 'marron', 'marron2', 'rojo']),
 ]
 
 export const CHANNEL_IDS = CHANNELS.map((c) => c.id)

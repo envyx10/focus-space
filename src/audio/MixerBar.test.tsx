@@ -67,3 +67,13 @@ describe('MixerBar interaction', () => {
     expect(screen.queryByText(/todo en silencio/i)).not.toBeInTheDocument()
   })
 })
+
+describe('keyboard channel', () => {
+  it('defaults to Cherry brown and cycles through the Blue, Brown and Red recordings', async () => {
+    const onVariant = vi.fn()
+    render(<MixerBar prefs={DEFAULT_PREFS} onVolume={() => {}} onVariant={onVariant} />)
+    expect(DEFAULT_PREFS.variants.keys).toBe('marron')
+    await userEvent.click(screen.getByRole('button', { name: /teclado: cherry marrón./i }))
+    expect(onVariant).toHaveBeenCalledWith('keys', 'marron2')
+  })
+})
