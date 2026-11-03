@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { askNotificationPermission, chime, notificationsSupported } from '../timer/alerts'
 import { DEFAULT_CONFIG, type TimerConfig } from '../timer/timer'
 import { LIMITS } from '../timer/timerStore'
@@ -44,11 +44,22 @@ type Props = {
   onImmersive: () => void
 }
 
+/** One group of settings: a quiet label, then rows. */
+function Group({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <section className="set-group" aria-label={title}>
+      <h3>{title}</h3>
+      <div className="set-rows">{children}</div>
+    </section>
+  )
+}
+
 function Minutes({ label, value, limits, onCommit }: { label: string; value: number; limits: readonly [number, number]; onCommit: (v: number) => void }) {
   return (
-    <label className="set-num">
+    <label className="set-row">
       <span>{label}</span>
       <input
+        className="set-num"
         key={value}
         type="number"
         min={limits[0]}
@@ -63,6 +74,18 @@ function Minutes({ label, value, limits, onCommit }: { label: string; value: num
         }}
         onKeyDown={(e) => e.key === 'Enter' && e.currentTarget.blur()}
       />
+    </label>
+  )
+}
+
+function Switch({ label, hint, checked, disabled, onChange }: { label: string; hint?: string; checked: boolean; disabled?: boolean; onChange: (on: boolean) => void }) {
+  return (
+    <label className={`set-row set-toggle${disabled ? ' is-off' : ''}`}>
+      <span>
+        {label}
+        {hint && <small>{hint}</small>}
+      </span>
+      <input className="set-switch" type="checkbox" checked={checked} disabled={disabled} onChange={(e) => onChange(e.target.checked)} />
     </label>
   )
 }
@@ -91,9 +114,13 @@ export default function SettingsMenu(p: Props) {
   const week = rangeMs(p.stats, p.today, 7)
   const today = p.stats[p.today]
   const days = streak(p.stats, p.today)
+  const customized = JSON.stringify(cfg) !== JSON.stringify(DEFAULT_CONFIG)
 
   const toggleNotify = async (on: boolean) => {
-    if (!on) return p.onNotify(false)
+    if (!on) {
+      setMsg(null)
+      return p.onNotify(false)
+    }
     const ok = await askNotificationPermission()
     setMsg(ok ? null : 'El navegador no permite notificaciones aquí. Puedes activarlas en los permisos del sitio.')
     p.onNotify(ok)
@@ -106,61 +133,80 @@ export default function SettingsMenu(p: Props) {
       </button>
       {open && (
         <div className="set-panel" role="dialog" aria-label="Ajustes">
-          <div className="num">04</div>
-          <div className="lbl">Ajustes</div>
+          <header className="set-head">
+            <div>
+              <div className="num">04</div>
+              <div className="lbl">Ajustes</div>
+            </div>
+            <button className="set-close" onClick={() => onOpenChange(false)} aria-label="Cerrar ajustes" title="Cerrar (Esc)">
+              Cerrar ×
+            </button>
+          </header>
 
-          <section>
-            <h3>Pomodoro</h3>
-            <div className="set-presets" role="group" aria-label="Duraciones predefinidas">
-              {PRESETS.map((x, i) => (
-                <button key={x.label} aria-pressed={preset === i} onClick={() => p.onConfig({ ...cfg, ...x.cfg })}>
-                  {x.label}
-                </button>
-              ))}
+          <Group title="Pomodoro">
+            <div className="set-row">
+              <span>Ritmo</span>
+              <span className="set-seg" role="group" aria-label="Duraciones predefinidas">
+                {PRESETS.map((x, i) => (
+                  <button key={x.label} aria-pressed={preset === i} onClick={() => p.onConfig({ ...cfg, ...x.cfg })}>
+                    {x.label}
+                  </button>
+                ))}
+              </span>
             </div>
-            <div className="set-nums">
-              <Minutes label="Focus (min)" value={cfg.work / MIN} limits={LIMITS.work} onCommit={(v) => setMin('work', v)} />
-              <Minutes label="Descanso (min)" value={cfg.short / MIN} limits={LIMITS.short} onCommit={(v) => setMin('short', v)} />
-              <Minutes label="Largo (min)" value={cfg.long / MIN} limits={LIMITS.long} onCommit={(v) => setMin('long', v)} />
-              <Minutes label="Largo cada" value={cfg.longEvery} limits={LIMITS.longEvery} onCommit={(v) => p.onConfig({ ...cfg, longEvery: v })} />
-            </div>
-            <label className="set-check">
-              <input type="checkbox" checked={cfg.autoNext} onChange={(e) => p.onConfig({ ...cfg, autoNext: e.target.checked })} />
-              Empezar la siguiente fase automáticamente
-            </label>
-            {JSON.stringify(cfg) !== JSON.stringify(DEFAULT_CONFIG) && (
-              <button className="set-link" onClick={() => p.onConfig(DEFAULT_CONFIG)}>
-                Restablecer
+            <Minutes label="Focus (min)" value={cfg.work / MIN} limits={LIMITS.work} onCommit={(v) => setMin('work', v)} />
+            <Minutes label="Descanso (min)" value={cfg.short / MIN} limits={LIMITS.short} onCommit={(v) => setMin('short', v)} />
+            <Minutes label="Largo (min)" value={cfg.long / MIN} limits={LIMITS.long} onCommit={(v) => setMin('long', v)} />
+            <Minutes label="Largo cada" value={cfg.longEvery} limits={LIMITS.longEvery} onCommit={(v) => p.onConfig({ ...cfg, longEvery: v })} />
+            <Switch label="Empezar la siguiente fase automáticamente" checked={cfg.autoNext} onChange={(on) => p.onConfig({ ...cfg, autoNext: on })} />
+            {customized && (
+              <button className="set-act" onClick={() => p.onConfig(DEFAULT_CONFIG)}>
+                Restablecer →
               </button>
             )}
-          </section>
+          </Group>
 
-          <section>
-            <h3>Avisos</h3>
-            <label className="set-range">
-              <span>Sonido al terminar · {prefs.chimeVolume === 0 ? 'apagado' : `${Math.round(prefs.chimeVolume * 100)} %`}</span>
-              <input type="range" min={0} max={100} step={5} value={Math.round(prefs.chimeVolume * 100)} aria-label="Volumen del aviso" onChange={(e) => p.onChime(Number(e.target.value) / 100)} />
+          <Group title="Avisos">
+            <label className="set-row set-stack">
+              <span>
+                Sonido al terminar
+                <output>{prefs.chimeVolume === 0 ? 'Apagado' : `${Math.round(prefs.chimeVolume * 100)} %`}</output>
+              </span>
+              <input
+                className="set-range"
+                type="range"
+                min={0}
+                max={100}
+                step={5}
+                value={Math.round(prefs.chimeVolume * 100)}
+                style={{ ['--v' as string]: `${Math.round(prefs.chimeVolume * 100)}%` }}
+                aria-label="Volumen del aviso"
+                onChange={(e) => p.onChime(Number(e.target.value) / 100)}
+              />
             </label>
-            <button className="set-link" disabled={prefs.chimeVolume === 0} onClick={() => chime(prefs.chimeVolume)}>
-              Probar sonido
+            <button className="set-act" disabled={prefs.chimeVolume === 0} onClick={() => chime(prefs.chimeVolume)}>
+              Probar sonido →
             </button>
-            <label className="set-check">
-              <input type="checkbox" checked={prefs.notify} disabled={!notificationsSupported()} onChange={(e) => toggleNotify(e.target.checked)} />
-              Notificación del navegador {!notificationsSupported() && '(no disponible)'}
-            </label>
-            <p className="set-dim">Mientras corre, la cuenta atrás aparece en el título de la pestaña.</p>
-            {msg && <p className="set-msg">{msg}</p>}
-          </section>
+            <Switch
+              label="Notificación del navegador"
+              hint={notificationsSupported() ? undefined : 'No disponible en este navegador'}
+              checked={prefs.notify}
+              disabled={!notificationsSupported()}
+              onChange={toggleNotify}
+            />
+            <p className="set-note">Mientras corre, la cuenta atrás aparece en el título de la pestaña.</p>
+            {msg && (
+              <p className="set-note set-warn" role="status">
+                {msg}
+              </p>
+            )}
+          </Group>
 
-          <section>
-            <h3>Pantalla</h3>
-            <label className="set-check">
-              <input type="checkbox" checked={prefs.calm} onChange={(e) => p.onCalm(e.target.checked)} />
-              Modo calma: sin esfera ni grano
-            </label>
+          <Group title="Pantalla">
+            <Switch label="Modo calma: sin esfera ni grano" checked={prefs.calm} onChange={p.onCalm} />
             <div className="set-row">
               <span>Tamaño del texto</span>
-              <span className="set-presets" role="group" aria-label="Tamaño del texto">
+              <span className="set-seg" role="group" aria-label="Tamaño del texto">
                 {TEXT_SCALES.map((s) => (
                   <button key={s} aria-pressed={prefs.textScale === s} onClick={() => p.onTextScale(s)}>
                     {SCALE_LABEL[s]}
@@ -169,7 +215,7 @@ export default function SettingsMenu(p: Props) {
               </span>
             </div>
             <button
-              className="set-link"
+              className="set-act"
               onClick={() => {
                 onOpenChange(false)
                 p.onImmersive()
@@ -177,16 +223,12 @@ export default function SettingsMenu(p: Props) {
             >
               Modo inmersión →
             </button>
-          </section>
+          </Group>
 
-          <section>
-            <h3>Sonido</h3>
-            <label className="set-check">
-              <input type="checkbox" checked={prefs.muted} onChange={(e) => p.onMuted(e.target.checked)} />
-              Silenciar todo (ambiente y radio)
-            </label>
+          <Group title="Sonido">
+            <Switch label="Silenciar todo (ambiente y radio)" checked={prefs.muted} onChange={p.onMuted} />
             <form
-              className="set-scene"
+              className="set-row set-scene"
               onSubmit={(e) => {
                 e.preventDefault()
                 p.onSaveScene(sceneName)
@@ -198,25 +240,20 @@ export default function SettingsMenu(p: Props) {
                 Guardar
               </button>
             </form>
-            {prefs.scenes.length > 0 && (
-              <ul className="set-scenes">
-                {prefs.scenes.map((s) => (
-                  <li key={s.name}>
-                    <button onClick={() => p.onApplyScene(s.name)} title="Aplicar esta mezcla">
-                      {s.name}
-                    </button>
-                    <button aria-label={`Borrar mezcla ${s.name}`} onClick={() => p.onDeleteScene(s.name)}>
-                      ×
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
+            {prefs.scenes.map((s) => (
+              <div className="set-row set-scene-item" key={s.name}>
+                <button onClick={() => p.onApplyScene(s.name)} title="Aplicar esta mezcla">
+                  {s.name}
+                </button>
+                <button className="set-x" aria-label={`Borrar mezcla ${s.name}`} title="Borrar" onClick={() => p.onDeleteScene(s.name)}>
+                  ×
+                </button>
+              </div>
+            ))}
+          </Group>
 
-          <section>
-            <h3>Estadísticas</h3>
-            <dl className="set-stats">
+          <Group title="Estadísticas">
+            <dl className="set-list">
               <div>
                 <dt>Hoy</dt>
                 <dd>
@@ -229,14 +266,15 @@ export default function SettingsMenu(p: Props) {
               </div>
               <div>
                 <dt>Racha</dt>
-                <dd>{days} {days === 1 ? 'día' : 'días'}</dd>
+                <dd>
+                  {days} {days === 1 ? 'día' : 'días'}
+                </dd>
               </div>
             </dl>
-          </section>
+          </Group>
 
-          <section>
-            <h3>Atajos</h3>
-            <dl className="set-keys">
+          <Group title="Atajos">
+            <dl className="set-list set-keys">
               {SHORTCUTS.map(([k, d]) => (
                 <div key={k}>
                   <dt>
@@ -246,7 +284,7 @@ export default function SettingsMenu(p: Props) {
                 </div>
               ))}
             </dl>
-          </section>
+          </Group>
         </div>
       )}
     </div>
