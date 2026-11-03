@@ -18,7 +18,7 @@
 }
 
 .hd-session {
-  grid-column: span 4;
+  grid-column: span 3;
 }
 
 .hd-date {
@@ -26,6 +26,20 @@
 }
 
 .hd-account {
-  grid-column: span 2;
+  grid-column: span 3;
   text-align: right;
+}
+
+.hd-account {
+  display: flex;
+  justify-content: flex-end;
+  gap: 18px;
+}
+
+.hd-idle {
+  opacity: 0.55;
+}
+
+.hd-account button {
+  white-space: nowrap;
 }

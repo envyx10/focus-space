@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { advance, initialState, pause, POMODORO, remaining, start } from './timer'
+import { advance, extend, initialState, pause, POMODORO, remaining, skip, start, withConfig } from './timer'
 
 const MIN = 60_000
 
@@ -49,6 +49,53 @@ describe('timer', () => {
 
   it('advance on a paused timer does nothing', () => {
     const s = initialState('pomodoro')
-    expect(advance(s, 99 * MIN)).toEqual({ state: s, phasesEnded: 0 })
+    expect(advance(s, 99 * MIN)).toEqual({ state: s, phasesEnded: 0, focusedMs: 0, focusSessions: 0 })
+  })
+})
+
+describe('timer controls', () => {
+  it('autoNext off: the next phase waits, paused, for the user', () => {
+    const cfg = { ...POMODORO, autoNext: false }
+    const r = advance(start(initialState('pomodoro', 25 * MIN, cfg), 0), 30 * MIN)
+    expect(r.phasesEnded).toBe(1)
+    expect(r.state.phase).toBe('short')
+    expect(r.state.endsAt).toBeNull()
+    expect(remaining(r.state, 30 * MIN)).toBe(5 * MIN)
+  })
+
+  it('uses the configured durations', () => {
+    const cfg = { ...POMODORO, work: 50 * MIN, short: 10 * MIN }
+    const r = advance(start(initialState('pomodoro', 25 * MIN, cfg), 0), 50 * MIN)
+    expect(r.state.phase).toBe('short')
+    expect(remaining(r.state, 50 * MIN)).toBe(10 * MIN)
+  })
+
+  it('reports the focus time completed, not the breaks', () => {
+    const r = advance(start(initialState('pomodoro'), 0), (25 + 5 + 25) * MIN)
+    expect(r.focusSessions).toBe(2)
+    expect(r.focusedMs).toBe(50 * MIN)
+    expect(advance(start(initialState('free', 40 * MIN), 0), 41 * MIN).focusedMs).toBe(40 * MIN)
+  })
+
+  it('extend adds time whether running or paused', () => {
+    expect(remaining(extend(start(initialState('pomodoro'), 0), 5 * MIN), 0)).toBe(30 * MIN)
+    expect(remaining(extend(initialState('pomodoro'), 5 * MIN), 0)).toBe(30 * MIN)
+  })
+
+  it('skip jumps to the next phase, keeps running, and does not count a skipped work block', () => {
+    const s = skip(start(initialState('pomodoro'), 0), 10 * MIN)
+    expect(s.phase).toBe('short')
+    expect(s.completedWork).toBe(0)
+    expect(remaining(s, 10 * MIN)).toBe(5 * MIN)
+    expect(skip(initialState('pomodoro'), 0).endsAt).toBeNull()
+    expect(skip({ ...initialState('pomodoro'), phase: 'short' }, 0).phase).toBe('work')
+  })
+
+  it('new durations apply at once to an untouched phase, not to one in progress', () => {
+    const cfg = { ...POMODORO, work: 50 * MIN }
+    expect(remaining(withConfig(initialState('pomodoro'), cfg), 0)).toBe(50 * MIN)
+    const going = start(initialState('pomodoro'), 0)
+    expect(remaining(withConfig(going, cfg), 0)).toBe(25 * MIN)
+    expect(withConfig(going, cfg).cfg.work).toBe(50 * MIN)
   })
 })

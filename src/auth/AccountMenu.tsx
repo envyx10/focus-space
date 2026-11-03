@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
+import { useT } from '../i18n'
 import type { Session } from './useSession'
 import './account.css'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export default function AccountMenu({ session }: { session: Session }) {
+  const t = useT()
   const [open, setOpen] = useState(false)
   const [email, setEmail] = useState('')
   const [msg, setMsg] = useState<string | null>(null)
@@ -28,28 +30,28 @@ export default function AccountMenu({ session }: { session: Session }) {
       await fn()
       setMsg(ok)
     } catch {
-      setMsg('No se pudo conectar. Inténtalo de nuevo.')
+      setMsg(t('account.offline'))
     }
   }
 
   return (
     <div className="acct" ref={root}>
       <button className="acct-btn" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
-        {session.user ? 'Cuenta ●' : 'Cuenta ↗'}
+        {session.user ? t('account.user') : t('account.guest')}
       </button>
       {open && (
-        <div className="acct-panel" role="dialog" aria-label="Cuenta">
+        <div className="acct-panel" role="dialog" aria-label={t('account.title')}>
           <div className="num">03</div>
-          <div className="lbl">Cuenta</div>
+          <div className="lbl">{t('account.title')}</div>
 
           {!session.available ? (
-            <p className="acct-row">Modo solo local: tus tareas se guardan en este navegador.</p>
+            <p className="acct-row">{t('account.localMode')}</p>
           ) : session.user ? (
             <>
               <p className="acct-row">{session.user.email}</p>
-              <p className="acct-row acct-dim">Tus tareas se sincronizan entre dispositivos.</p>
+              <p className="acct-row acct-dim">{t('account.syncing')}</p>
               <button className="acct-row acct-act" onClick={() => run(session.signOut, null)}>
-                Cerrar sesión →
+                {t('account.signOut')}
               </button>
             </>
           ) : (
@@ -59,18 +61,18 @@ export default function AccountMenu({ session }: { session: Session }) {
                 onSubmit={(e) => {
                   e.preventDefault()
                   const clean = email.trim()
-                  if (!EMAIL_RE.test(clean)) return setMsg('Escribe un email válido.')
-                  run(() => session.signInWithEmail(clean), 'Revisa tu correo: te hemos enviado un enlace.')
+                  if (!EMAIL_RE.test(clean)) return setMsg(t('account.invalidEmail'))
+                  run(() => session.signInWithEmail(clean), t('account.linkSent'))
                 }}
               >
-                <input type="email" placeholder="Tu email" aria-label="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                <button type="submit">Enviar enlace →</button>
+                <input type="email" placeholder={t('account.emailPlaceholder')} aria-label={t('account.emailLabel')} value={email} onChange={(e) => setEmail(e.target.value)} />
+                <button type="submit">{t('account.sendLink')}</button>
               </form>
               <button className="acct-row acct-act" onClick={() => run(() => session.signInWithProvider('google'), null)}>
-                Continuar con Google →
+                {t('account.google')}
               </button>
               <button className="acct-row acct-act" onClick={() => run(() => session.signInWithProvider('github'), null)}>
-                Continuar con GitHub →
+                {t('account.github')}
               </button>
             </>
           )}

@@ -5,6 +5,9 @@ import FocusPanel from './FocusPanel'
 
 const base = {
   running: false,
+  status: 'idle' as const,
+  onSkip: () => {},
+  onExtend: () => {},
   mode: 'pomodoro' as const,
   phase: 'work' as const,
   freeMinutes: 25,
@@ -58,5 +61,53 @@ describe('FocusPanel', () => {
     expect(screen.getByLabelText('Hora local')).toBeInTheDocument() // starting from the clock opens the timer
     rerender(<FocusPanel {...base} running remainingMs={60_000} activeTaskText={null} />)
     expect(screen.getByRole('button', { name: /pausar/i })).toBeInTheDocument()
+  })
+
+  it('asks before throwing away a phase in progress, and does nothing if declined', async () => {
+    const onReset = vi.fn()
+    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false)
+    render(<FocusPanel {...base} running status="running" remainingMs={60_000} activeTaskText={null} onReset={onReset} />)
+    await userEvent.click(screen.getByRole('button', { name: 'Pomodoro' }))
+    await userEvent.click(screen.getByRole('button', { name: /reiniciar/i }))
+    expect(confirm).toHaveBeenCalled()
+    expect(onReset).not.toHaveBeenCalled()
+    confirm.mockReturnValue(true)
+    await userEvent.click(screen.getByRole('button', { name: /reiniciar/i }))
+    expect(onReset).toHaveBeenCalled()
+    confirm.mockRestore()
+  })
+
+  it('does not ask when nothing has been spent', async () => {
+    const onReset = vi.fn()
+    const confirm = vi.spyOn(window, 'confirm')
+    render(<FocusPanel {...base} remainingMs={60_000} activeTaskText={null} onReset={onReset} />)
+    await userEvent.click(screen.getByRole('button', { name: 'Pomodoro' }))
+    await userEvent.click(screen.getByRole('button', { name: /reiniciar/i }))
+    expect(confirm).not.toHaveBeenCalled()
+    expect(onReset).toHaveBeenCalled()
+    confirm.mockRestore()
+  })
+
+  it('offers +5 min and skip in Pomodoro', async () => {
+    const onSkip = vi.fn()
+    const onExtend = vi.fn()
+    render(<FocusPanel {...base} remainingMs={60_000} activeTaskText={null} onSkip={onSkip} onExtend={onExtend} />)
+    await userEvent.click(screen.getByRole('button', { name: 'Pomodoro' }))
+    await userEvent.click(screen.getByRole('button', { name: '+5 min' }))
+    await userEvent.click(screen.getByRole('button', { name: /saltar/i }))
+    expect(onExtend).toHaveBeenCalled()
+    expect(onSkip).toHaveBeenCalled()
+  })
+
+  it('the Space signal starts, then pauses, like the main button', () => {
+    const onStart = vi.fn()
+    const onPause = vi.fn()
+    const props = { ...base, remainingMs: 60_000, activeTaskText: null, onStart, onPause }
+    const { rerender } = render(<FocusPanel {...props} toggleSignal={0} />)
+    rerender(<FocusPanel {...props} toggleSignal={1} />)
+    expect(onStart).toHaveBeenCalledTimes(1)
+    rerender(<FocusPanel {...props} running status="running" toggleSignal={1} />)
+    rerender(<FocusPanel {...props} running status="running" toggleSignal={2} />)
+    expect(onPause).toHaveBeenCalledTimes(1)
   })
 })
