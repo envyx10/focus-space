@@ -1,7 +1,7 @@
 # Third-party licenses · Licencias de terceros
 
-Focus/Space's own code is [MIT](LICENSE) (© 2026 envyx10). This file lists what else is in, or loaded by, the app and under which terms.
-*El código propio de Focus/Space es [MIT](LICENSE) (© 2026 envyx10). Este archivo lista qué más contiene o carga la app y bajo qué condiciones.*
+Focus/Space's own code is under [FSL-1.1-MIT](LICENSE) (© 2026 envyx10). This file lists what else is in, or loaded by, the app and under which terms.
+*El código propio de Focus/Space está bajo [FSL-1.1-MIT](LICENSE) (© 2026 envyx10). Este archivo lista qué más contiene o carga la app y bajo qué condiciones.*
 
 ## What ships in the production bundle · Lo que va en el paquete de producción
 
