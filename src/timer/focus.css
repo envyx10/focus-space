@@ -24,6 +24,17 @@
   align-items: flex-start;
 }
 
+.mini-clock {
+  margin-top: 10px;
+  font-family: var(--display, var(--font));
+  font-weight: var(--display-weight, 700);
+  font-style: var(--display-style, normal);
+  font-size: calc(30px * var(--display-scale, 1));
+  letter-spacing: -0.02em;
+  line-height: 1;
+  font-feature-settings: 'tnum';
+}
+
 .focus-right {
   display: flex;
   flex-direction: column;
