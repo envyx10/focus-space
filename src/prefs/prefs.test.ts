@@ -27,17 +27,17 @@ describe('prefs', () => {
   })
 
 
-  it('typeface defaults to Syne and rejects unknown ids', () => {
-    expect(loadPrefs().font).toBe('syne')
-    localStorage.setItem(PREFS_KEY, JSON.stringify({ v: 1, font: 'mono' }))
+  it('typeface defaults to Mono and rejects unknown ids', () => {
     expect(loadPrefs().font).toBe('mono')
+    localStorage.setItem(PREFS_KEY, JSON.stringify({ v: 1, font: 'grotesk' }))
+    expect(loadPrefs().font).toBe('grotesk')
     localStorage.setItem(PREFS_KEY, JSON.stringify({ v: 1, font: 'comic' }))
-    expect(loadPrefs().font).toBe('syne')
+    expect(loadPrefs().font).toBe('mono')
   })
 
   it('a saved typeface that no longer exists falls back to the default', () => {
     localStorage.setItem(PREFS_KEY, JSON.stringify({ v: 1, font: 'editorial' }))
-    expect(loadPrefs().font).toBe('syne')
+    expect(loadPrefs().font).toBe('mono')
   })
 
   it('round-trips', () => {
