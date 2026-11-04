@@ -65,7 +65,6 @@ const renderVertex = /* glsl */ `
   uniform sampler2D tPosition;
   uniform sampler2D tVelocity;
   uniform float uPixelRatio;
-  uniform float uBass;
   uniform float uIntro;
   varying float vAlpha;
   varying float vHeat;
@@ -78,7 +77,7 @@ const renderVertex = /* glsl */ `
     vec4 mv = modelViewMatrix * vec4(p.xyz, 1.0);
     gl_Position = projectionMatrix * mv;
     float seed = p.w;
-    gl_PointSize = (0.7 + seed * seed * 0.8) * (1.0 + uBass * 0.35) * uPixelRatio * (${CAMERA_Z.toFixed(1)} / -mv.z);
+    gl_PointSize = (0.7 + seed * seed * 0.8) * uPixelRatio * (${CAMERA_Z.toFixed(1)} / -mv.z);
     float depth = clamp((${(CAMERA_Z + 1.4).toFixed(1)} + mv.z) / 2.8, 0.0, 1.0); // 1 = nearest
     // Lights fixed to the camera, so the sphere turns under them: a soft key from the upper
     // left and a warm back light grazing the lower right edge. Unlit side stays near-dark.
@@ -193,7 +192,6 @@ export default function Scene3D({ getLevels }: Props) {
       tPosition: { value: gpu.getCurrentRenderTarget(posVar).texture },
       tVelocity: { value: gpu.getCurrentRenderTarget(velVar).texture },
       uPixelRatio: { value: 1 },
-      uBass: { value: 0 },
       uIntro: { value: 0 },
     }
     const material = new ShaderMaterial({
@@ -266,7 +264,6 @@ export default function Scene3D({ getLevels }: Props) {
       lv.high = follow(lv.high, goal.high)
       sim.uFlow.value = 0.14 + lv.bass * 0.9 + lv.high * 0.3
       sim.uStir.value *= Math.pow(0.35, elapsed)
-      uniforms.uBass.value = lv.bass
       // fade in over ~2.5 s of real time while the particles assemble
       uniforms.uIntro.value = Math.min(1, uniforms.uIntro.value + elapsed / 2.5)
       // fixed-size steps keep the simulation stable even when the tab is throttled
