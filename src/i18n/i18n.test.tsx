@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { CHANNELS } from '../audio/channels'
+import { CHIMES } from '../timer/alerts'
 import FocusPanel from '../timer/FocusPanel'
 import SettingsMenu from '../settings/SettingsMenu'
 import { DEFAULT_PREFS } from '../prefs/prefs'
@@ -39,6 +40,7 @@ describe('dictionaries', () => {
       expect(es, `channel.${ch.id}`).toHaveProperty([`channel.${ch.id}`])
       for (const v of ch.variants) expect(es, `variant.${ch.id}.${v.id}`).toHaveProperty([`variant.${ch.id}.${v.id}`])
     }
+    for (const s of CHIMES) expect(es, `chime.${s}`).toHaveProperty([`chime.${s}`])
     for (const k of ['phase.work', 'phase.short', 'phase.long', 'phase.free', 'status.running', 'status.paused', 'status.waiting', 'status.idle']) expect(es).toHaveProperty([k])
   })
 })
@@ -117,6 +119,7 @@ describe('the app in English', () => {
           onOpenChange={noop}
           onConfig={noop}
           onChime={noop}
+          onChimeSound={noop}
           onNotify={noop}
           onCalm={noop}
           onMuted={noop}

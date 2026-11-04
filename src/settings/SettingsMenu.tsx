@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { LANGS, useI18n, type Key } from '../i18n'
 import Icon from '../lib/Icon'
-import { askNotificationPermission, chime, notificationsSupported } from '../timer/alerts'
+import { askNotificationPermission, chime, CHIMES, notificationsSupported, type Chime } from '../timer/alerts'
 import { DEFAULT_CONFIG, type TimerConfig } from '../timer/timer'
 import { LIMITS } from '../timer/timerStore'
 import { formatDuration, rangeMs, streak, type Stats } from '../stats/stats'
@@ -38,6 +38,7 @@ type Props = {
   onOpenChange: (open: boolean) => void
   onConfig: (c: TimerConfig) => void
   onChime: (v: number) => void
+  onChimeSound: (s: Chime) => void
   onNotify: (on: boolean) => void
   onCalm: (on: boolean) => void
   onMuted: (on: boolean) => void
@@ -192,7 +193,24 @@ export default function SettingsMenu(p: Props) {
                 onChange={(e) => p.onChime(Number(e.target.value) / 100)}
               />
             </label>
-            <button className="set-act" disabled={prefs.chimeVolume === 0} onClick={() => chime(prefs.chimeVolume)}>
+            <div className="set-row">
+              <span>{t('settings.chimeSound')}</span>
+              <span className="set-seg" role="group" aria-label={t('settings.chimeSound')}>
+                {CHIMES.map((s) => (
+                  <button
+                    key={s}
+                    aria-pressed={prefs.chimeSound === s}
+                    onClick={() => {
+                      p.onChimeSound(s)
+                      chime(prefs.chimeVolume, s)
+                    }}
+                  >
+                    {t(`chime.${s}`)}
+                  </button>
+                ))}
+              </span>
+            </div>
+            <button className="set-act" disabled={prefs.chimeVolume === 0} onClick={() => chime(prefs.chimeVolume, prefs.chimeSound)}>
               {t('settings.chimeTest')}
             </button>
             <Switch

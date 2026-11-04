@@ -2,11 +2,47 @@ import { useEffect } from 'react'
 import { useT, type T } from '../i18n'
 import type { Phase, TimerMode } from './timer'
 
-export function chime(volume: number): void {
+export const CHIMES = ['campana', 'cuenco', 'marimba', 'digital'] as const
+export type Chime = (typeof CHIMES)[number]
+
+// Synthesised tones: [frequency Hz, start s, length s] per note.
+const NOTES: Record<Exclude<Chime, 'campana'>, { wave: OscillatorType; notes: [number, number, number][] }> = {
+  cuenco: { wave: 'sine', notes: [[220, 0, 4], [528, 0, 3.2], [880, 0, 1.8]] },
+  marimba: { wave: 'triangle', notes: [[523, 0, 0.7], [659, 0.14, 0.7], [784, 0.28, 1.1]] },
+  digital: { wave: 'square', notes: [[1046, 0, 0.12], [1046, 0.2, 0.12], [1046, 0.4, 0.12]] },
+}
+
+let ctx: AudioContext | null = null
+
+export function chime(volume: number, sound: Chime = 'campana'): void {
   if (volume <= 0) return
-  const a = new Audio('/sounds/chime.mp3')
-  a.volume = volume
-  a.play().catch(() => {})
+  if (sound === 'campana') {
+    const a = new Audio('/sounds/chime.mp3')
+    a.volume = volume
+    a.play().catch(() => {})
+    return
+  }
+  try {
+    ctx ??= new AudioContext()
+    void ctx.resume()
+    const { wave, notes } = NOTES[sound]
+    const peak = volume * (wave === 'square' ? 0.08 : 0.3) // square waves sound far louder at the same gain
+    for (const [freq, at, len] of notes) {
+      const t = ctx.currentTime + at
+      const osc = ctx.createOscillator()
+      const gain = ctx.createGain()
+      osc.type = wave
+      osc.frequency.value = freq
+      gain.gain.setValueAtTime(0, t)
+      gain.gain.linearRampToValueAtTime(peak, t + 0.01)
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + len)
+      osc.connect(gain).connect(ctx.destination)
+      osc.start(t)
+      osc.stop(t + len)
+    }
+  } catch {
+    // no Web Audio: the phase still ends, just silently
+  }
 }
 
 export function notificationsSupported(): boolean {
