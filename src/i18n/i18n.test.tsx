@@ -121,6 +121,7 @@ describe('the app in English', () => {
           onCalm={noop}
           onMuted={noop}
           onTextScale={noop}
+          onAccent={noop}
           onSaveScene={noop}
           onApplyScene={noop}
           onDeleteScene={noop}

@@ -36,7 +36,7 @@
 .set-panel ::selection,
 .set-panel::selection {
   background: var(--accent);
-  color: var(--bg);
+  color: var(--on-accent);
 }
 
 @keyframes set-in {
@@ -233,7 +233,7 @@
 
 .set-switch:checked::after {
   transform: translateX(16px);
-  background: var(--bg);
+  background: var(--on-accent);
 }
 
 .set-stack {
@@ -411,4 +411,44 @@ kbd {
   font: inherit;
   font-size: 11px;
   text-align: center;
+}
+
+/* Accent picker: square swatches like the rest of the panel, then the native colour input for anything else. */
+.set-accent {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
+}
+
+.set-swatch,
+.set-color {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 1px solid #3a3a3a;
+  border-radius: 0;
+}
+
+.set-swatch[aria-pressed='true'] {
+  outline: 1px solid var(--fg);
+  outline-offset: 2px;
+}
+
+.set-color {
+  background: none;
+  cursor: pointer;
+}
+
+.set-color::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.set-color::-webkit-color-swatch {
+  border: 0;
+}
+
+.set-color::-moz-color-swatch {
+  border: 0;
 }

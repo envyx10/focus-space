@@ -2,6 +2,7 @@
   --bg: #0b0b0b;
   --fg: #ecebe6;
   --line: #262626;
-  --accent: #ff4b1f;
+  --accent: #ff4b1f; /* the user can change it: App sets --accent and --on-accent on .app */
+  --on-accent: #0b0b0b; /* text on top of the accent */
   --font: 'Inter Tight', 'Helvetica Neue', Arial, sans-serif;
 }

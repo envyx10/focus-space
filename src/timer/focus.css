@@ -68,7 +68,7 @@
 
 .cycler button:active {
   background: var(--accent);
-  color: var(--bg);
+  color: var(--on-accent);
 }
 
 .cycler button:first-child {
@@ -185,7 +185,7 @@
   min-width: 150px;
   background: var(--accent);
   border-color: var(--accent);
-  color: var(--bg);
+  color: var(--on-accent);
 }
 
 .btn.primary:hover {

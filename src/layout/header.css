@@ -43,3 +43,11 @@
 .hd-account button {
   white-space: nowrap;
 }
+
+/* Same type as the Settings and Account buttons beside it (a button doesn't inherit the header's caps by itself). */
+.hd-mute {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 11px;
+  transition: color 0.15s;
+}

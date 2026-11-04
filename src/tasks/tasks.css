@@ -178,3 +178,53 @@
 .tasks-tools ~ .tasks-note {
   margin-top: 0;
 }
+
+/* Focus mode: the list, read-only, on the right edge. Desktop only: a phone has no room beside the clock. */
+.focus-tasks {
+  position: absolute;
+  top: 50%;
+  right: 24px;
+  z-index: 3;
+  width: min(260px, 22vw);
+  max-height: 70%;
+  overflow: hidden;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.focus-tasks ul {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+}
+
+.focus-tasks li {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  padding: 9px 0;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+  opacity: 0.55;
+}
+
+.focus-tasks .num {
+  opacity: 0.7;
+}
+
+/* the task the timer is on: full strength */
+.focus-tasks li.on {
+  opacity: 1;
+}
+
+.focus-tasks li.dn {
+  opacity: 0.25;
+  text-decoration: line-through;
+}
+
+@media (max-width: 1023px) {
+  .focus-tasks {
+    display: none;
+  }
+}

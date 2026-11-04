@@ -5,6 +5,7 @@ import { askNotificationPermission, chime, notificationsSupported } from '../tim
 import { DEFAULT_CONFIG, type TimerConfig } from '../timer/timer'
 import { LIMITS } from '../timer/timerStore'
 import { formatDuration, rangeMs, streak, type Stats } from '../stats/stats'
+import { ACCENTS } from '../prefs/accent'
 import { TEXT_SCALES, type Prefs, type TextScale } from '../prefs/prefs'
 import './settings.css'
 
@@ -41,6 +42,7 @@ type Props = {
   onCalm: (on: boolean) => void
   onMuted: (on: boolean) => void
   onTextScale: (s: TextScale) => void
+  onAccent: (hex: string) => void
   onSaveScene: (name: string) => void
   onApplyScene: (name: string) => void
   onDeleteScene: (name: string) => void
@@ -228,6 +230,15 @@ export default function SettingsMenu(p: Props) {
                     {SCALE_LABEL[s]}
                   </button>
                 ))}
+              </span>
+            </div>
+            <div className="set-row">
+              <span>{t('settings.accent')}</span>
+              <span className="set-accent" role="group" aria-label={t('settings.accent')}>
+                {ACCENTS.map((c) => (
+                  <button key={c} className="set-swatch" style={{ background: c }} aria-label={c} aria-pressed={prefs.accent === c} onClick={() => p.onAccent(c)} />
+                ))}
+                <input className="set-color" type="color" value={prefs.accent} title={t('settings.accentCustom')} aria-label={t('settings.accentCustom')} onChange={(e) => p.onAccent(e.target.value.toLowerCase())} />
               </span>
             </div>
             <button

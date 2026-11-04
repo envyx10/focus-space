@@ -1,4 +1,5 @@
 import { channel, CHANNEL_IDS, type ChannelId } from '../audio/channels'
+import { DEFAULT_ACCENT, isHex } from './accent'
 import { isRecord, readJSON, writeJSON } from '../lib/storage'
 import { TYPEFACES } from '../visual/typefaces'
 
@@ -26,6 +27,8 @@ export type Prefs = {
   /** Mutes every sound without touching the saved mix. */
   muted: boolean
   textScale: TextScale
+  /** Highlight colour, #rrggbb. */
+  accent: string
   lofiStation: number
   scenes: Scene[]
 }
@@ -41,6 +44,7 @@ export const DEFAULT_PREFS: Prefs = {
   calm: false,
   muted: false,
   textScale: 'm',
+  accent: DEFAULT_ACCENT,
   lofiStation: 0,
   scenes: [],
 }
@@ -83,6 +87,7 @@ export function loadPrefs(): Prefs {
     calm: r.calm === true,
     muted: r.muted === true,
     textScale: TEXT_SCALES.includes(r.textScale as TextScale) ? (r.textScale as TextScale) : DEFAULT_PREFS.textScale,
+    accent: isHex(r.accent) ? r.accent.toLowerCase() : DEFAULT_ACCENT,
     lofiStation: Number.isInteger(r.lofiStation) && (r.lofiStation as number) >= 0 ? (r.lofiStation as number) : 0,
     scenes: parseScenes(r.scenes),
   }
