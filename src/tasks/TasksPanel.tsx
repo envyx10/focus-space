@@ -166,6 +166,8 @@ export default function TasksPanel({ tasks, synced, saveError, add, restore, cle
             onKeyDown={(e) => {
               // ↑ jumps to the last task's delete button: Enter or Supr deletes it.
               if (e.key === 'ArrowUp') e.currentTarget.closest('ul')?.querySelector<HTMLElement>('.tk:nth-last-child(2) .tk-del')?.focus()
+              // Backspace on an empty box deletes the whole last task; a held key never chains deletes (undo only keeps one).
+              if (e.key === 'Backspace' && !e.repeat && !draft && tasks.length) del(tasks[tasks.length - 1])
               if (e.key === 'Enter' && draft.trim()) {
                 add(draft)
                 setDraft('')
