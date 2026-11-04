@@ -28,8 +28,6 @@
   text-transform: none;
   letter-spacing: 0;
   font-size: 13px;
-  scrollbar-width: thin;
-  scrollbar-color: #3a3a3a transparent;
   animation: set-in 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
