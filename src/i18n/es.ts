@@ -111,6 +111,7 @@ export const es = {
   'lofi.paused': 'En pausa',
   'lofi.station': 'Cambiar de emisora. Ahora: {name}',
   'lofi.stationHint': 'Emisora: {name} · clic para cambiar',
+  'lofi.next': 'Emisora {n}/{total} · siguiente ›',
   'lofi.volume': 'Volumen lofi',
   'lofi.vol': 'Vol {n}',
 
