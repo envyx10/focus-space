@@ -9,8 +9,6 @@ export const es = {
   'status.paused': 'En pausa',
   'status.waiting': 'Listo para seguir',
   'status.idle': 'Parado',
-  'weather.ask': 'Ver el tiempo',
-  'weather.hint': 'Usa tu ubicación para mostrar el tiempo de tu zona',
   'weather.clear': 'Despejado',
   'weather.cloudy': 'Nublado',
   'weather.fog': 'Niebla',

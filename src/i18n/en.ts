@@ -7,8 +7,6 @@ export const en: Record<Key, string> = {
   'status.paused': 'Paused',
   'status.waiting': 'Ready to continue',
   'status.idle': 'Stopped',
-  'weather.ask': 'Show weather',
-  'weather.hint': 'Uses your location to show your local weather',
   'weather.clear': 'Clear',
   'weather.cloudy': 'Cloudy',
   'weather.fog': 'Fog',
