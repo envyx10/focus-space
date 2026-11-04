@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { LANGS, useI18n, type Key } from '../i18n'
+import Icon from '../lib/Icon'
 import { askNotificationPermission, chime, notificationsSupported } from '../timer/alerts'
 import { DEFAULT_CONFIG, type TimerConfig } from '../timer/timer'
 import { LIMITS } from '../timer/timerStore'
@@ -133,6 +134,7 @@ export default function SettingsMenu(p: Props) {
     <div className="set" ref={root}>
       <button className="set-btn" aria-expanded={open} aria-haspopup="dialog" title={t('settings.openHint')} onClick={() => onOpenChange(!open)}>
         {t('settings.open')}
+        <Icon name="gear" />
       </button>
       {open && (
         <div className="set-panel" role="dialog" aria-label={t('settings.title')}>
@@ -143,6 +145,7 @@ export default function SettingsMenu(p: Props) {
             </div>
             <button className="set-close" onClick={() => onOpenChange(false)} aria-label={t('settings.closeLabel')} title={t('settings.closeHint')}>
               {t('settings.close')}
+              <Icon name="close" />
             </button>
           </header>
 

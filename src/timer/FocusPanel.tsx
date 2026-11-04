@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { useT } from '../i18n'
+import Icon from '../lib/Icon'
 import type { Phase, TimerMode } from './timer'
 import type { TimerStatus } from './useTimer'
 import './focus.css'
@@ -144,10 +145,12 @@ export default function FocusPanel(p: Props) {
           )}
           {p.running && !clock ? (
             <button className="btn primary" onClick={p.onPause}>
+              <Icon name="pause" />
               {t('focus.pause')}
             </button>
           ) : (
             <button className="btn primary" onClick={start}>
+              <Icon name="play" />
               {p.running
                 ? t('focus.timerBtn')
                 : p.status === 'waiting'

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useT } from '../i18n'
+import Icon from '../lib/Icon'
 import type { Session } from './useSession'
 import './account.css'
 
@@ -38,6 +39,7 @@ export default function AccountMenu({ session }: { session: Session }) {
     <div className="acct" ref={root}>
       <button className="acct-btn" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
         {session.user ? t('account.user') : t('account.guest')}
+        <Icon name={session.user ? 'user' : 'out'} />
       </button>
       {open && (
         <div className="acct-panel" role="dialog" aria-label={t('account.title')}>

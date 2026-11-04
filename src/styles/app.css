@@ -303,3 +303,137 @@ button {
     font-size: calc(min(clamp(165px, 25.5vw, 435px), 62vh) * var(--display-scale, 1));
   }
 }
+
+/* Line icons (src/lib/Icon.tsx): they follow the text colour and sit on the baseline next to a label. */
+.ico {
+  width: 1.1em;
+  height: 1.1em;
+  flex: none;
+}
+
+.btn,
+.set-btn,
+.set-close,
+.acct-btn,
+.hd-mute,
+.pl-play,
+.pl-station,
+.mx-variant,
+.cycler button,
+.tk-act button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.cycler .ico {
+  width: 16px;
+  height: 16px;
+}
+
+@media (max-width: 1023px) {
+  /* notch / status bar: the header grows by the inset instead of sliding under it */
+  .app > .region-header {
+    height: calc(44px + env(safe-area-inset-top));
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .app .big {
+    font-size: calc(clamp(110px, 30vw, 220px) * var(--display-scale, 1));
+  }
+
+  .app .hd-account button {
+    min-height: 44px;
+  }
+
+  /* fingertip-sized targets: the row actions were 13px glyphs */
+  .app .tk {
+    padding: 2px 0;
+  }
+
+  .app .tk-act {
+    gap: 2px;
+  }
+
+  .app .tk-act button,
+  .app .tk-box {
+    min-width: 36px;
+    min-height: 36px;
+  }
+
+  .app .tk-box {
+    justify-content: flex-start;
+  }
+
+  .app .cycler button {
+    width: 44px;
+  }
+
+  .app .mx-line {
+    height: 4px;
+  }
+
+  .app .mx-name {
+    min-height: 32px;
+  }
+
+  .app > .region-lofi {
+    height: auto;
+    min-height: 150px;
+  }
+
+  .app .pl {
+    gap: 14px;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  }
+
+  .app .pl-row {
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+  }
+
+  .app .pl-station {
+    padding: 8px 14px;
+  }
+}
+
+@media (max-width: 560px) {
+  /* task name above, the actions as a full-width row: a thumb reaches them */
+  .app .focus-meta {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  .app .actions .btn {
+    padding: 16px;
+  }
+}
+
+/* Muted: the header button turns accent, and the sound controls dim so it reads at a glance. */
+.hd-mute[aria-pressed='true'] {
+  color: var(--accent);
+}
+
+.mixer,
+.pl-vol {
+  transition: opacity 0.2s;
+}
+
+.app[data-muted] .mixer,
+.app[data-muted] .pl-vol {
+  opacity: 0.3;
+}
+
+@media (max-width: 560px) {
+  /* the icon alone says it on a phone; the label would push the menus off the header */
+  .app .hd-mute-label {
+    display: none;
+  }
+
+  .app .hd-mute {
+    min-width: 44px;
+  }
+}
