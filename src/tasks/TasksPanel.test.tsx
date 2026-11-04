@@ -41,6 +41,17 @@ describe('TasksPanel', () => {
     expect(screen.getByPlaceholderText('+ Nueva tarea')).toHaveFocus()
   })
 
+  it('↑ lands on the last delete button, and Enter on it deletes', async () => {
+    const remove = vi.fn(noop)
+    render(<TasksPanel tasks={[task('1', 'Uno'), task('2', 'Dos')]} synced {...actions} remove={remove} />)
+    await userEvent.click(screen.getByPlaceholderText('+ Nueva tarea'))
+    await userEvent.keyboard('{ArrowUp}')
+    expect(screen.getByRole('button', { name: 'Borrar Dos' })).toHaveFocus()
+    await userEvent.keyboard('{Enter}')
+    expect(remove).toHaveBeenCalledWith('2')
+    expect(screen.getByPlaceholderText('+ Nueva tarea')).toHaveFocus()
+  })
+
   it('numbers rows and counts pending', () => {
     render(<TasksPanel tasks={[task('1', 'Uno'), task('2', 'Dos', { done: true })]} synced {...actions} />)
     expect(screen.getAllByRole('checkbox').map((c) => c.textContent)).toEqual(['01', '02'])

@@ -7,6 +7,7 @@ import './tasks.css'
 // Matches the CHECK on tasks.text in supabase/schema.sql.
 const MAX_TEXT = 500
 const UNDO_MS = 8000
+const focusNewTask = () => document.querySelector<HTMLInputElement>('[data-new-task]')?.focus()
 
 type Props = {
   tasks: Task[]
@@ -41,7 +42,7 @@ function Row({ task, index, onDelete, ...a }: RowProps) {
         if ((e.key !== 'Delete' && e.key !== 'Backspace') || editing) return
         e.preventDefault()
         onDelete(task)
-        document.querySelector<HTMLInputElement>('[data-new-task]')?.focus()
+        focusNewTask()
       }}
     >
       <button
@@ -94,7 +95,13 @@ function Row({ task, index, onDelete, ...a }: RowProps) {
             ✎
           </button>
         )}
-        <button aria-label={t('tasks.deleteLabel', { text: task.text })} title={t('tasks.delete')} className="tk-del" onClick={() => onDelete(task)}>
+        <button aria-label={t('tasks.deleteLabel', { text: task.text })} title={t('tasks.delete')} className="tk-del"
+          onClick={(e) => {
+            onDelete(task)
+            // detail 0 = activated with Enter/Space, so keep the keyboard flow going.
+            if (!e.detail) focusNewTask()
+          }}
+        >
           ×
         </button>
       </span>
@@ -157,8 +164,8 @@ export default function TasksPanel({ tasks, synced, saveError, add, restore, cle
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={(e) => {
-              // ↑ jumps to the last task so it can be deleted with Supr without the mouse.
-              if (e.key === 'ArrowUp') e.currentTarget.closest('ul')?.querySelector<HTMLElement>('.tk:nth-last-child(2) .tk-box')?.focus()
+              // ↑ jumps to the last task's delete button: Enter or Supr deletes it.
+              if (e.key === 'ArrowUp') e.currentTarget.closest('ul')?.querySelector<HTMLElement>('.tk:nth-last-child(2) .tk-del')?.focus()
               if (e.key === 'Enter' && draft.trim()) {
                 add(draft)
                 setDraft('')
