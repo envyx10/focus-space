@@ -248,6 +248,10 @@
   align-items: baseline;
 }
 
+.set-stack .set-seg button {
+  flex: 1;
+}
+
 .set-stack output {
   font-variant-numeric: tabular-nums;
   opacity: 0.6;
