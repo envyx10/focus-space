@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { useI18n } from '../i18n'
 import type { TimerStatus } from '../timer/useTimer'
+import Weather from './Weather'
 import './header.css'
 
 type Props = { sessionNumber: number; now: Date; status?: TimerStatus; muteSlot?: ReactNode; settingsSlot?: ReactNode; accountSlot: ReactNode }
@@ -23,7 +24,9 @@ export default function Header({ sessionNumber, now, status = 'idle', muteSlot, 
       <span className="hd-session">
         {t('header.session', { n: String(sessionNumber).padStart(2, '0') })} — <span className={status === 'running' ? 'acc' : 'hd-idle'}>{t(`status.${status}`)}</span>
       </span>
-      <span className="hd-date">{formatDay(now, lang)}</span>
+      <span className="hd-date">
+        {formatDay(now, lang)} <Weather />
+      </span>
       <span className="hd-account">
         {muteSlot}
         {settingsSlot}

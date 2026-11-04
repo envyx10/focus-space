@@ -13,7 +13,7 @@
 }
 
 .hd-brand {
-  grid-column: span 4;
+  grid-column: span 3;
   font-weight: 700;
 }
 
@@ -22,7 +22,7 @@
 }
 
 .hd-date {
-  grid-column: span 2;
+  grid-column: span 3;
 }
 
 .hd-account {
@@ -50,4 +50,19 @@
   letter-spacing: 0.06em;
   font-size: 11px;
   transition: color 0.15s;
+}
+
+.hd-weather {
+  margin-left: 10px;
+  opacity: 0.7;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.hd-date {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

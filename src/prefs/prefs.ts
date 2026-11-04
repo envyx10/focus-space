@@ -2,6 +2,7 @@ import { channel, CHANNEL_IDS, type ChannelId } from '../audio/channels'
 import { DEFAULT_ACCENT, isHex } from './accent'
 import { isRecord, readJSON, writeJSON } from '../lib/storage'
 import { TYPEFACES } from '../visual/typefaces'
+import { CHIMES, type Chime } from '../timer/alerts'
 
 export const PREFS_KEY = 'focus-space:prefs'
 
@@ -20,6 +21,7 @@ export type Prefs = {
   font: string
   /** Volume of the end-of-phase chime; 0 turns it off. */
   chimeVolume: number
+  chimeSound: Chime
   /** Browser notification when a phase ends (asks permission only when switched on). */
   notify: boolean
   /** Hides the particle sphere and the grain for a quieter screen. */
@@ -38,8 +40,9 @@ export const DEFAULT_PREFS: Prefs = {
   volumes: { rain: 0, fire: 0, cafe: 0, wind: 0, keys: 0 },
   variants: { rain: 'suave', fire: 'hoguera', cafe: 'cafeteria', wind: 'suave', keys: 'marron' },
   lofiVolume: 0.6,
-  font: 'syne',
+  font: 'mono',
   chimeVolume: 0.4,
+  chimeSound: 'campana',
   notify: false,
   calm: false,
   muted: false,
@@ -83,6 +86,7 @@ export function loadPrefs(): Prefs {
     lofiVolume: isVolume(r.lofiVolume) ? r.lofiVolume : DEFAULT_PREFS.lofiVolume,
     font: TYPEFACES.some((t) => t.id === r.font) ? (r.font as string) : DEFAULT_PREFS.font,
     chimeVolume: isVolume(r.chimeVolume) ? r.chimeVolume : DEFAULT_PREFS.chimeVolume,
+    chimeSound: CHIMES.includes(r.chimeSound as Chime) ? (r.chimeSound as Chime) : DEFAULT_PREFS.chimeSound,
     notify: r.notify === true,
     calm: r.calm === true,
     muted: r.muted === true,
