@@ -8,6 +8,7 @@ import { STATIONS, useYouTubeLofi } from './lofi/useYouTubeLofi'
 import AccountMenu from './auth/AccountMenu'
 import { supabase } from './auth/supabase'
 import { useSession } from './auth/useSession'
+import Icon from './lib/Icon'
 import { useShortcuts } from './lib/useShortcuts'
 import SettingsMenu from './settings/SettingsMenu'
 import { addFocus, loadStats, saveStats } from './stats/stats'
@@ -95,12 +96,18 @@ export default function App() {
   const zoom = ZOOM[prefs.textScale]
 
   return (
-    <div className="app" style={{ ...displayFont, '--zoom': zoom } as CSSProperties} data-immersive={immersive || undefined}>
+    <div className="app" style={{ ...displayFont, '--zoom': zoom } as CSSProperties} data-immersive={immersive || undefined} data-muted={prefs.muted || undefined}>
       <header className="region-header" data-region="header">
         <Header
           sessionNumber={timer.sessionNumber}
           now={now}
           status={timer.status}
+          muteSlot={
+            <button className="hd-mute" aria-pressed={prefs.muted} title={t('mute.hint')} onClick={() => ambient.setMuted(!prefs.muted)}>
+              <span className="hd-mute-label">{prefs.muted ? t('mute.on') : t('mute.off')}</span>
+              <Icon name={prefs.muted ? 'muted' : 'sound'} />
+            </button>
+          }
           settingsSlot={
             <SettingsMenu
               prefs={prefs}

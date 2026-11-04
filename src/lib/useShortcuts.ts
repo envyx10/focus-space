@@ -11,12 +11,16 @@ export type ShortcutHandlers = {
   escape: () => void
 }
 
-const TYPING = new Set(['INPUT', 'TEXTAREA', 'SELECT'])
+const TYPING = new Set(['TEXTAREA', 'SELECT'])
+// Inputs you don't type into: after clicking a switch or slider the focus stays there, and the app keys must still work.
+const NOT_TEXT = new Set(['checkbox', 'radio', 'range', 'button', 'submit', 'file'])
 
 /** True when a key press belongs to the thing being typed into, not to the app. */
 export function isTypingTarget(t: EventTarget | null): boolean {
-  const el = t as HTMLElement | null
-  return !!el && (TYPING.has(el.tagName) || el.isContentEditable)
+  const el = t as HTMLInputElement | null
+  if (!el) return false
+  if (el.tagName === 'INPUT') return !NOT_TEXT.has(el.type)
+  return TYPING.has(el.tagName) || el.isContentEditable
 }
 
 /**
@@ -35,7 +39,7 @@ export function useShortcuts(handlers: ShortcutHandlers): void {
       if (e.key === 'Escape') return h.escape()
       if (e.key === ' ') {
         const el = e.target as HTMLElement | null
-        if (el && (el.tagName === 'BUTTON' || el.tagName === 'A' || el.getAttribute('role') === 'slider' || el.getAttribute('role') === 'checkbox')) return
+        if (el && (el.tagName === 'BUTTON' || el.tagName === 'A' || el.tagName === 'INPUT' || el.getAttribute('role') === 'slider' || el.getAttribute('role') === 'checkbox')) return
         e.preventDefault()
         return h.toggleTimer()
       }

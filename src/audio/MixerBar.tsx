@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { useT } from '../i18n'
+import Icon from '../lib/Icon'
 import { CHANNELS, nextVariant, type Channel, type ChannelId } from './channels'
 import type { Prefs } from '../prefs/prefs'
 import './mixer.css'
@@ -24,7 +25,10 @@ function Strip({ ch, volume, variant, onVolume, onVariant }: { ch: Channel; volu
     <div className={`mx${volume > 0 ? ' live' : ''}`}>
       <button className="mx-name" onClick={() => onVariant(ch.id, nextVariant(ch.id, variant))} aria-label={t('mixer.changeVariant', { channel: chLabel, variant: variantLabel })}>
         {chLabel}
-        <span className="mx-variant">{variantLabel} ↻</span>
+        <span className="mx-variant">
+          {variantLabel}
+          <Icon name="refresh" />
+        </span>
       </button>
       {/* Sibling of the button: ARIA sliders make their children presentational. */}
       <div

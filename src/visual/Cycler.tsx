@@ -1,4 +1,5 @@
 import { useT } from '../i18n'
+import Icon from '../lib/Icon'
 
 type Option = { id: string; label: string }
 type Props = { label: string; options: Option[]; value: string; onChange: (id: string) => void }
@@ -13,7 +14,7 @@ export default function Cycler({ label, options, value, onChange }: Props) {
   return (
     <span className="cycler">
       <button onClick={() => go(-1)} aria-label={t('type.prev')}>
-        ‹
+        <Icon name="prev" />
       </button>
       <span className="cycler-mid">
         <span className="cycler-label">{label}</span>
@@ -23,7 +24,7 @@ export default function Cycler({ label, options, value, onChange }: Props) {
         <span className="cycler-name">{options[i].label}</span>
       </span>
       <button onClick={() => go(1)} aria-label={t('type.next')}>
-        ›
+        <Icon name="next" />
       </button>
     </span>
   )

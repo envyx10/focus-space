@@ -1,4 +1,5 @@
 import { useT } from '../i18n'
+import Icon from '../lib/Icon'
 import { STATIONS, type LofiStatus } from './useYouTubeLofi'
 import './lofi.css'
 
@@ -25,7 +26,8 @@ export default function LofiBlock({ status, playing, volume, onToggle, onVolume,
     <div className={`pl${unavailable ? ' off' : ''}`}>
       <div className="pl-row">
         <button className="pl-play" onClick={onToggle} disabled={status !== 'ready'} aria-label={playing ? t('lofi.pauseLabel') : t('lofi.play')}>
-          {playing ? '❚❚' : '▶'} {t('lofi.radio')}
+          <Icon name={playing ? 'pause' : 'play'} />
+          {t('lofi.radio')}
         </button>
         <span>
           {unavailable ? t('lofi.unavailable') : status === 'loading' ? t('lofi.loading') : playing ? t('lofi.playing') : t('lofi.paused')}
@@ -37,6 +39,7 @@ export default function LofiBlock({ status, playing, volume, onToggle, onVolume,
               onClick={() => onStation(station + 1)}
             >
               {t('lofi.next', { n: station + 1, total: STATIONS.length })}
+              <Icon name="next" />
             </button>
           )}
         </span>

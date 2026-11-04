@@ -14,6 +14,8 @@ export const STATIONS: Station[] = [
   { id: 'zBRFf8gAsR8', name: 'Calm Lofi Room', title: 'rain & waves /\nrainy café' },
   { id: 'Fo5BDohM9Fo', name: 'bits & hits', title: 'rpg beats /\ngaming lofi' },
   { id: 'TfmECBzmOn4', name: 'Lofi Fruits', title: 'upbeat lofi /\nhip hop radio' },
+  // Added 2026-11-04; oEmbed returns 200, so embedding is allowed. A third-party 24/7 stream: if it goes down the radio skips to the next station.
+  { id: 'wqayWHJciTk', name: 'kno Music', title: 'disney piano /\nbedtime' },
 ]
 export const LOFI_VIDEO_IDS = STATIONS.map((s) => s.id)
 const READY_TIMEOUT_MS = 8000
