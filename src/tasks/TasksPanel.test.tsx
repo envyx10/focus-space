@@ -52,6 +52,16 @@ describe('TasksPanel', () => {
     expect(screen.getByPlaceholderText('+ Nueva tarea')).toHaveFocus()
   })
 
+  it('Backspace in the empty new-task box deletes the last task, but not while typing', async () => {
+    const remove = vi.fn(noop)
+    render(<TasksPanel tasks={[task('1', 'Uno'), task('2', 'Dos')]} synced {...actions} remove={remove} />)
+    await userEvent.click(screen.getByPlaceholderText('+ Nueva tarea'))
+    await userEvent.keyboard('ab{Backspace}{Backspace}')
+    expect(remove).not.toHaveBeenCalled()
+    await userEvent.keyboard('{Backspace}')
+    expect(remove).toHaveBeenCalledWith('2')
+  })
+
   it('numbers rows and counts pending', () => {
     render(<TasksPanel tasks={[task('1', 'Uno'), task('2', 'Dos', { done: true })]} synced {...actions} />)
     expect(screen.getAllByRole('checkbox').map((c) => c.textContent)).toEqual(['01', '02'])
