@@ -69,6 +69,18 @@
   opacity: 0.5;
 }
 
+/* A row with keyboard focus shows its actions, so the delete button can be found without a mouse. */
+.tk:focus-within .tk-arrow,
+.tk:focus-within .tk-pen,
+.tk:focus-within .tk-del {
+  opacity: 0.5;
+}
+
+.tk-del:focus-visible {
+  opacity: 1;
+  color: var(--accent);
+}
+
 .tk.on .tk-arrow {
   opacity: 1;
   color: var(--accent);
