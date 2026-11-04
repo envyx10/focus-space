@@ -14,7 +14,7 @@ const session: Session = {
 
 async function open(props = session) {
   render(<AccountMenu session={props} />)
-  await userEvent.click(screen.getByRole('button', { name: /cuenta/i }))
+  await userEvent.click(screen.getByRole('button', { name: /entrar|cuenta/i }))
 }
 
 describe('AccountMenu', () => {

@@ -40,7 +40,7 @@ export const es = {
   'focus.reset': '↺ Reiniciar',
   'focus.extend': '+5 min',
   'focus.extendHint': 'Añadir 5 minutos a esta fase',
-  'focus.skip': '⏭ Saltar',
+  'focus.skip': 'Saltar',
   'focus.skipHint': 'Saltar a la siguiente fase',
   'focus.pause': 'Pausar',
   'focus.timerBtn': 'Temporizador',
@@ -131,7 +131,7 @@ export const es = {
   'immersive.exit': 'Esc · salir',
 
   // account
-  'account.guest': 'Cuenta',
+  'account.guest': 'Entrar',
   'account.user': 'Cuenta',
   'account.title': 'Cuenta',
   'account.localMode': 'Modo solo local: tus tareas se guardan en este navegador.',

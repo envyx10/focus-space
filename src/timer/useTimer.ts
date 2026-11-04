@@ -9,6 +9,24 @@ const EXTEND_MS = 5 * MIN
 
 export type TimerStatus = 'running' | 'paused' | 'waiting' | 'idle'
 
+/**
+ * Calls fn every `ms`. A background tab throttles setInterval (Chrome: about once a minute after 5 min hidden),
+ * which would delay the chime and the notification; a worker's timer is not throttled that way.
+ * shortcut: falls back to setInterval where Workers or blob: URLs are unavailable (tests, strict CSP).
+ */
+function tick(fn: () => void, ms: number): () => void {
+  try {
+    const url = URL.createObjectURL(new Blob([`setInterval(() => postMessage(0), ${ms})`]))
+    const worker = new Worker(url)
+    URL.revokeObjectURL(url)
+    worker.onmessage = fn
+    return () => worker.terminate()
+  } catch {
+    const id = setInterval(fn, ms)
+    return () => clearInterval(id)
+  }
+}
+
 type Options = {
   chimeVolume: number
   chimeSound: Chime
@@ -35,7 +53,7 @@ export function useTimer({ chimeVolume, chimeSound, notify, onFocus }: Options) 
 
   useEffect(() => {
     if (state.endsAt === null) return
-    const id = setInterval(() => {
+    return tick(() => {
       const t = Date.now()
       setNow(t)
       const s = stateRef.current
@@ -57,7 +75,6 @@ export function useTimer({ chimeVolume, chimeSound, notify, onFocus }: Options) 
       stateRef.current = r.state
       setState(r.state)
     }, 250)
-    return () => clearInterval(id)
   }, [state.endsAt])
 
   const startT = useCallback(() => {

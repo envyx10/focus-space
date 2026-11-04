@@ -139,6 +139,7 @@ export default function FocusPanel(p: Props) {
                 {t('focus.extend')}
               </button>
               <button className="btn" onClick={p.onSkip} title={t('focus.skipHint')}>
+                <Icon name="skip" />
                 {t('focus.skip')}
               </button>
             </>
