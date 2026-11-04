@@ -5,7 +5,7 @@
   flex-direction: column;
   justify-content: space-between;
   background: var(--accent);
-  color: var(--bg);
+  color: var(--on-accent);
 }
 
 .pl.off {
@@ -62,12 +62,12 @@
 }
 
 .pl-vol:focus-visible {
-  outline-color: var(--bg);
+  outline-color: var(--on-accent);
 }
 
 .pl-vol i {
   height: 2px;
-  background: rgba(11, 11, 11, 0.25);
+  background: color-mix(in srgb, currentColor 25%, transparent);
   position: relative;
 }
 

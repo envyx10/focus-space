@@ -10,14 +10,16 @@ import {
   RGBAFormat,
   Scene,
   ShaderMaterial,
+  Vector3,
   WebGLRenderer,
 } from 'three'
 import { GPUComputationRenderer } from 'three/examples/jsm/misc/GPUComputationRenderer.js'
 import { noiseGlsl } from './shaders/noise'
+import { hexToRgb } from '../prefs/accent'
 import { fibonacciSphere, follow, smooth } from './sphereMath'
 
 type Levels = { bass: number; high: number }
-type Props = { getLevels: () => Levels | null }
+type Props = { getLevels: () => Levels | null; /** Highlight colour: the glowing particles take it. */ accent: string }
 
 // 256² = 65 536 particles, simulated entirely on the GPU (position + velocity textures).
 const SIDE = typeof navigator !== 'undefined' && (navigator.hardwareConcurrency ?? 8) <= 4 ? 180 : 256
@@ -95,6 +97,7 @@ const renderVertex = /* glsl */ `
 
 const renderFragment = /* glsl */ `
   uniform float uIntro;
+  uniform vec3 uAccent;
   varying float vAlpha;
   varying float vHeat;
   varying float vAccent;
@@ -105,8 +108,8 @@ const renderFragment = /* glsl */ `
     float d = length(c);
     float disc = 1.0 - smoothstep(0.32, 0.5, d); // crisp dot, just antialiased
     vec3 warm = vec3(0.86, 0.85, 0.81);
-    vec3 ember = vec3(1.0, 0.33, 0.14);
-    // fast-moving particles and a few seeds glow orange: motion reads as colour
+    vec3 ember = uAccent;
+    // fast-moving particles and a few seeds glow in the accent colour: motion reads as colour
     vec3 col = mix(warm, ember, max(max(vHeat * 0.85, vAccent * uIntro), vRim * 0.85));
     float a = disc * vAlpha * (0.5 + vHeat * 0.4) * 0.7 * uIntro;
     gl_FragColor = vec4(col * a, a); // premultiplied
@@ -137,10 +140,12 @@ function sphereTexture(): DataTexture {
   return t
 }
 
-export default function Scene3D({ getLevels }: Props) {
+export default function Scene3D({ getLevels, accent }: Props) {
   const host = useRef<HTMLDivElement>(null)
   const levelsRef = useRef(getLevels)
   levelsRef.current = getLevels
+  const accentRef = useRef(accent)
+  accentRef.current = accent
 
   useEffect(() => {
     const el = host.current
@@ -193,6 +198,7 @@ export default function Scene3D({ getLevels }: Props) {
       tVelocity: { value: gpu.getCurrentRenderTarget(velVar).texture },
       uPixelRatio: { value: 1 },
       uIntro: { value: 0 },
+      uAccent: { value: new Vector3(...hexToRgb(accent)) },
     }
     const material = new ShaderMaterial({
       uniforms,
@@ -255,6 +261,7 @@ export default function Scene3D({ getLevels }: Props) {
     const draw = () => {
       uniforms.tPosition.value = gpu.getCurrentRenderTarget(posVar).texture
       uniforms.tVelocity.value = gpu.getCurrentRenderTarget(velVar).texture
+      uniforms.uAccent.value.set(...hexToRgb(accentRef.current))
       renderer.render(three, camera)
     }
 

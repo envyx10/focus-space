@@ -168,6 +168,8 @@ export const en: Record<Key, string> = {
   'settings.language': 'Language',
   'settings.calm': 'Calm mode: no sphere or grain',
   'settings.textSize': 'Text size',
+  'settings.accent': 'Accent colour',
+  'settings.accentCustom': 'Pick another colour',
   'settings.immersive': 'Focus mode →',
   'settings.sound': 'Sound',
   'settings.muteAll': 'Mute everything (ambient and radio)',

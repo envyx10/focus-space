@@ -170,6 +170,8 @@ export const es = {
   'settings.language': 'Idioma',
   'settings.calm': 'Modo calma: sin esfera ni grano',
   'settings.textSize': 'Tamaño del texto',
+  'settings.accent': 'Color de resalte',
+  'settings.accentCustom': 'Elegir otro color',
   'settings.immersive': 'Modo focus →',
   'settings.sound': 'Sonido',
   'settings.muteAll': 'Silenciar todo (ambiente y radio)',

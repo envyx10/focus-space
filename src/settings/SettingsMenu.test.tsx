@@ -16,6 +16,7 @@ function setup(over: Partial<Parameters<typeof SettingsMenu>[0]> = {}) {
     onCalm: vi.fn(),
     onMuted: vi.fn(),
     onTextScale: vi.fn(),
+    onAccent: vi.fn(),
     onSaveScene: vi.fn(),
     onApplyScene: vi.fn(),
     onDeleteScene: vi.fn(),
@@ -55,6 +56,15 @@ describe('SettingsMenu', () => {
     expect(f.onMuted).toHaveBeenCalledWith(true)
     await userEvent.click(screen.getByRole('button', { name: 'A+' }))
     expect(f.onTextScale).toHaveBeenCalledWith('l')
+  })
+
+  it('the accent colour comes from a swatch or the colour input', async () => {
+    const f = setup()
+    expect(screen.getByRole('button', { name: '#ff4b1f' })).toHaveAttribute('aria-pressed', 'true')
+    await userEvent.click(screen.getByRole('button', { name: '#38bdf8' }))
+    expect(f.onAccent).toHaveBeenCalledWith('#38bdf8')
+    fireEvent.change(screen.getByLabelText('Elegir otro color'), { target: { value: '#123ABC' } })
+    expect(f.onAccent).toHaveBeenCalledWith('#123abc')
   })
 
   it('the chime can be turned off', () => {

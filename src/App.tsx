@@ -10,8 +10,10 @@ import { supabase } from './auth/supabase'
 import { useSession } from './auth/useSession'
 import Icon from './lib/Icon'
 import { useShortcuts } from './lib/useShortcuts'
+import { onAccent } from './prefs/accent'
 import SettingsMenu from './settings/SettingsMenu'
 import { addFocus, loadStats, saveStats } from './stats/stats'
+import FocusTasks from './tasks/FocusTasks'
 import TasksPanel from './tasks/TasksPanel'
 import { useTaskRepo } from './tasks/useTaskRepo'
 import { useTasks } from './tasks/useTasks'
@@ -96,7 +98,7 @@ export default function App() {
   const zoom = ZOOM[prefs.textScale]
 
   return (
-    <div className="app" style={{ ...displayFont, '--zoom': zoom } as CSSProperties} data-immersive={immersive || undefined} data-muted={prefs.muted || undefined}>
+    <div className="app" style={{ ...displayFont, '--zoom': zoom, '--accent': prefs.accent, '--on-accent': onAccent(prefs.accent) } as CSSProperties} data-immersive={immersive || undefined} data-muted={prefs.muted || undefined}>
       <header className="region-header" data-region="header">
         <Header
           sessionNumber={timer.sessionNumber}
@@ -122,6 +124,7 @@ export default function App() {
               onCalm={ambient.setCalm}
               onMuted={ambient.setMuted}
               onTextScale={ambient.setTextScale}
+              onAccent={ambient.setAccent}
               onSaveScene={ambient.saveScene}
               onApplyScene={ambient.applyScene}
               onDeleteScene={ambient.deleteScene}
@@ -173,10 +176,11 @@ export default function App() {
         >
           {!prefs.calm && (
             <Suspense fallback={null}>
-              <Scene3D getLevels={getLevels} />
+              <Scene3D getLevels={getLevels} accent={prefs.accent} />
             </Suspense>
           )}
         </FocusPanel>
+        {immersive && <FocusTasks tasks={tasks.tasks} />}
         {immersive && (
           <button className="exit-immersive" onClick={exitImmersive}>
             {t('immersive.exit')}

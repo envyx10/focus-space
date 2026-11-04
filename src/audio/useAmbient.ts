@@ -85,6 +85,7 @@ export function useAmbient() {
   const setNotify = useCallback((notify: boolean) => setPrefs((p) => ({ ...p, notify })), [])
   const setCalm = useCallback((calm: boolean) => setPrefs((p) => ({ ...p, calm })), [])
   const setTextScale = useCallback((textScale: TextScale) => setPrefs((p) => ({ ...p, textScale })), [])
+  const setAccent = useCallback((accent: string) => setPrefs((p) => ({ ...p, accent })), [])
   const setLofiStation = useCallback((lofiStation: number) => setPrefs((p) => ({ ...p, lofiStation })), [])
 
   const getLevels = useCallback(() => {
@@ -110,6 +111,7 @@ export function useAmbient() {
     setCalm,
     setTextScale,
     setLofiStation,
+    setAccent,
     getLevels,
   }
 }
