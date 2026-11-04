@@ -291,7 +291,7 @@ export default function SettingsMenu(p: Props) {
                   {s.name}
                 </button>
                 <button className="set-x" aria-label={t('settings.mixDelete', { name: s.name })} title={t('tasks.delete')} onClick={() => p.onDeleteScene(s.name)}>
-                  ×
+                  <Icon name="close" />
                 </button>
               </div>
             ))}

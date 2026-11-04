@@ -19,6 +19,7 @@ export const STATIONS: Station[] = [
 ]
 export const LOFI_VIDEO_IDS = STATIONS.map((s) => s.id)
 const READY_TIMEOUT_MS = 8000
+const RETRY_MS = 60_000
 
 export type LofiStatus = 'loading' | 'ready' | 'unavailable'
 
@@ -38,7 +39,8 @@ type YTNamespace = {
       videoId: string
       width: number
       height: number
-      playerVars: Record<string, number>
+      host: string
+      playerVars: Record<string, number | string>
       events: {
         onReady: () => void
         onError: (e: { data: number }) => void
@@ -77,19 +79,20 @@ function loadApi(): Promise<YTNamespace> {
   return apiPromise
 }
 
-export function useYouTubeLofi(volume: number, initialStation = 0) {
+export function useYouTubeLofi(volume: number, initialStation = 0, muted = false) {
   const [status, setStatus] = useState<LofiStatus>('loading')
   const [playing, setPlaying] = useState(false)
   const [station, setStation] = useState(initialStation < STATIONS.length ? initialStation : 0)
   const player = useRef<YTPlayer | null>(null)
   const volumeRef = useRef(volume)
-  volumeRef.current = volume
+  volumeRef.current = muted ? 0 : volume
   const stationRef = useRef(station)
   stationRef.current = station
   const playingRef = useRef(false)
   playingRef.current = playing
   // Streams that already failed in a row; when every station has failed the radio is unavailable.
   const failed = useRef(0)
+  const retry = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   useEffect(() => {
     let cancelled = false
@@ -110,7 +113,9 @@ export function useYouTubeLofi(volume: number, initialStation = 0) {
           videoId: STATIONS[stationRef.current].id,
           width: 200,
           height: 200,
-          playerVars: { autoplay: 0, controls: 0, disablekb: 1, playsinline: 1 },
+          // youtube-nocookie.com: no tracking cookies until the user presses play.
+          host: 'https://www.youtube-nocookie.com',
+          playerVars: { autoplay: 0, controls: 0, disablekb: 1, playsinline: 1, origin: location.origin },
           events: {
             onReady: () => {
               if (cancelled) return
@@ -126,7 +131,15 @@ export function useYouTubeLofi(volume: number, initialStation = 0) {
                 const next = (stationRef.current + 1) % STATIONS.length
                 setStation(next)
                 player.current?.cueVideoById(STATIONS[next].id)
-              } else setStatus('unavailable')
+              } else {
+                setStatus('unavailable')
+                // A network blip fails every station in a row: try again later instead of giving up until a reload.
+                clearTimeout(retry.current)
+                retry.current = setTimeout(() => {
+                  failed.current = 0
+                  setStatus('ready')
+                }, RETRY_MS)
+              }
             },
             onStateChange: (e) => {
               if (cancelled) return
@@ -141,6 +154,7 @@ export function useYouTubeLofi(volume: number, initialStation = 0) {
     return () => {
       cancelled = true
       clearTimeout(timeout)
+      clearTimeout(retry.current)
       player.current?.destroy()
       player.current = null
       host.remove()
@@ -148,12 +162,27 @@ export function useYouTubeLofi(volume: number, initialStation = 0) {
   }, [])
 
   useEffect(() => {
-    player.current?.setVolume(Math.round(volume * 100))
-  }, [volume])
+    player.current?.setVolume(Math.round((muted ? 0 : volume) * 100))
+  }, [volume, muted])
+
+  // iOS ignores setVolume, so muting must pause the stream; unmuting resumes only what muting paused.
+  const pausedByMute = useRef(false)
+  useEffect(() => {
+    const p = player.current
+    if (!p) return
+    if (muted && playingRef.current) {
+      pausedByMute.current = true
+      p.pauseVideo()
+    } else if (!muted && pausedByMute.current) {
+      pausedByMute.current = false
+      p.playVideo()
+    }
+  }, [muted])
 
   const toggle = useCallback(() => {
     const p = player.current
     if (!p) return
+    pausedByMute.current = false
     if (playing) p.pauseVideo()
     else p.playVideo()
   }, [playing])
