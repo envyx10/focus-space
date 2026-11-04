@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useT } from '../i18n'
+import Icon from '../lib/Icon'
 import { isTypingTarget } from '../lib/useShortcuts'
 import { parseImport, serializeTasks } from './transfer'
 import type { Task } from './types'
@@ -88,12 +89,12 @@ function Row({ task, index, onDelete, ...a }: RowProps) {
             className="tk-arrow"
             onClick={() => a.setActive(task.active ? null : task.id)}
           >
-            →
+            <Icon name="right" />
           </button>
         )}
         {!editing && (
           <button aria-label={t('tasks.editLabel', { text: task.text })} title={t('tasks.edit')} className="tk-pen" onClick={startEdit}>
-            ✎
+            <Icon name="edit" />
           </button>
         )}
         <button aria-label={t('tasks.deleteLabel', { text: task.text })} title={t('tasks.delete')} className="tk-del"
@@ -103,7 +104,7 @@ function Row({ task, index, onDelete, ...a }: RowProps) {
             if (!e.detail) focusNewTask()
           }}
         >
-          ×
+          <Icon name="close" />
         </button>
       </span>
     </li>
@@ -170,7 +171,8 @@ export default function TasksPanel({ tasks, synced, saveError, add, restore, cle
           <Row key={t.id} task={t} index={i} onDelete={del} toggle={actions.toggle} edit={actions.edit} setActive={actions.setActive} />
         ))}
         <li className="tk tk-new">
-          <span className="tk-box">+</span>
+          {/* the placeholder already starts with "+" */}
+          <span className="tk-box" aria-hidden />
           <input
             data-new-task
             placeholder={t('tasks.new')}

@@ -3,7 +3,7 @@ import { useI18n } from '../i18n'
 import type { TimerStatus } from '../timer/useTimer'
 import './header.css'
 
-type Props = { sessionNumber: number; now: Date; status?: TimerStatus; settingsSlot?: ReactNode; accountSlot: ReactNode }
+type Props = { sessionNumber: number; now: Date; status?: TimerStatus; muteSlot?: ReactNode; settingsSlot?: ReactNode; accountSlot: ReactNode }
 
 const weekdayFormat: Record<string, Intl.DateTimeFormat> = {}
 
@@ -15,7 +15,7 @@ export function formatDay(d: Date, lang: 'es' | 'en' = 'es'): string {
   return `${wd[0].toUpperCase()}${wd.slice(1)} ${dd}.${mm}`
 }
 
-export default function Header({ sessionNumber, now, status = 'idle', settingsSlot, accountSlot }: Props) {
+export default function Header({ sessionNumber, now, status = 'idle', muteSlot, settingsSlot, accountSlot }: Props) {
   const { t, lang } = useI18n()
   return (
     <div className="hd">
@@ -25,6 +25,7 @@ export default function Header({ sessionNumber, now, status = 'idle', settingsSl
       </span>
       <span className="hd-date">{formatDay(now, lang)}</span>
       <span className="hd-account">
+        {muteSlot}
         {settingsSlot}
         {accountSlot}
       </span>
