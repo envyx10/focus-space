@@ -7,6 +7,13 @@ export const STATIONS: Station[] = [
   { id: '7NOSDKb0HlU', name: 'Chillhop', title: 'beats to relax /\nstudy to' },
   { id: '5yx6BWlEVcY', name: 'Chillhop Radio', title: 'chill beats /\nall day' },
   { id: 'lTRiuFIWV54', name: '1 A.M Study', title: 'late night /\nstudy session' },
+  // Added 2026-11-04, one per mood; all report playableInEmbed:true.
+  { id: 'blAFxjhg62k', name: 'Coffee Shop Radio', title: 'jazzy beats /\ncoffee shop' },
+  { id: 'i6WzngxTnBA', name: 'Chillhop Late Night', title: 'dreamy beats /\nlate night vibes' },
+  { id: 'uWzSqdcfPZw', name: 'STEEZYASFUCK', title: 'slow beats /\nto sleep to' },
+  { id: 'zBRFf8gAsR8', name: 'Calm Lofi Room', title: 'rain & waves /\nrainy café' },
+  { id: 'Fo5BDohM9Fo', name: 'bits & hits', title: 'rpg beats /\ngaming lofi' },
+  { id: 'TfmECBzmOn4', name: 'Lofi Fruits', title: 'upbeat lofi /\nhip hop radio' },
 ]
 export const LOFI_VIDEO_IDS = STATIONS.map((s) => s.id)
 const READY_TIMEOUT_MS = 8000

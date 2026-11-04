@@ -34,7 +34,16 @@ function Row({ task, index, onDelete, ...a }: RowProps) {
   }
 
   return (
-    <li className={`tk${task.done ? ' dn' : ''}${task.active ? ' on' : ''}`}>
+    <li
+      className={`tk${task.done ? ' dn' : ''}${task.active ? ' on' : ''}`}
+      onKeyDown={(e) => {
+        // Supr/Retroceso on any of the row's buttons deletes it; never while editing its text.
+        if ((e.key !== 'Delete' && e.key !== 'Backspace') || editing) return
+        e.preventDefault()
+        onDelete(task)
+        document.querySelector<HTMLInputElement>('[data-new-task]')?.focus()
+      }}
+    >
       <button
         className="tk-box"
         role="checkbox"
@@ -148,6 +157,8 @@ export default function TasksPanel({ tasks, synced, saveError, add, restore, cle
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={(e) => {
+              // ↑ jumps to the last task so it can be deleted with Supr without the mouse.
+              if (e.key === 'ArrowUp') e.currentTarget.closest('ul')?.querySelector<HTMLElement>('.tk:nth-last-child(2) .tk-box')?.focus()
               if (e.key === 'Enter' && draft.trim()) {
                 add(draft)
                 setDraft('')
