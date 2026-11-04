@@ -29,7 +29,7 @@ describe('useShortcuts', () => {
     expect(h.toggleTimer).not.toHaveBeenCalled()
   })
 
-  it('keeps working after a switch was clicked, and leaves its own Space alone', async () => {
+  it('keeps working after a switch was clicked, and Space only toggles the switch', async () => {
     const h = fns()
     const { getByLabelText } = render(<Host h={h} />)
     await userEvent.click(getByLabelText('interruptor'))
@@ -37,6 +37,7 @@ describe('useShortcuts', () => {
     expect(h.mute).toHaveBeenCalledTimes(1)
     await userEvent.keyboard(' ')
     expect(h.toggleTimer).not.toHaveBeenCalled()
+    // the click checked it and the Space unchecked it
     expect(getByLabelText('interruptor')).not.toBeChecked()
   })
 

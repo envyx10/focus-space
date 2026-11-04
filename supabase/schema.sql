@@ -12,6 +12,11 @@ create index if not exists tasks_user_id_idx on public.tasks (user_id);
 
 alter table public.tasks enable row level security;
 
+-- Each policy is dropped first so the whole file can be run again.
+drop policy if exists "tasks: select own" on public.tasks;
+drop policy if exists "tasks: insert own" on public.tasks;
+drop policy if exists "tasks: update own" on public.tasks;
+drop policy if exists "tasks: delete own" on public.tasks;
 create policy "tasks: select own" on public.tasks for select using (user_id = auth.uid());
 create policy "tasks: insert own" on public.tasks for insert with check (user_id = auth.uid());
 create policy "tasks: update own" on public.tasks for update using (user_id = auth.uid()) with check (user_id = auth.uid());

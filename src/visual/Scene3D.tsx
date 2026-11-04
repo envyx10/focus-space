@@ -25,6 +25,9 @@ type Props = { getLevels: () => Levels | null; /** Highlight colour: the glowing
 const SIDE = typeof navigator !== 'undefined' && (navigator.hardwareConcurrency ?? 8) <= 4 ? 180 : 256
 const COUNT = SIDE * SIDE
 const CAMERA_Z = 5.3
+const FOV = 30 // 30° (was 35°): the sphere a touch bigger
+// Share of the frame height the unit sphere spans at CAMERA_Z (~0.717).
+const SPHERE_SPAN = Math.tan(Math.asin(1 / CAMERA_Z)) / Math.tan((FOV / 2) * (Math.PI / 180))
 const STEP = 1 / 60
 
 // Velocity: a spring towards the particle's spot on the shape + a curl-noise current. The
@@ -214,7 +217,7 @@ export default function Scene3D({ getLevels, accent }: Props) {
     points.frustumCulled = false
     const three = new Scene()
     three.add(points)
-    const camera = new PerspectiveCamera(30, 1, 0.1, 50) // 30° (was 35°): the sphere a touch bigger
+    const camera = new PerspectiveCamera(FOV, 1, 0.1, 50)
     camera.position.set(0, 0, CAMERA_Z)
 
     const resize = () => {
@@ -226,9 +229,8 @@ export default function Scene3D({ getLevels, accent }: Props) {
       camera.aspect = width / height
       if (matchMedia('(max-width: 1023px)').matches) {
         // Phone: centred, 80% of the panel's width but never taller than 90% of its height (landscape, tablets).
-        // At CAMERA_Z the unit sphere spans ~0.717 of the frame height.
         camera.setViewOffset(width, height, 0, 0, width, height)
-        camera.zoom = Math.min(0.8 * width, 0.9 * height) / (0.717 * height)
+        camera.zoom = Math.min(0.8 * width, 0.9 * height) / (SPHERE_SPAN * height)
       } else {
         // Scene centre at 68% / 48% of the panel, beside the clock.
         camera.setViewOffset(width, height, -0.18 * width, 0.02 * height, width, height)

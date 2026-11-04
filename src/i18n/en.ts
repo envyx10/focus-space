@@ -121,7 +121,7 @@ export const en: Record<Key, string> = {
   'immersive.exit': 'Esc · exit',
 
   // account
-  'account.guest': 'Account',
+  'account.guest': 'Sign in',
   'account.user': 'Account',
   'account.title': 'Account',
   'account.localMode': 'Local-only mode: your tasks are saved in this browser.',
