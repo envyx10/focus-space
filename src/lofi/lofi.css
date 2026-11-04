@@ -81,11 +81,15 @@
 
 .pl-station {
   margin-left: 10px;
+  padding: 2px 8px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
   font-weight: 700;
   text-transform: inherit;
   letter-spacing: inherit;
 }
 
-.pl-station:hover {
-  text-decoration: underline;
+.pl-station:hover,
+.pl-station:focus-visible {
+  background: color-mix(in srgb, currentColor 15%, transparent);
 }

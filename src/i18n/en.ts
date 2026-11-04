@@ -109,6 +109,7 @@ export const en: Record<Key, string> = {
   'lofi.paused': 'Paused',
   'lofi.station': 'Change station. Now: {name}',
   'lofi.stationHint': 'Station: {name} · click to change',
+  'lofi.next': 'Station {n}/{total} · next ›',
   'lofi.volume': 'Lofi volume',
   'lofi.vol': 'Vol {n}',
 
