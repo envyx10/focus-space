@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useT } from '../i18n'
+import { isTypingTarget } from '../lib/useShortcuts'
 import { parseImport, serializeTasks } from './transfer'
 import type { Task } from './types'
 import './tasks.css'
@@ -123,6 +124,20 @@ export default function TasksPanel({ tasks, synced, saveError, add, restore, cle
     const id = setTimeout(() => setUndo(null), UNDO_MS)
     return () => clearTimeout(id)
   }, [undo])
+
+  // Ctrl/Cmd+Z brings the deleted task back while the undo notice is up; a field with text keeps its own undo.
+  useEffect(() => {
+    if (!undo || !restore) return
+    const onKey = (e: KeyboardEvent) => {
+      if (!(e.ctrlKey || e.metaKey) || e.shiftKey || e.altKey || e.key.toLowerCase() !== 'z') return
+      if (isTypingTarget(e.target) && (e.target as HTMLInputElement).value) return
+      e.preventDefault()
+      restore(undo)
+      setUndo(null)
+    }
+    addEventListener('keydown', onKey)
+    return () => removeEventListener('keydown', onKey)
+  }, [undo, restore])
 
   const del = (task: Task) => {
     actions.remove(task.id)

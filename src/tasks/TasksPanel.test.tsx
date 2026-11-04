@@ -62,6 +62,23 @@ describe('TasksPanel', () => {
     expect(remove).toHaveBeenCalledWith('2')
   })
 
+  it('Ctrl+Z after a delete restores the task', async () => {
+    const restore = vi.fn(noop)
+    render(<TasksPanel tasks={[task('1', 'Uno')]} synced {...actions} restore={restore} />)
+    await userEvent.click(screen.getByPlaceholderText('+ Nueva tarea'))
+    await userEvent.keyboard('{Backspace}{Control>}z{/Control}')
+    expect(restore).toHaveBeenCalledWith(expect.objectContaining({ id: '1' }))
+    expect(screen.queryByText('Tarea borrada')).not.toBeInTheDocument()
+  })
+
+  it('Ctrl+Z in a field with text is left to the field', async () => {
+    const restore = vi.fn(noop)
+    render(<TasksPanel tasks={[task('1', 'Uno')]} synced {...actions} restore={restore} />)
+    await userEvent.click(screen.getByPlaceholderText('+ Nueva tarea'))
+    await userEvent.keyboard('{Backspace}ab{Control>}z{/Control}')
+    expect(restore).not.toHaveBeenCalled()
+  })
+
   it('numbers rows and counts pending', () => {
     render(<TasksPanel tasks={[task('1', 'Uno'), task('2', 'Dos', { done: true })]} synced {...actions} />)
     expect(screen.getAllByRole('checkbox').map((c) => c.textContent)).toEqual(['01', '02'])
