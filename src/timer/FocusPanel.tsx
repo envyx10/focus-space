@@ -115,7 +115,7 @@ export default function FocusPanel(p: Props) {
 
       <div className="big" role="timer" aria-label={clock ? t('focus.nowIs', { time: hhmm }) : t('focus.clockLabel', { min: big, sec: small })}>
         <span data-part="min">{big}</span>
-        <span className={`colon${p.running || clock ? ' blink' : ''}`} aria-hidden>
+        <span className="colon" aria-hidden>
           <i />
           <i />
         </span>

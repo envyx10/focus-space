@@ -223,10 +223,6 @@
   background: var(--accent);
 }
 
-.big .colon.blink {
-  animation: blink 1s steps(1) infinite;
-}
-
 /* Solid, lower-contrast seconds: hierarchy without hairline outlines that blur into the sphere. */
 .big .sec {
   color: #5b5a56;
@@ -251,18 +247,6 @@
 
 .focus-dim {
   opacity: 0.4;
-}
-
-@keyframes blink {
-  50% {
-    opacity: 0.15;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .big .colon.blink {
-    animation: none;
-  }
 }
 
 /* Four actions now share the row with the task name: tighter side buttons, never broken across lines. */

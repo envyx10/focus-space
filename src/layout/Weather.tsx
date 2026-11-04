@@ -21,12 +21,12 @@ function loadPlace(): Place | null {
   return isRecord(v) && typeof v.lat === 'number' && typeof v.lon === 'number' && typeof v.city === 'string' ? (v as Place) : null
 }
 
-// Open-Meteo and BigDataCloud need no API key; only rounded coordinates leave the browser.
+// City-level location from the IP: no permission prompt (geolocation is off in our Permissions-Policy). No API keys.
 async function locate(lang: string): Promise<Place> {
-  const pos = await new Promise<GeolocationPosition>((ok, ko) => navigator.geolocation.getCurrentPosition(ok, ko, { maximumAge: 3_600_000 }))
-  const lat = Math.round(pos.coords.latitude * 100) / 100
-  const lon = Math.round(pos.coords.longitude * 100) / 100
-  const r = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=${lang}`).then((r) => r.json())
+  const r = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?localityLanguage=${lang}`).then((r) => r.json())
+  if (typeof r.latitude !== 'number' || typeof r.longitude !== 'number') throw new Error('no location')
+  const lat = Math.round(r.latitude * 100) / 100
+  const lon = Math.round(r.longitude * 100) / 100
   return { lat, lon, city: String(r.city || r.locality || r.principalSubdivision || '') }
 }
 
@@ -34,7 +34,21 @@ export default function Weather() {
   const { t, lang } = useI18n()
   const [place, setPlace] = useState(loadPlace)
   const [now, setNow] = useState<Now | null>(null)
-  const [failed, setFailed] = useState(false)
+
+  // Re-locate on every load (the stored place only paints instantly); a moved laptop picks up its new city.
+  useEffect(() => {
+    let alive = true
+    locate(lang)
+      .then((p) => {
+        if (!alive) return
+        writeJSON(PLACE_KEY, p)
+        setPlace((old) => (old && old.lat === p.lat && old.lon === p.lon && old.city === p.city ? old : p))
+      })
+      .catch(() => {}) // offline or blocked: keep the stored place, or show nothing
+    return () => {
+      alive = false
+    }
+  }, [lang])
 
   useEffect(() => {
     if (!place) return
@@ -52,23 +66,7 @@ export default function Weather() {
     }
   }, [place])
 
-  const ask = () =>
-    locate(lang)
-      .then((p) => {
-        writeJSON(PLACE_KEY, p)
-        setPlace(p)
-      })
-      .catch(() => setFailed(true))
-
-  if (!place) {
-    if (failed || !('geolocation' in navigator)) return null
-    return (
-      <button className="hd-weather" onClick={ask} title={t('weather.hint')}>
-        {t('weather.ask')}
-      </button>
-    )
-  }
-  if (!now) return null
+  if (!place || !now) return null
   return (
     <span className="hd-weather" title={t(`weather.${sky(now.code)}`)}>
       {place.city && `${place.city} `}
