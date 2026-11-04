@@ -13,7 +13,7 @@ export type ShortcutHandlers = {
 
 const TYPING = new Set(['TEXTAREA', 'SELECT'])
 // Inputs you don't type into: after clicking a switch or slider the focus stays there, and the app keys must still work.
-const NOT_TEXT = new Set(['checkbox', 'radio', 'range', 'button', 'submit', 'file'])
+const NOT_TEXT = new Set(['checkbox', 'radio', 'range', 'button', 'submit', 'file', 'color'])
 
 /** True when a key press belongs to the thing being typed into, not to the app. */
 export function isTypingTarget(t: EventTarget | null): boolean {

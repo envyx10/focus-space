@@ -225,9 +225,10 @@ export default function Scene3D({ getLevels, accent }: Props) {
       renderer.setSize(width, height, false)
       camera.aspect = width / height
       if (matchMedia('(max-width: 1023px)').matches) {
-        // Phone: centred, and 80% of the panel's width. At CAMERA_Z the unit sphere spans ~0.717 of the frame height.
+        // Phone: centred, 80% of the panel's width but never taller than 90% of its height (landscape, tablets).
+        // At CAMERA_Z the unit sphere spans ~0.717 of the frame height.
         camera.setViewOffset(width, height, 0, 0, width, height)
-        camera.zoom = (0.8 * width) / (0.717 * height)
+        camera.zoom = Math.min(0.8 * width, 0.9 * height) / (0.717 * height)
       } else {
         // Scene centre at 68% / 48% of the panel, beside the clock.
         camera.setViewOffset(width, height, -0.18 * width, 0.02 * height, width, height)

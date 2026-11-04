@@ -5,6 +5,7 @@ import type { ReactNode } from 'react'
 const PATHS = {
   play: <path d="M5 3.5v9l7.5-4.5z" fill="currentColor" stroke="none" />,
   pause: <path d="M4.5 3.5h2.5v9H4.5zM9 3.5h2.5v9H9z" fill="currentColor" stroke="none" />,
+  skip: <path d="M3 3.5v9l6.5-4.5zM11 3.5h2v9h-2z" fill="currentColor" stroke="none" />,
   gear: (
     <>
       <path d="M2 5h6.5M12.5 5H14M2 11h1.5M7.5 11H14" />

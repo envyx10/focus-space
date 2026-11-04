@@ -43,7 +43,7 @@ export default function App() {
     notify: prefs.notify,
     onFocus: (ms, sessions) => setStats((s) => addFocus(s, todayKey(), ms, sessions)),
   })
-  const lofi = useYouTubeLofi(prefs.muted ? 0 : prefs.lofiVolume, prefs.lofiStation)
+  const lofi = useYouTubeLofi(prefs.lofiVolume, prefs.lofiStation, prefs.muted)
   const session = useSession(supabase)
   const { repo, synced } = useTaskRepo(supabase, session.user)
   const tasks = useTasks(repo)
