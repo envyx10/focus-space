@@ -193,7 +193,7 @@ export default function SettingsMenu(p: Props) {
                 onChange={(e) => p.onChime(Number(e.target.value) / 100)}
               />
             </label>
-            <div className="set-row">
+            <div className="set-row set-stack">
               <span>{t('settings.chimeSound')}</span>
               <span className="set-seg" role="group" aria-label={t('settings.chimeSound')}>
                 {CHIMES.map((s) => (
