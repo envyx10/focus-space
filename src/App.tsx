@@ -40,6 +40,7 @@ export default function App() {
   useEffect(() => saveStats(stats), [stats])
   const timer = useTimer({
     chimeVolume: prefs.chimeVolume,
+    chimeSound: prefs.chimeSound,
     notify: prefs.notify,
     onFocus: (ms, sessions) => setStats((s) => addFocus(s, todayKey(), ms, sessions)),
   })
@@ -120,6 +121,7 @@ export default function App() {
               onOpenChange={setSettingsOpen}
               onConfig={timer.setConfig}
               onChime={ambient.setChimeVolume}
+              onChimeSound={ambient.setChimeSound}
               onNotify={ambient.setNotify}
               onCalm={ambient.setCalm}
               onMuted={ambient.setMuted}
