@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useT } from '../i18n'
+import { isTypingTarget } from '../lib/useShortcuts'
 import { parseImport, serializeTasks } from './transfer'
 import type { Task } from './types'
 import './tasks.css'
@@ -7,6 +8,7 @@ import './tasks.css'
 // Matches the CHECK on tasks.text in supabase/schema.sql.
 const MAX_TEXT = 500
 const UNDO_MS = 8000
+const focusNewTask = () => document.querySelector<HTMLInputElement>('[data-new-task]')?.focus()
 
 type Props = {
   tasks: Task[]
@@ -34,7 +36,16 @@ function Row({ task, index, onDelete, ...a }: RowProps) {
   }
 
   return (
-    <li className={`tk${task.done ? ' dn' : ''}${task.active ? ' on' : ''}`}>
+    <li
+      className={`tk${task.done ? ' dn' : ''}${task.active ? ' on' : ''}`}
+      onKeyDown={(e) => {
+        // Supr/Retroceso on any of the row's buttons deletes it; never while editing its text.
+        if ((e.key !== 'Delete' && e.key !== 'Backspace') || editing) return
+        e.preventDefault()
+        onDelete(task)
+        focusNewTask()
+      }}
+    >
       <button
         className="tk-box"
         role="checkbox"
@@ -85,7 +96,13 @@ function Row({ task, index, onDelete, ...a }: RowProps) {
             ✎
           </button>
         )}
-        <button aria-label={t('tasks.deleteLabel', { text: task.text })} title={t('tasks.delete')} className="tk-del" onClick={() => onDelete(task)}>
+        <button aria-label={t('tasks.deleteLabel', { text: task.text })} title={t('tasks.delete')} className="tk-del"
+          onClick={(e) => {
+            onDelete(task)
+            // detail 0 = activated with Enter/Space, so keep the keyboard flow going.
+            if (!e.detail) focusNewTask()
+          }}
+        >
           ×
         </button>
       </span>
@@ -107,6 +124,20 @@ export default function TasksPanel({ tasks, synced, saveError, add, restore, cle
     const id = setTimeout(() => setUndo(null), UNDO_MS)
     return () => clearTimeout(id)
   }, [undo])
+
+  // Ctrl/Cmd+Z brings the deleted task back while the undo notice is up; a field with text keeps its own undo.
+  useEffect(() => {
+    if (!undo || !restore) return
+    const onKey = (e: KeyboardEvent) => {
+      if (!(e.ctrlKey || e.metaKey) || e.shiftKey || e.altKey || e.key.toLowerCase() !== 'z') return
+      if (isTypingTarget(e.target) && (e.target as HTMLInputElement).value) return
+      e.preventDefault()
+      restore(undo)
+      setUndo(null)
+    }
+    addEventListener('keydown', onKey)
+    return () => removeEventListener('keydown', onKey)
+  }, [undo, restore])
 
   const del = (task: Task) => {
     actions.remove(task.id)
@@ -148,6 +179,10 @@ export default function TasksPanel({ tasks, synced, saveError, add, restore, cle
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={(e) => {
+              // ↑ jumps to the last task's delete button: Enter or Supr deletes it.
+              if (e.key === 'ArrowUp') e.currentTarget.closest('ul')?.querySelector<HTMLElement>('.tk:nth-last-child(2) .tk-del')?.focus()
+              // Backspace on an empty box deletes the whole last task; a held key never chains deletes (undo only keeps one).
+              if (e.key === 'Backspace' && !e.repeat && !draft && tasks.length) del(tasks[tasks.length - 1])
               if (e.key === 'Enter' && draft.trim()) {
                 add(draft)
                 setDraft('')

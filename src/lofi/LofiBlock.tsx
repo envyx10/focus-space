@@ -36,7 +36,7 @@ export default function LofiBlock({ status, playing, volume, onToggle, onVolume,
               title={t('lofi.stationHint', { name: current.name })}
               onClick={() => onStation(station + 1)}
             >
-              ↻ {station + 1}/{STATIONS.length}
+              {t('lofi.next', { n: station + 1, total: STATIONS.length })}
             </button>
           )}
         </span>
