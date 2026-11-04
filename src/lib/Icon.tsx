@@ -1,0 +1,35 @@
+import type { ReactNode } from 'react'
+
+// Thin square-cap strokes in currentColor: they take the text colour of whatever button holds them,
+// so no glyph is ever swapped for a grey system emoji on a phone.
+const PATHS = {
+  play: <path d="M5 3.5v9l7.5-4.5z" fill="currentColor" stroke="none" />,
+  pause: <path d="M4.5 3.5h2.5v9H4.5zM9 3.5h2.5v9H9z" fill="currentColor" stroke="none" />,
+  gear: (
+    <>
+      <path d="M2 5h6.5M12.5 5H14M2 11h1.5M7.5 11H14" />
+      <circle cx="10.5" cy="5" r="1.8" />
+      <circle cx="5.5" cy="11" r="1.8" />
+    </>
+  ),
+  out: <path d="M5 11l6-6M5.5 5H11v5.5" />,
+  user: <circle cx="8" cy="8" r="3" fill="currentColor" stroke="none" />,
+  refresh: <path d="M13 8a5 5 0 1 1-1.6-3.7M13 2.5v3h-3" />,
+  prev: <path d="M10 3.5L5.5 8l4.5 4.5" />,
+  next: <path d="M6 3.5L10.5 8 6 12.5" />,
+  right: <path d="M2.5 8h10M9 4.5L12.5 8 9 11.5" />,
+  edit: <path d="M3 13l.6-2.8 6.9-6.9 2.2 2.2-6.9 6.9zM9 4.8L11.2 7" />,
+  sound: <path d="M2 6.5h2.5L8 3.5v9L4.5 9.5H2zM10.5 6a3 3 0 0 1 0 4M12.5 4a6 6 0 0 1 0 8" />,
+  muted: <path d="M2 6.5h2.5L8 3.5v9L4.5 9.5H2zM10.5 6.5l3.5 3.5M14 6.5L10.5 10" />,
+  close:<path d="M4 4l8 8M12 4l-8 8" />,
+}
+
+export type IconName = keyof typeof PATHS
+
+export default function Icon({ name }: { name: IconName }): ReactNode {
+  return (
+    <svg className="ico" viewBox="0 0 16 16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="square" strokeLinejoin="miter">
+      {PATHS[name]}
+    </svg>
+  )
+}

@@ -56,7 +56,7 @@ describe('FocusPanel', () => {
   it('play button starts, and shows pause while running', async () => {
     const onStart = vi.fn()
     const { rerender } = render(<FocusPanel {...base} remainingMs={60_000} activeTaskText={null} onStart={onStart} />)
-    await userEvent.click(screen.getByRole('button', { name: /^▶ iniciar$/i }))
+    await userEvent.click(screen.getByRole('button', { name: /^iniciar$/i }))
     expect(onStart).toHaveBeenCalled()
     expect(screen.getByLabelText('Hora local')).toBeInTheDocument() // starting from the clock opens the timer
     rerender(<FocusPanel {...base} running remainingMs={60_000} activeTaskText={null} />)
