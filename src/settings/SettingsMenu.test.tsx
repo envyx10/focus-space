@@ -12,6 +12,7 @@ function setup(over: Partial<Parameters<typeof SettingsMenu>[0]> = {}) {
     onOpenChange: vi.fn(),
     onConfig: vi.fn(),
     onChime: vi.fn(),
+    onChimeSound: vi.fn(),
     onNotify: vi.fn(),
     onCalm: vi.fn(),
     onMuted: vi.fn(),
@@ -65,6 +66,13 @@ describe('SettingsMenu', () => {
     expect(f.onAccent).toHaveBeenCalledWith('#38bdf8')
     fireEvent.change(screen.getByLabelText('Elegir otro color'), { target: { value: '#123ABC' } })
     expect(f.onAccent).toHaveBeenCalledWith('#123abc')
+  })
+
+  it('picks the end-of-phase tone', async () => {
+    const f = setup()
+    expect(screen.getByRole('button', { name: 'Campana' })).toHaveAttribute('aria-pressed', 'true')
+    await userEvent.click(screen.getByRole('button', { name: 'Marimba' }))
+    expect(f.onChimeSound).toHaveBeenCalledWith('marimba')
   })
 
   it('the chime can be turned off', () => {

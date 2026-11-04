@@ -3,6 +3,7 @@ import { CHANNEL_IDS, type ChannelId } from './channels'
 import { createEngine, type Engine } from './engine'
 import { bandLevels } from './levels'
 import { loadPrefs, MAX_SCENES, savePrefs, type Prefs, type Scene, type TextScale } from '../prefs/prefs'
+import type { Chime } from '../timer/alerts'
 
 export function useAmbient() {
   const [prefs, setPrefs] = useState<Prefs>(loadPrefs)
@@ -82,6 +83,7 @@ export function useAmbient() {
   const setLofiVolume = useCallback((v: number) => setPrefs((p) => ({ ...p, lofiVolume: v })), [])
   const setFont = useCallback((font: string) => setPrefs((p) => ({ ...p, font })), [])
   const setChimeVolume = useCallback((chimeVolume: number) => setPrefs((p) => ({ ...p, chimeVolume })), [])
+  const setChimeSound = useCallback((chimeSound: Chime) => setPrefs((p) => ({ ...p, chimeSound })), [])
   const setNotify = useCallback((notify: boolean) => setPrefs((p) => ({ ...p, notify })), [])
   const setCalm = useCallback((calm: boolean) => setPrefs((p) => ({ ...p, calm })), [])
   const setTextScale = useCallback((textScale: TextScale) => setPrefs((p) => ({ ...p, textScale })), [])
@@ -107,6 +109,7 @@ export function useAmbient() {
     setLofiVolume,
     setFont,
     setChimeVolume,
+    setChimeSound,
     setNotify,
     setCalm,
     setTextScale,

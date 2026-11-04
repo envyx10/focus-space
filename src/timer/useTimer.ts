@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useT } from '../i18n'
-import { chime, notifyPhase, phaseLabel } from './alerts'
+import { chime, notifyPhase, phaseLabel, type Chime } from './alerts'
 import { advance, extend, initialState, pause, remaining, reset, skip, start, withConfig, type TimerConfig, type TimerMode, type TimerState } from './timer'
 import { loadTimerStore, saveTimerStore, todayKey } from './timerStore'
 
@@ -29,12 +29,13 @@ function tick(fn: () => void, ms: number): () => void {
 
 type Options = {
   chimeVolume: number
+  chimeSound: Chime
   notify: boolean
   /** Focus time completed (Pomodoro work blocks, free sessions), for the stats. */
   onFocus?: (focusedMs: number, sessions: number) => void
 }
 
-export function useTimer({ chimeVolume, notify, onFocus }: Options) {
+export function useTimer({ chimeVolume, chimeSound, notify, onFocus }: Options) {
   const t = useT()
   const tRef = useRef(t)
   tRef.current = t
@@ -45,8 +46,8 @@ export function useTimer({ chimeVolume, notify, onFocus }: Options) {
   const [awaiting, setAwaiting] = useState(false)
   const stateRef = useRef(state)
   stateRef.current = state
-  const opts = useRef({ chimeVolume, notify, onFocus })
-  opts.current = { chimeVolume, notify, onFocus }
+  const opts = useRef({ chimeVolume, chimeSound, notify, onFocus })
+  opts.current = { chimeVolume, chimeSound, notify, onFocus }
 
   useEffect(() => saveTimerStore({ ...store, timer: state }), [store, state])
 
@@ -59,7 +60,7 @@ export function useTimer({ chimeVolume, notify, onFocus }: Options) {
       const r = advance(s, t)
       if (r.phasesEnded === 0) return
       const o = opts.current
-      chime(o.chimeVolume)
+      chime(o.chimeVolume, o.chimeSound)
       if (o.notify) {
         const tt = tRef.current
         notifyPhase(
