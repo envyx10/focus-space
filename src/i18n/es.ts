@@ -123,7 +123,7 @@ export const es = {
   'immersive.exit': 'Esc · salir',
 
   // account
-  'account.guest': 'Cuenta',
+  'account.guest': 'Entrar',
   'account.user': 'Cuenta',
   'account.title': 'Cuenta',
   'account.localMode': 'Modo solo local: tus tareas se guardan en este navegador.',

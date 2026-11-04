@@ -11,7 +11,8 @@ export function serializeTasks(tasks: Task[]): string {
 function make(text: string, done: boolean, createdAt?: string): Task | null {
   const clean = text.trim().slice(0, MAX_TEXT)
   if (!clean) return null
-  const when = createdAt && !Number.isNaN(Date.parse(createdAt)) ? createdAt : new Date().toISOString()
+  // Always ISO: it sorts as text and Postgres accepts it, which a loose Date.parse string may not.
+  const when = new Date(createdAt && !Number.isNaN(Date.parse(createdAt)) ? createdAt : Date.now()).toISOString()
   return { id: crypto.randomUUID(), text: clean, done, active: false, createdAt: when }
 }
 
@@ -24,6 +25,8 @@ export function parseImport(raw: string): Task[] {
   } catch {
     json = undefined
   }
+  // A lone "42" or "true" is valid JSON but just a one-line list.
+  if (!Array.isArray(json) && !isRecord(json)) json = undefined
   const list = Array.isArray(json) ? json : isRecord(json) && Array.isArray(json.tasks) ? json.tasks : null
   if (list) {
     for (const x of list) {
