@@ -43,7 +43,7 @@ export default function App() {
     notify: prefs.notify,
     onFocus: (ms, sessions) => setStats((s) => addFocus(s, todayKey(), ms, sessions)),
   })
-  const lofi = useYouTubeLofi(prefs.muted ? 0 : prefs.lofiVolume, prefs.lofiStation)
+  const lofi = useYouTubeLofi(prefs.lofiVolume, prefs.lofiStation, prefs.muted)
   const session = useSession(supabase)
   const { repo, synced } = useTaskRepo(supabase, session.user)
   const tasks = useTasks(repo)
@@ -105,7 +105,8 @@ export default function App() {
           now={now}
           status={timer.status}
           muteSlot={
-            <button className="hd-mute" aria-pressed={prefs.muted} title={t('mute.hint')} onClick={() => ambient.setMuted(!prefs.muted)}>
+            // The label flips with the state, so no aria-pressed; aria-label keeps a name on phones, where the label is hidden.
+            <button className="hd-mute" aria-label={prefs.muted ? t('mute.on') : t('mute.off')} title={t('mute.hint')} onClick={() => ambient.setMuted(!prefs.muted)}>
               <span className="hd-mute-label">{prefs.muted ? t('mute.on') : t('mute.off')}</span>
               <Icon name={prefs.muted ? 'muted' : 'sound'} />
             </button>

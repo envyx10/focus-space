@@ -12,6 +12,7 @@ function Host({ h }: { h: ShortcutHandlers }) {
       <input aria-label="campo" />
       <button>botón</button>
       <input type="checkbox" aria-label="interruptor" />
+      <input type="color" aria-label="color" />
     </div>
   )
 }
@@ -28,7 +29,7 @@ describe('useShortcuts', () => {
     expect(h.toggleTimer).not.toHaveBeenCalled()
   })
 
-  it('keeps working after a switch was clicked, and leaves its own Space alone', async () => {
+  it('keeps working after a switch was clicked, and Space only toggles the switch', async () => {
     const h = fns()
     const { getByLabelText } = render(<Host h={h} />)
     await userEvent.click(getByLabelText('interruptor'))
@@ -36,7 +37,16 @@ describe('useShortcuts', () => {
     expect(h.mute).toHaveBeenCalledTimes(1)
     await userEvent.keyboard(' ')
     expect(h.toggleTimer).not.toHaveBeenCalled()
+    // the click checked it and the Space unchecked it
     expect(getByLabelText('interruptor')).not.toBeChecked()
+  })
+
+  it('keeps working after the colour picker was used', async () => {
+    const h = fns()
+    const { getByLabelText } = render(<Host h={h} />)
+    getByLabelText('color').focus()
+    await userEvent.keyboard('m')
+    expect(h.mute).toHaveBeenCalledTimes(1)
   })
 
   it('Space toggles the timer on the page but leaves a focused button alone', async () => {

@@ -20,7 +20,7 @@ Las webs de "lofi + lluvia para concentrarse" que existen son feas, lentas y ant
 ## No-objetivos (v1)
 
 - Spotify (queda para una iteración posterior; requerirá Premium y aprobación de cuota de Spotify para uso público).
-- Versión móvil / diseño responsive para teléfono. Es una app de escritorio.
+- Versión móvil / diseño responsive para teléfono en v1 (añadido después: la app ya tiene diseño para móvil).
 - Modo "Relax" como pantalla separada. Una sola pantalla.
 - Que la esfera reaccione al lofi de YouTube: técnicamente imposible (audio de iframe cross-origin no analizable).
 
