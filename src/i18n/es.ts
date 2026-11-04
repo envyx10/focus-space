@@ -32,7 +32,7 @@ export const es = {
   'focus.reset': '↺ Reiniciar',
   'focus.extend': '+5 min',
   'focus.extendHint': 'Añadir 5 minutos a esta fase',
-  'focus.skip': '⏭ Saltar',
+  'focus.skip': 'Saltar',
   'focus.skipHint': 'Saltar a la siguiente fase',
   'focus.pause': 'Pausar',
   'focus.timerBtn': 'Temporizador',

@@ -77,13 +77,13 @@ function loadApi(): Promise<YTNamespace> {
   return apiPromise
 }
 
-export function useYouTubeLofi(volume: number, initialStation = 0) {
+export function useYouTubeLofi(volume: number, initialStation = 0, muted = false) {
   const [status, setStatus] = useState<LofiStatus>('loading')
   const [playing, setPlaying] = useState(false)
   const [station, setStation] = useState(initialStation < STATIONS.length ? initialStation : 0)
   const player = useRef<YTPlayer | null>(null)
   const volumeRef = useRef(volume)
-  volumeRef.current = volume
+  volumeRef.current = muted ? 0 : volume
   const stationRef = useRef(station)
   stationRef.current = station
   const playingRef = useRef(false)
@@ -148,12 +148,27 @@ export function useYouTubeLofi(volume: number, initialStation = 0) {
   }, [])
 
   useEffect(() => {
-    player.current?.setVolume(Math.round(volume * 100))
-  }, [volume])
+    player.current?.setVolume(Math.round((muted ? 0 : volume) * 100))
+  }, [volume, muted])
+
+  // iOS ignores setVolume, so muting must pause the stream; unmuting resumes only what muting paused.
+  const pausedByMute = useRef(false)
+  useEffect(() => {
+    const p = player.current
+    if (!p) return
+    if (muted && playingRef.current) {
+      pausedByMute.current = true
+      p.pauseVideo()
+    } else if (!muted && pausedByMute.current) {
+      pausedByMute.current = false
+      p.playVideo()
+    }
+  }, [muted])
 
   const toggle = useCallback(() => {
     const p = player.current
     if (!p) return
+    pausedByMute.current = false
     if (playing) p.pauseVideo()
     else p.playVideo()
   }, [playing])
