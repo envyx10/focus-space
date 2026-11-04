@@ -9,7 +9,7 @@ export function supabaseRepo(client: SupabaseClient, userId: string): TaskRepo {
   const table = () => client.from('tasks')
   return {
     async list() {
-      const { data, error } = await table().select('id,text,done,active,created_at').order('created_at')
+      const { data, error } = await table().select('id,text,done,active,created_at').eq('user_id', userId).order('created_at')
       if (error) throw error
       return (data as Row[]).map(toTask)
     },
@@ -25,7 +25,7 @@ export function supabaseRepo(client: SupabaseClient, userId: string): TaskRepo {
       if (error) throw error
     },
     async remove(id) {
-      const { error } = await table().delete().eq('id', id)
+      const { error } = await table().delete().eq('id', id).eq('user_id', userId)
       if (error) throw error
     },
   }

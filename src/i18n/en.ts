@@ -30,7 +30,7 @@ export const en: Record<Key, string> = {
   'focus.reset': '↺ Reset',
   'focus.extend': '+5 min',
   'focus.extendHint': 'Add 5 minutes to this phase',
-  'focus.skip': '⏭ Skip',
+  'focus.skip': 'Skip',
   'focus.skipHint': 'Skip to the next phase',
   'focus.pause': 'Pause',
   'focus.timerBtn': 'Timer',
@@ -121,7 +121,7 @@ export const en: Record<Key, string> = {
   'immersive.exit': 'Esc · exit',
 
   // account
-  'account.guest': 'Account',
+  'account.guest': 'Sign in',
   'account.user': 'Account',
   'account.title': 'Account',
   'account.localMode': 'Local-only mode: your tasks are saved in this browser.',
