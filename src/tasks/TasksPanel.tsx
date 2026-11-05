@@ -238,7 +238,7 @@ export default function TasksPanel({ tasks, synced, saveError, add, restore, cle
       )}
       {!synced && <p className="tasks-note">{t('tasks.localOnly')}</p>}
       {full && describe && (
-        <TasksFocus tasks={tasks} describe={describe} toggle={actions.toggle} edit={actions.edit} setActive={actions.setActive} onClose={() => setFull(false)} />
+        <TasksFocus tasks={tasks} add={add} describe={describe} toggle={actions.toggle} edit={actions.edit} setActive={actions.setActive} onClose={() => setFull(false)} />
       )}
     </div>
   )
