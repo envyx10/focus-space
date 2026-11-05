@@ -48,6 +48,8 @@ export type Prefs = {
   chimeSound: Chime
   /** Browser notification when a phase ends (asks permission only when switched on). */
   notify: boolean
+  /** Offers the breathing game during Pomodoro breaks. */
+  breakGame: boolean
   /** Hides the particle sphere and the grain for a quieter screen. */
   calm: boolean
   /** Mutes every sound without touching the saved mix. */
@@ -72,6 +74,7 @@ export const DEFAULT_PREFS: Prefs = {
   chimeVolume: 0.4,
   chimeSound: 'campana',
   notify: false,
+  breakGame: true,
   calm: false,
   muted: false,
   textScale: 'm',
@@ -126,6 +129,7 @@ export function loadPrefs(): Prefs {
     chimeVolume: isVolume(r.chimeVolume) ? r.chimeVolume : DEFAULT_PREFS.chimeVolume,
     chimeSound: CHIMES.includes(r.chimeSound as Chime) ? (r.chimeSound as Chime) : DEFAULT_PREFS.chimeSound,
     notify: r.notify === true,
+    breakGame: r.breakGame !== false,
     calm: r.calm === true,
     muted: r.muted === true,
     textScale: TEXT_SCALES.includes(r.textScale as TextScale) ? (r.textScale as TextScale) : DEFAULT_PREFS.textScale,

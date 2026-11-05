@@ -18,6 +18,7 @@ import { GPUComputationRenderer } from 'three/examples/jsm/misc/GPUComputationRe
 import { noiseGlsl } from './shaders/noise'
 import { hexToRgb } from '../prefs/accent'
 import { fibonacciSphere, follow, smooth } from './sphereMath'
+import { breathing } from '../break/breath'
 
 type Levels = { bass: number; high: number }
 type Props = {
@@ -35,6 +36,8 @@ const COUNT = SIDE * SIDE
 const CAMERA_Z = 5.3
 const FOV = 30 // 30° (was 35°): the sphere a touch bigger
 // Share of the frame height the unit sphere spans at CAMERA_Z (~0.717).
+// How far the sphere rises in the breathing guide (fraction of the panel's height).
+const BREATH_Y = 0.16
 const SPHERE_SPAN = Math.tan(Math.asin(1 / CAMERA_Z)) / Math.tan((FOV / 2) * (Math.PI / 180))
 const STEP = 1 / 60
 
@@ -84,12 +87,15 @@ const renderVertex = /* glsl */ `
   varying float vHeat;
   varying float vAccent;
   varying float vRim;
+  varying float vY;
 
   void main() {
     vec4 p = texture2D(tPosition, aRef);
     vec3 v = texture2D(tVelocity, aRef).xyz;
     vec4 mv = modelViewMatrix * vec4(p.xyz, 1.0);
     gl_Position = projectionMatrix * mv;
+    // height on screen across the sphere, -1 bottom .. 1 top, whatever its scale and spin
+    vY = (mv.y - (modelViewMatrix * vec4(0.0, 0.0, 0.0, 1.0)).y) / length(modelViewMatrix[0].xyz);
     float seed = p.w;
     gl_PointSize = (0.7 + seed * seed * 0.8) * uPixelRatio * (${CAMERA_Z.toFixed(1)} / -mv.z);
     float depth = clamp((${(CAMERA_Z + 1.4).toFixed(1)} + mv.z) / 2.8, 0.0, 1.0); // 1 = nearest
@@ -115,10 +121,13 @@ const renderFragment = /* glsl */ `
   uniform float uGain;
   uniform float uLight;
   uniform vec3 uAccent;
+  uniform float uFill;
+  uniform float uFillMix;
   varying float vAlpha;
   varying float vHeat;
   varying float vAccent;
   varying float vRim;
+  varying float vY;
 
   void main() {
     vec2 c = gl_PointCoord - 0.5;
@@ -129,7 +138,10 @@ const renderFragment = /* glsl */ `
     vec3 ember = uAccent;
     // fast-moving particles and a few seeds glow in the accent colour: motion reads as colour
     vec3 col = mix(warm, ember, max(max(vHeat * 0.85, vAccent * uIntro), vRim * 0.85));
-    float a = min(1.0, disc * vAlpha * (0.5 + vHeat * 0.4) * 0.7 * uIntro * uGain);
+    // Breathing guide: the accent fills the sphere from the bottom up on the in-breath and drains on the out-breath.
+    float fill = uFillMix * smoothstep(uFill + 0.35, uFill - 0.35, vY);
+    col = mix(col, ember, fill * 0.8);
+    float a = min(1.0, disc * vAlpha * (0.5 + vHeat * 0.4 + fill * 0.5) * 0.7 * uIntro * uGain);
     gl_FragColor = vec4(col * a, a); // premultiplied
   }
 `
@@ -222,6 +234,8 @@ export default function Scene3D({ getLevels, accent, light = false }: Props) {
       uPixelRatio: { value: 1 },
       uIntro: { value: 0 },
       uGain: { value: 1 },
+      uFill: { value: -2 },
+      uFillMix: { value: 0 },
       uLight: { value: 0 },
       uAccent: { value: new Vector3(...hexToRgb(accent)) },
     }
@@ -242,6 +256,8 @@ export default function Scene3D({ getLevels, accent, light = false }: Props) {
     const camera = new PerspectiveCamera(FOV, 1, 0.1, 50)
     camera.position.set(0, 0, CAMERA_Z)
 
+    const view = { w: 1, h: 1, x: 0, baseX: 0, y: 0, baseY: 0 }
+    const aim = () => camera.setViewOffset(view.w, view.h, view.x * view.w, view.y * view.h, view.w, view.h)
     const resize = () => {
       const { width, height } = el.getBoundingClientRect()
       if (!width || !height) return
@@ -251,13 +267,14 @@ export default function Scene3D({ getLevels, accent, light = false }: Props) {
       camera.aspect = width / height
       if (matchMedia('(max-width: 1023px)').matches) {
         // Phone: centred, 80% of the panel's width but never taller than 90% of its height (landscape, tablets).
-        camera.setViewOffset(width, height, 0, 0, width, height)
+        Object.assign(view, { w: width, h: height, x: 0, baseX: 0, y: breathing.size === null ? 0 : BREATH_Y, baseY: 0 })
         camera.zoom = Math.min(0.8 * width, 0.9 * height) / (SPHERE_SPAN * height)
       } else {
         // Scene centre at 68% / 48% of the panel, beside the clock.
-        camera.setViewOffset(width, height, -0.18 * width, 0.02 * height, width, height)
+        Object.assign(view, { w: width, h: height, x: breathing.size === null ? -0.18 : 0, baseX: -0.18, y: breathing.size === null ? 0.02 : BREATH_Y, baseY: 0.02 })
         camera.zoom = 1
       }
+      aim()
       camera.updateProjectionMatrix()
       uniforms.uPixelRatio.value = pr * 1.08 // dots grow with the sphere so it stays as dense
     }
@@ -287,7 +304,7 @@ export default function Scene3D({ getLevels, accent, light = false }: Props) {
       uniforms.tPosition.value = gpu.getCurrentRenderTarget(posVar).texture
       uniforms.tVelocity.value = gpu.getCurrentRenderTarget(velVar).texture
       uniforms.uAccent.value.set(...hexToRgb(accentRef.current))
-      uniforms.uGain.value = lightRef.current ? 2.2 : 1
+      uniforms.uGain.value = lightRef.current ? 2.8 : 1
       uniforms.uLight.value = lightRef.current ? 1 : 0
       // Light adds up to white on a light page, so there the dots are ink, composited over the paper instead.
       material.blending = lightRef.current ? NormalBlending : AdditiveBlending
@@ -316,9 +333,27 @@ export default function Scene3D({ getLevels, accent, light = false }: Props) {
       tilt.y = smooth(tilt.y, pointer.y)
       spin += elapsed * (0.08 + lv.bass * 0.12)
       points.rotation.set(0.35 + tilt.y, spin + tilt.x, 0)
+      // Breathing guide open: the sphere moves to the centre and swells and shrinks with the breath.
+      const b = breathing.size
+      // sized against the panel's height: at most half of it at the top of the in-breath, about a quarter at the bottom
+      const fit = 0.44 / (SPHERE_SPAN * camera.zoom)
+      points.scale.setScalar(smooth(points.scale.x, b === null ? 1 : fit * (0.55 + b * 0.45)))
+      // fill line from just under the sphere (empty) to just over it (full)
+      if (b !== null) uniforms.uFill.value = b * 2.7 - 1.35
+      uniforms.uFillMix.value = smooth(uniforms.uFillMix.value, b === null ? 0 : 1)
+      // and rises a little, so the cue under it reads on the paper, not over the dots
+      const x = smooth(view.x, b === null ? view.baseX : 0)
+      const y = smooth(view.y, b === null ? view.baseY : BREATH_Y)
+      if (Math.abs(x - view.x) + Math.abs(y - view.y) > 1e-4) {
+        view.x = x
+        view.y = y
+        aim()
+        camera.updateProjectionMatrix()
+      }
       draw()
     }
 
+    breathing.sphere = !still
     if (still) {
       // settle the particles onto the shape, then hold a single frame
       sim.uStir.value = 0
@@ -329,6 +364,7 @@ export default function Scene3D({ getLevels, accent, light = false }: Props) {
     } else raf = requestAnimationFrame(frame)
 
     return () => {
+      breathing.sphere = false
       redraw.current = null
       cancelAnimationFrame(raf)
       removeEventListener('pointermove', onMove)

@@ -20,6 +20,16 @@ const base = {
 }
 
 describe('FocusPanel', () => {
+  it('the Breathe view opens the guide in the panel and any other view closes it', async () => {
+    render(<FocusPanel {...base} remainingMs={60_000} activeTaskText={null} />)
+    await userEvent.click(screen.getByRole('button', { name: 'Respirar' }))
+    expect(await screen.findByRole('region', { name: 'Respirar' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Respirar' })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByRole('button', { name: 'Hora' })).toHaveAttribute('aria-pressed', 'false')
+    await userEvent.click(screen.getByRole('button', { name: 'Hora' }))
+    expect(screen.queryByRole('region', { name: 'Respirar' })).not.toBeInTheDocument()
+  })
+
   it('opens on the local time: hours solid, minutes grey, no reset button', () => {
     const { container } = render(<FocusPanel {...base} remainingMs={60_000} activeTaskText={null} />)
     expect(screen.getByRole('timer', { name: 'Son las 09:05' })).toBeInTheDocument()

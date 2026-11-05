@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from 'react'
 import { useT } from '../i18n'
 import Icon from '../lib/Icon'
 import type { Phase, TimerMode } from './timer'
 import type { TimerStatus } from './useTimer'
 import './focus.css'
+
+const BreathGame = lazy(() => import('../break/BreathGame'))
 
 type Props = {
   remainingMs: number
@@ -13,6 +15,8 @@ type Props = {
   phase: Phase
   freeMinutes: number
   activeTaskText: string | null
+  /** Takes the task line's place when given (the break invite and game live there). */
+  taskSlot?: ReactNode
   onStart: () => void
   onPause: () => void
   onReset: () => void
@@ -33,23 +37,27 @@ export default function FocusPanel(p: Props) {
   const t = useT()
   // Opens on the local time; a running timer (e.g. after a reload) takes the stage instead.
   const [clock, setClock] = useState(!p.running)
+  // Breathing view: the guide takes the panel for as long as you like; the timer keeps going underneath.
+  const [breathe, setBreathe] = useState(false)
   const total = Math.ceil(p.remainingMs / 1000)
   const hhmm = `${pad(p.now.getHours())}:${pad(p.now.getMinutes())}`
   const [big, small] = clock
     ? [pad(p.now.getHours()), pad(p.now.getMinutes())]
     : [pad(Math.floor(total / 60)), pad(total % 60)]
   const phaseName = p.mode === 'free' ? t('phase.free') : t(`phase.${p.phase}`)
-  const label = clock ? t('focus.localTime') : phaseName
+  const label = breathe ? t('break.title') : clock ? t('focus.localTime') : phaseName
   // A phase with time already spent is worth a second thought before it is thrown away.
   const inProgress = p.running || p.status === 'paused'
   const sure = (ask: string) => !inProgress || window.confirm(t('focus.confirmLoss', { ask }))
   const pick = (m: TimerMode) => {
     if (m !== p.mode && !sure(t('focus.confirmMode'))) return
     setClock(false)
+    setBreathe(false)
     p.onModeChange(m)
   }
   const start = () => {
     setClock(false)
+    setBreathe(false)
     if (!p.running) p.onStart()
   }
   const live = useRef({ clock, running: p.running, start, pause: p.onPause })
@@ -99,14 +107,17 @@ export default function FocusPanel(p: Props) {
               </div>
             )}
             <div className="seg" role="group" aria-label={t('focus.modeGroup')}>
-              <button aria-pressed={clock} onClick={() => setClock(true)}>
+              <button aria-pressed={!breathe && clock} onClick={() => (setClock(true), setBreathe(false))}>
                 {t('focus.modeClock')}
               </button>
-              <button aria-pressed={!clock && p.mode === 'pomodoro'} onClick={() => pick('pomodoro')}>
+              <button aria-pressed={!breathe && !clock && p.mode === 'pomodoro'} onClick={() => pick('pomodoro')}>
                 {t('focus.modePomodoro')}
               </button>
-              <button aria-pressed={!clock && p.mode === 'free'} onClick={() => pick('free')}>
+              <button aria-pressed={!breathe && !clock && p.mode === 'free'} onClick={() => pick('free')}>
                 {t('focus.modeFree')}
+              </button>
+              <button aria-pressed={breathe} onClick={() => setBreathe(true)}>
+                {t('focus.modeBreathe')}
               </button>
             </div>
           </div>
@@ -126,7 +137,7 @@ export default function FocusPanel(p: Props) {
       </div>
 
       <div className="focus-meta">
-        <span>{p.activeTaskText ?? <span className="focus-dim">{t('focus.noTask')}</span>}</span>
+        <span>{p.taskSlot ?? p.activeTaskText ?? <span className="focus-dim">{t('focus.noTask')}</span>}</span>
         <span className="actions">
           {!clock && (
             <button className="btn" onClick={() => sure(t('focus.confirmReset')) && p.onReset()}>
@@ -164,6 +175,11 @@ export default function FocusPanel(p: Props) {
           )}
         </span>
       </div>
+      {breathe && (
+        <Suspense fallback={null}>
+          <BreathGame mode onClose={() => setBreathe(false)} />
+        </Suspense>
+      )}
     </div>
   )
 }
