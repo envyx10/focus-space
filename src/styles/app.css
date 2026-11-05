@@ -290,13 +290,6 @@ button {
 }
 
 @media (max-width: 1023px) {
-  .app .mx-hint {
-    padding: 8px 16px;
-    white-space: normal;
-  }
-}
-
-@media (max-width: 1023px) {
   .app .mx-strips {
     grid-auto-flow: row;
   }

@@ -74,12 +74,6 @@ describe('MixerBar interaction', () => {
     expect(onVolume).toHaveBeenCalledWith('rain', 0.3)
   })
 
-  it('nudges the first-time user only while everything is silent', () => {
-    const { rerender } = render(<MixerBar prefs={DEFAULT_PREFS} onVolume={() => {}} onVariant={() => {}} onSlots={() => {}} />)
-    expect(screen.getByText(/todo en silencio/i)).toBeInTheDocument()
-    rerender(<MixerBar prefs={{ ...DEFAULT_PREFS, volumes: { ...DEFAULT_PREFS.volumes, fire: 0.1 } }} onVolume={() => {}} onVariant={() => {}} onSlots={() => {}} />)
-    expect(screen.queryByText(/todo en silencio/i)).not.toBeInTheDocument()
-  })
 })
 
 describe('keyboard channel', () => {
