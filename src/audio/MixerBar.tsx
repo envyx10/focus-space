@@ -102,17 +102,10 @@ function Strip({ ch, volume, variant, onSwap, onVolume, onVariant }: StripProps)
 }
 
 export default function MixerBar({ prefs, onVolume, onVariant, onSlots }: Props) {
-  const t = useT()
   // A saved mix may play a channel that has no square; it shows up at the end so it can still be turned down.
   const shown = [...prefs.slots, ...CHANNEL_IDS.filter((id) => !prefs.slots.includes(id) && prefs.volumes[id] > 0)].map(channel)
-  const silent = shown.every((ch) => prefs.volumes[ch.id] === 0)
   return (
     <div className="mixer">
-      {silent && !prefs.muted && (
-        <p className="mx-hint" aria-live="polite">
-          {t('mixer.silent')}
-        </p>
-      )}
       <div className="mx-strips">
         {shown.map((ch, i) => (
           <Strip
