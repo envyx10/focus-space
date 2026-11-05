@@ -85,6 +85,12 @@ button {
   overflow: hidden;
 }
 
+/* Light theme: the sphere still renders as additive light (that is what gives its dense, glowing core) and is
+   inverted on the page, so overlaps build up as ink; the hue turn keeps the accent particles in the accent's hue. */
+:root[data-theme='light'] .region-focus canvas {
+  filter: invert(1) hue-rotate(180deg);
+}
+
 .region-mixer {
   grid-column: 1 / 9;
   min-width: 0;
