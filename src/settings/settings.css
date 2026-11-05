@@ -78,9 +78,11 @@
   opacity: 0.55;
 }
 
-.set-close:hover {
-  opacity: 1;
-  color: var(--accent);
+@media (hover: hover) {
+  .set-close:hover {
+    opacity: 1;
+    color: var(--accent);
+  }
 }
 
 .set-group {
@@ -146,9 +148,11 @@
   margin: 0;
 }
 
-.set-num:hover,
+@media (hover: hover) {
+  .set-num:hover,
 .set-scene input:hover {
-  border-color: var(--muted);
+    border-color: var(--muted);
+  }
 }
 
 .set-num:focus,
@@ -177,8 +181,10 @@
   border-left: 1px solid var(--line-strong);
 }
 
-.set-seg button:hover {
-  color: var(--fg);
+@media (hover: hover) {
+  .set-seg button:hover {
+    color: var(--fg);
+  }
 }
 
 .set-seg button[aria-pressed='true'] {
@@ -220,8 +226,10 @@
   transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), background 0.18s;
 }
 
-.set-toggle:hover .set-switch:not(:disabled) {
-  border-color: var(--muted);
+@media (hover: hover) {
+  .set-toggle:hover .set-switch:not(:disabled) {
+    border-color: var(--muted);
+  }
 }
 
 .set-switch:checked {
@@ -303,9 +311,11 @@
   transition: color 0.15s, opacity 0.15s;
 }
 
-.set-act:hover:not(:disabled) {
-  color: var(--accent);
-  opacity: 1;
+@media (hover: hover) {
+  .set-act:hover:not(:disabled) {
+    color: var(--accent);
+    opacity: 1;
+  }
 }
 
 .set-act:disabled {
@@ -361,8 +371,10 @@
   letter-spacing: 0;
 }
 
-.set-scene-item button:hover {
-  color: var(--accent);
+@media (hover: hover) {
+  .set-scene-item button:hover {
+    color: var(--accent);
+  }
 }
 
 .set-x {
@@ -498,9 +510,11 @@ kbd {
   min-height: 28px;
 }
 
-.set-slot .set-x:hover:not(:disabled) {
-  opacity: 1;
-  color: var(--accent);
+@media (hover: hover) {
+  .set-slot .set-x:hover:not(:disabled) {
+    opacity: 1;
+    color: var(--accent);
+  }
 }
 
 .set-slot .set-x:disabled {

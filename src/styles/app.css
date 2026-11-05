@@ -32,8 +32,10 @@ button {
   scrollbar-color: var(--line-strong) transparent;
 }
 
-*:hover {
-  scrollbar-color: var(--accent) transparent;
+@media (hover: hover) {
+  *:hover {
+    scrollbar-color: var(--accent) transparent;
+  }
 }
 
 :focus-visible {
@@ -49,6 +51,7 @@ button {
   /* --zoom is the text-size setting: the whole grid scales and the viewport it must fit shrinks to match */
   zoom: var(--zoom, 1);
   height: calc(100vh / var(--zoom, 1));
+  height: calc(100dvh / var(--zoom, 1));
   min-width: calc(1024px / var(--zoom, 1));
   min-height: calc(640px / var(--zoom, 1));
   /* clip, not hidden: focusing an input must never scroll the grid sideways */
@@ -138,10 +141,12 @@ button {
   opacity: 0.35;
 }
 
-.exit-immersive:hover,
+@media (hover: hover) {
+  .exit-immersive:hover,
 .exit-immersive:focus-visible {
-  opacity: 1;
-  color: var(--accent);
+    opacity: 1;
+    color: var(--accent);
+  }
 }
 
 /* Phones and small tablets: the grid becomes one column. The desktop layout is untouched above 1023px. */
@@ -402,7 +407,7 @@ button {
 
   .app .pl {
     gap: 14px;
-    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+    padding-bottom: 16px;
   }
 
   .app .pl-row {
@@ -452,5 +457,100 @@ button {
 
   .app .hd-mute {
     min-width: 44px;
+  }
+}
+
+/* Bottom tab bar: phones only. */
+.m-tabs {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .app > .region-header {
+    z-index: 5;
+  }
+
+  /* Only the picked panel shows under the clock, so the page is never three panels long. */
+  .app[data-tab='tasks'] > .region-mixer,
+  .app[data-tab='tasks'] > .region-lofi,
+  .app[data-tab='mixer'] > .region-tasks,
+  .app[data-tab='mixer'] > .region-lofi,
+  .app[data-tab='lofi'] > .region-tasks,
+  .app[data-tab='lofi'] > .region-mixer {
+    display: none;
+  }
+
+  .app[data-immersive] > .m-tabs {
+    display: none;
+  }
+
+  .m-tabs {
+    order: 10;
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin-top: auto;
+    padding-bottom: env(safe-area-inset-bottom);
+    background: var(--bg);
+    border-top: 1px solid var(--line);
+  }
+
+  .m-tabs button {
+    min-height: 52px;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    opacity: 0.5;
+  }
+
+  .m-tabs button[aria-pressed='true'] {
+    opacity: 1;
+    color: var(--accent);
+    box-shadow: inset 0 2px 0 var(--accent);
+  }
+
+  /* iOS zooms into any field under 16px when it gets focus. */
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
+  /* Thumb-sized targets (WCAG 2.5.5: 44 px). */
+  .app .btn,
+  .app .seg button,
+  .app .cycler button,
+  .app .stepper button,
+  .app .set-btn,
+  .app .set-close,
+  .app .set-seg button,
+  .app .set-x,
+  .app .hd-mute,
+  .app .acct-btn,
+  .app .mx-name {
+    min-height: 44px;
+  }
+
+  .app .set-x,
+  .app .stepper button {
+    min-width: 44px;
+  }
+
+  .app .mx-slider {
+    min-height: 56px;
+  }
+
+  /* Landscape phones: the clock panel must not need more height than the screen has. */
+  @media (orientation: landscape) and (max-height: 500px) {
+    .app .focus {
+      min-height: calc(100dvh - 44px - 52px);
+    }
+
+    .app .big {
+      font-size: calc(min(17vw, 45dvh) * var(--display-scale, 1));
+    }
   }
 }

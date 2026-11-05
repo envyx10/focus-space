@@ -80,6 +80,10 @@ export const en: Record<Key, string> = {
   'tasks.localOnly': 'Saved only in this browser · Sign in to sync',
 
   // mixer
+  'tabs.label': 'Panels',
+  'tabs.tasks': 'Tasks',
+  'tabs.mixer': 'Sounds',
+  'tabs.lofi': 'Radio',
   'mixer.silent': 'All quiet · click or drag a bar to turn a sound up',
   'mixer.changeVariant': '{channel}: {variant}. Change variant',
   'mixer.volume': '{channel} volume',

@@ -61,9 +61,11 @@
   transition: background 0.15s, color 0.15s;
 }
 
-.cycler button:hover {
-  background: var(--fg);
-  color: var(--bg);
+@media (hover: hover) {
+  .cycler button:hover {
+    background: var(--fg);
+    color: var(--bg);
+  }
 }
 
 .cycler button:active {
@@ -134,8 +136,10 @@
   border-left: 1px solid var(--line-strong);
 }
 
-.seg button:hover {
-  color: var(--fg);
+@media (hover: hover) {
+  .seg button:hover {
+    color: var(--fg);
+  }
 }
 
 .seg button[aria-pressed='true'] {
@@ -158,8 +162,10 @@
   font-size: 14px;
 }
 
-.stepper button:hover {
-  color: var(--accent);
+@media (hover: hover) {
+  .stepper button:hover {
+    color: var(--accent);
+  }
 }
 
 .actions {
@@ -177,8 +183,10 @@
   transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
 
-.btn:hover {
-  border-color: var(--fg);
+@media (hover: hover) {
+  .btn:hover {
+    border-color: var(--fg);
+  }
 }
 
 .btn.primary {
@@ -188,9 +196,11 @@
   color: var(--on-accent);
 }
 
-.btn.primary:hover {
-  background: var(--fg);
-  border-color: var(--fg);
+@media (hover: hover) {
+  .btn.primary:hover {
+    background: var(--fg);
+    border-color: var(--fg);
+  }
 }
 
 .big {
