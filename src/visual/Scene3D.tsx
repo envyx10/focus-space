@@ -161,6 +161,9 @@ function sphereTexture(): DataTexture {
 export default function Scene3D({ getLevels, accent, light = false }: Props) {
   const lightRef = useRef(light)
   lightRef.current = light
+  // Reduced motion draws one still frame; this redraws it when the theme or accent changes.
+  const redraw = useRef<(() => void) | null>(null)
+  useEffect(() => redraw.current?.(), [light, accent])
   const host = useRef<HTMLDivElement>(null)
   const levelsRef = useRef(getLevels)
   levelsRef.current = getLevels
@@ -322,9 +325,11 @@ export default function Scene3D({ getLevels, accent, light = false }: Props) {
       for (let i = 0; i < 240; i++) step(i * STEP)
       uniforms.uIntro.value = 1
       draw()
+      redraw.current = draw
     } else raf = requestAnimationFrame(frame)
 
     return () => {
+      redraw.current = null
       cancelAnimationFrame(raf)
       removeEventListener('pointermove', onMove)
       ro.disconnect()
