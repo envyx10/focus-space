@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react'
 import {
   AdditiveBlending,
-  NormalBlending,
   BufferAttribute,
   BufferGeometry,
   DataTexture,
@@ -134,8 +133,9 @@ const renderFragment = /* glsl */ `
     float d = length(c);
     float disc = 1.0 - smoothstep(0.32, 0.5, d); // crisp dot, just antialiased
     // Dark page: warm light adding up. Light page: graphite ink laid over the paper, the accent in its true colour.
-    vec3 warm = mix(vec3(0.86, 0.85, 0.81), vec3(0.1, 0.1, 0.1), uLight);
-    vec3 ember = uAccent;
+    vec3 warm = vec3(0.86, 0.85, 0.81);
+    // Light page: the canvas is inverted by CSS, so the accent is fed in inverted and comes out in its true colour.
+    vec3 ember = mix(uAccent, 1.0 - uAccent, uLight);
     // fast-moving particles and a few seeds glow in the accent colour: motion reads as colour
     vec3 col = mix(warm, ember, max(max(vHeat * 0.85, vAccent * uIntro), vRim * 0.85));
     // Breathing guide: the accent fills the sphere from the bottom up on the in-breath and drains on the out-breath.
@@ -304,10 +304,8 @@ export default function Scene3D({ getLevels, accent, light = false }: Props) {
       uniforms.tPosition.value = gpu.getCurrentRenderTarget(posVar).texture
       uniforms.tVelocity.value = gpu.getCurrentRenderTarget(velVar).texture
       uniforms.uAccent.value.set(...hexToRgb(accentRef.current))
-      uniforms.uGain.value = lightRef.current ? 2.8 : 1
+      uniforms.uGain.value = lightRef.current ? 3.2 : 1
       uniforms.uLight.value = lightRef.current ? 1 : 0
-      // Light adds up to white on a light page, so there the dots are ink, composited over the paper instead.
-      material.blending = lightRef.current ? NormalBlending : AdditiveBlending
       renderer.render(three, camera)
     }
 
