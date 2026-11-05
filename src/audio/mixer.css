@@ -45,9 +45,11 @@
   opacity: 0.45;
 }
 
-.mx-name:hover .mx-variant {
-  opacity: 1;
-  color: var(--accent);
+@media (hover: hover) {
+  .mx-name:hover .mx-variant {
+    opacity: 1;
+    color: var(--accent);
+  }
 }
 
 .mx b {

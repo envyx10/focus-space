@@ -23,7 +23,8 @@ type Levels = { bass: number; high: number }
 type Props = { getLevels: () => Levels | null; /** Highlight colour: the glowing particles take it. */ accent: string; light?: boolean }
 
 // 256² = 65 536 particles, simulated entirely on the GPU (position + velocity textures).
-const SIDE = typeof navigator !== 'undefined' && (navigator.hardwareConcurrency ?? 8) <= 4 ? 180 : 256
+// Fewer particles on weak CPUs and on touch devices (phones: battery).
+const SIDE = typeof navigator !== 'undefined' && ((navigator.hardwareConcurrency ?? 8) <= 4 || globalThis.matchMedia?.('(pointer: coarse)').matches) ? 180 : 256
 const COUNT = SIDE * SIDE
 const INK_DARK = [0.86, 0.85, 0.81]
 const INK_LIGHT = [0.09, 0.09, 0.09]

@@ -89,7 +89,9 @@
   letter-spacing: inherit;
 }
 
-.pl-station:hover,
+@media (hover: hover) {
+  .pl-station:hover,
 .pl-station:focus-visible {
-  background: color-mix(in srgb, currentColor 15%, transparent);
+    background: color-mix(in srgb, currentColor 15%, transparent);
+  }
 }

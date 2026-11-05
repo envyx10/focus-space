@@ -82,6 +82,10 @@ export const es = {
   'tasks.localOnly': 'Guardado solo en este navegador · Inicia sesión para sincronizar',
 
   // mixer
+  'tabs.label': 'Paneles',
+  'tabs.tasks': 'Tareas',
+  'tabs.mixer': 'Sonidos',
+  'tabs.lofi': 'Radio',
   'mixer.silent': 'Todo en silencio · haz clic o arrastra una barra para subir un sonido',
   'mixer.changeVariant': '{channel}: {variant}. Cambiar variante',
   'mixer.volume': 'Volumen {channel}',
