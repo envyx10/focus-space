@@ -121,22 +121,6 @@
   background: var(--fg);
 }
 
-/* First-run nudge: a line of its own above the strips. Floating over them, it covered the numbers on short windows. */
-.mx-hint {
-  flex: none;
-  padding: 6px 16px;
-  border-bottom: 1px solid var(--line);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin: 0;
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  opacity: 0.4;
-  pointer-events: none;
-}
-
 /* Five strips share the row: let the variant name drop under the channel name instead of squeezing it. */
 .mx-name {
   flex-wrap: wrap;
