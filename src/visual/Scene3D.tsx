@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react'
 import {
   AdditiveBlending,
-  NormalBlending,
   BufferAttribute,
   BufferGeometry,
   DataTexture,
@@ -20,13 +19,17 @@ import { hexToRgb } from '../prefs/accent'
 import { fibonacciSphere, follow, smooth } from './sphereMath'
 
 type Levels = { bass: number; high: number }
-type Props = { getLevels: () => Levels | null; /** Highlight colour: the glowing particles take it. */ accent: string; light?: boolean }
+type Props = {
+  getLevels: () => Levels | null
+  /** Highlight colour: the glowing particles take it. */
+  accent: string
+  /** Light page: CSS inverts the canvas into ink, which reads paler than light on black, so the dots get denser. */
+  light?: boolean
+}
 
 // 256² = 65 536 particles, simulated entirely on the GPU (position + velocity textures).
 const SIDE = typeof navigator !== 'undefined' && (navigator.hardwareConcurrency ?? 8) <= 4 ? 180 : 256
 const COUNT = SIDE * SIDE
-const INK_DARK = [0.86, 0.85, 0.81]
-const INK_LIGHT = [0.09, 0.09, 0.09]
 const CAMERA_Z = 5.3
 const FOV = 30 // 30° (was 35°): the sphere a touch bigger
 // Share of the frame height the unit sphere spans at CAMERA_Z (~0.717).
@@ -103,8 +106,8 @@ const renderVertex = /* glsl */ `
 
 const renderFragment = /* glsl */ `
   uniform float uIntro;
+  uniform float uGain;
   uniform vec3 uAccent;
-  uniform vec3 uInk;
   varying float vAlpha;
   varying float vHeat;
   varying float vAccent;
@@ -114,11 +117,11 @@ const renderFragment = /* glsl */ `
     vec2 c = gl_PointCoord - 0.5;
     float d = length(c);
     float disc = 1.0 - smoothstep(0.32, 0.5, d); // crisp dot, just antialiased
-    vec3 warm = uInk;
+    vec3 warm = vec3(0.86, 0.85, 0.81);
     vec3 ember = uAccent;
     // fast-moving particles and a few seeds glow in the accent colour: motion reads as colour
     vec3 col = mix(warm, ember, max(max(vHeat * 0.85, vAccent * uIntro), vRim * 0.85));
-    float a = disc * vAlpha * (0.5 + vHeat * 0.4) * 0.7 * uIntro;
+    float a = min(1.0, disc * vAlpha * (0.5 + vHeat * 0.4) * 0.7 * uIntro * uGain);
     gl_FragColor = vec4(col * a, a); // premultiplied
   }
 `
@@ -207,8 +210,8 @@ export default function Scene3D({ getLevels, accent, light = false }: Props) {
       tVelocity: { value: gpu.getCurrentRenderTarget(velVar).texture },
       uPixelRatio: { value: 1 },
       uIntro: { value: 0 },
+      uGain: { value: 1 },
       uAccent: { value: new Vector3(...hexToRgb(accent)) },
-      uInk: { value: new Vector3() },
     }
     const material = new ShaderMaterial({
       uniforms,
@@ -272,9 +275,7 @@ export default function Scene3D({ getLevels, accent, light = false }: Props) {
       uniforms.tPosition.value = gpu.getCurrentRenderTarget(posVar).texture
       uniforms.tVelocity.value = gpu.getCurrentRenderTarget(velVar).texture
       uniforms.uAccent.value.set(...hexToRgb(accentRef.current))
-      // Light adds up to white on a light page, so there the dots are dark ink laid over it instead.
-      uniforms.uInk.value.fromArray(lightRef.current ? INK_LIGHT : INK_DARK)
-      material.blending = lightRef.current ? NormalBlending : AdditiveBlending
+      uniforms.uGain.value = lightRef.current ? 2.2 : 1
       renderer.render(three, camera)
     }
 
