@@ -33,6 +33,9 @@ const Scene3D = lazy(() => import('./visual/Scene3D'))
 
 const ZOOM = { m: 1, l: 1.15, xl: 1.3 }
 
+const MOBILE_TABS = ['tasks', 'mixer', 'lofi'] as const
+type MobileTab = (typeof MOBILE_TABS)[number]
+
 export default function App() {
   const { t } = useI18n()
   const ambient = useAmbient()
@@ -62,6 +65,8 @@ export default function App() {
 
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [immersive, setImmersive] = useState(false)
+  // Phones show one of the lower panels at a time, picked from the bottom tab bar (CSS hides the bar on desktop).
+  const [mobileTab, setMobileTab] = useState<MobileTab>('tasks')
   const [toggleSignal, setToggleSignal] = useState(0)
 
   useTabTitle(timer.running, timer.remainingMs, phaseLabel(t, timer.state.mode, timer.state.phase), timer.status === 'waiting')
@@ -101,7 +106,7 @@ export default function App() {
   const zoom = ZOOM[prefs.textScale]
 
   return (
-    <div className="app" style={{ ...displayFont, '--zoom': zoom, '--accent': prefs.accent, '--on-accent': onAccent(prefs.accent) } as CSSProperties} data-immersive={immersive || undefined} data-muted={prefs.muted || undefined}>
+    <div className="app" style={{ ...displayFont, '--zoom': zoom, '--accent': prefs.accent, '--on-accent': onAccent(prefs.accent) } as CSSProperties} data-immersive={immersive || undefined} data-muted={prefs.muted || undefined} data-tab={mobileTab}>
       <header className="region-header" data-region="header">
         <Header
           sessionNumber={timer.sessionNumber}
@@ -218,6 +223,20 @@ export default function App() {
           }}
         />
       </section>
+      <nav className="m-tabs" aria-label={t('tabs.label')}>
+        {MOBILE_TABS.map((id) => (
+          <button
+            key={id}
+            aria-pressed={mobileTab === id}
+            onClick={() => {
+              setMobileTab(id)
+              requestAnimationFrame(() => document.querySelector(`[data-region="${id}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }))
+            }}
+          >
+            {t(`tabs.${id}`)}
+          </button>
+        ))}
+      </nav>
       {!prefs.calm && <Grain />}
     </div>
   )

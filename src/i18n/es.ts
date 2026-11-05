@@ -35,7 +35,7 @@ export const es = {
   'focus.clockLabel': '{min} minutos {sec} segundos',
   'focus.unitMin': 'MIN',
   'focus.noTask': 'Sin tarea activa',
-  'focus.reset': '↺ Reiniciar',
+  'focus.reset': 'Reiniciar',
   'focus.extend': '+5 min',
   'focus.extendHint': 'Añadir 5 minutos a esta fase',
   'focus.skip': 'Saltar',
@@ -82,6 +82,10 @@ export const es = {
   'tasks.localOnly': 'Guardado solo en este navegador · Inicia sesión para sincronizar',
 
   // mixer
+  'tabs.label': 'Paneles',
+  'tabs.tasks': 'Tareas',
+  'tabs.mixer': 'Sonidos',
+  'tabs.lofi': 'Radio',
   'mixer.swap': 'Sonido del cuadrado {channel}',
   'mixer.nextVariant': 'Siguiente grabación',
   'mixer.changeVariant': '{channel}: {variant}. Cambiar variante',

@@ -11,6 +11,15 @@ describe('App', () => {
     }
   })
 
+  it('the phone tab bar picks which lower panel shows', async () => {
+    const { container } = render(<App />)
+    const app = container.querySelector('.app')!
+    expect(app).toHaveAttribute('data-tab', 'tasks')
+    await userEvent.click(screen.getByRole('button', { name: 'Sonidos' }))
+    expect(app).toHaveAttribute('data-tab', 'mixer')
+    expect(screen.getByRole('button', { name: 'Sonidos' })).toHaveAttribute('aria-pressed', 'true')
+  })
+
   it('the header button flips between dark and light', async () => {
     render(<App />)
     await userEvent.click(screen.getByRole('button', { name: 'Cambiar a tema claro' }))
