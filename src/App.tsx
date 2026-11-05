@@ -185,14 +185,15 @@ export default function App() {
           freeMinutes={timer.freeMinutes}
           activeTaskText={activeTask?.text ?? null}
           taskSlot={
-            prefs.breakGame && (
+            // undefined, not false, when off: the panel falls back to the task line only on null/undefined
+            prefs.breakGame ? (
               <BreakCorner
                 inBreak={timer.state.mode === 'pomodoro' && timer.state.phase !== 'work' && (timer.status === 'running' || timer.status === 'paused')}
                 breakId={`${timer.sessionNumber}-${timer.state.phase}`}
                 remaining={clock(timer.remainingMs)}
                 fallback={activeTask?.text ?? <span className="focus-dim">{t('focus.noTask')}</span>}
               />
-            )
+            ) : undefined
           }
           onStart={timer.start}
           onPause={timer.pause}

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from './App'
+import { PREFS_KEY } from './prefs/prefs'
 
 describe('App', () => {
   it('renders the five grid regions', () => {
@@ -26,5 +27,11 @@ describe('App', () => {
     expect(document.documentElement.dataset.theme).toBe('light')
     await userEvent.click(screen.getByRole('button', { name: 'Cambiar a tema oscuro' }))
     expect(document.documentElement.dataset.theme).toBe('dark')
+  })
+
+  it('with the breathing invite turned off, the clock panel still shows the task line', () => {
+    localStorage.setItem(PREFS_KEY, JSON.stringify({ v: 1, breakGame: false }))
+    render(<App />)
+    expect(screen.getByText('Sin tarea activa')).toBeInTheDocument()
   })
 })
