@@ -130,6 +130,7 @@ export default function FocusPanel(p: Props) {
         <span className="actions">
           {!clock && (
             <button className="btn" onClick={() => sure(t('focus.confirmReset')) && p.onReset()}>
+              <Icon name="reset" />
               {t('focus.reset')}
             </button>
           )}

@@ -33,7 +33,7 @@ export const en: Record<Key, string> = {
   'focus.clockLabel': '{min} minutes {sec} seconds',
   'focus.unitMin': 'MIN',
   'focus.noTask': 'No active task',
-  'focus.reset': '↺ Reset',
+  'focus.reset': 'Reset',
   'focus.extend': '+5 min',
   'focus.extendHint': 'Add 5 minutes to this phase',
   'focus.skip': 'Skip',
