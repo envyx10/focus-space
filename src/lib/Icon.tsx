@@ -16,6 +16,7 @@ const PATHS = {
   out: <path d="M5 11l6-6M5.5 5H11v5.5" />,
   user: <circle cx="8" cy="8" r="3" fill="currentColor" stroke="none" />,
   refresh: <path d="M13 8a5 5 0 1 1-1.6-3.7M13 2.5v3h-3" />,
+  reset: <path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5v3h3" />,
   prev: <path d="M10 3.5L5.5 8l4.5 4.5" />,
   next: <path d="M6 3.5L10.5 8 6 12.5" />,
   up: <path d="M3.5 10L8 5.5l4.5 4.5" />,
