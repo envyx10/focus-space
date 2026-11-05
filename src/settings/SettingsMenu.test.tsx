@@ -23,6 +23,7 @@ function setup(over: Partial<Parameters<typeof SettingsMenu>[0]> = {}) {
     onDeleteScene: vi.fn(),
     onImmersive: vi.fn(),
     onSlots: vi.fn(),
+    onTheme: vi.fn(),
   }
   render(<SettingsMenu prefs={DEFAULT_PREFS} config={DEFAULT_CONFIG} stats={{}} today="2026-10-30" open {...fns} {...over} />)
   return fns
@@ -67,6 +68,13 @@ describe('SettingsMenu', () => {
     expect(f.onAccent).toHaveBeenCalledWith('#38bdf8')
     fireEvent.change(screen.getByLabelText('Elegir otro color'), { target: { value: '#123ABC' } })
     expect(f.onAccent).toHaveBeenCalledWith('#123abc')
+  })
+
+  it('picks the theme', async () => {
+    const f = setup()
+    expect(screen.getByRole('button', { name: 'Sistema' })).toHaveAttribute('aria-pressed', 'true')
+    await userEvent.click(screen.getByRole('button', { name: 'Claro' }))
+    expect(f.onTheme).toHaveBeenCalledWith('light')
   })
 
   it('picks the end-of-phase tone', async () => {

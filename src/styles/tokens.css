@@ -1,8 +1,23 @@
 :root {
+  color-scheme: dark;
   --bg: #0b0b0b;
   --fg: #ecebe6;
   --line: #262626;
+  --line-strong: #3a3a3a; /* outlines of controls */
+  --muted: #8a8984; /* secondary text */
+  --faint: #5b5a56; /* the clock's seconds */
   --accent: #ff4b1f; /* the user can change it: App sets --accent and --on-accent on .app */
   --on-accent: #0b0b0b; /* text on top of the accent */
   --font: 'Inter Tight', 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* index.html sets data-theme before the first paint (from the saved choice or the system), so there is no flash. */
+:root[data-theme='light'] {
+  color-scheme: light;
+  --bg: #f2f1ec;
+  --fg: #161616;
+  --line: #dbd9d2;
+  --line-strong: #b4b2aa;
+  --muted: #5f5e59;
+  --faint: #8f8d86;
 }
