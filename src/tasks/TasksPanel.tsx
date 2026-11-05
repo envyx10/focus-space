@@ -10,12 +10,22 @@ import './tasks.css'
 // Matches the CHECK on tasks.text in supabase/schema.sql.
 const MAX_TEXT = 500
 const UNDO_MS = 8000
+const DRAFT_KEY = 'focus-space:tasks:draft'
+const readDraft = () => {
+  try {
+    return localStorage.getItem(DRAFT_KEY) ?? ''
+  } catch {
+    return ''
+  }
+}
 const focusNewTask = () => document.querySelector<HTMLInputElement>('[data-new-task]')?.focus()
 
 type Props = {
   tasks: Task[]
   synced: boolean
   saveError?: boolean
+  /** The browser refused to store (private mode, full disk): nothing is lost yet, but it is only in memory. */
+  localError?: boolean
   add: (text: string) => Promise<void>
   toggle: (id: string) => Promise<void>
   edit: (id: string, text: string) => Promise<void>
@@ -113,11 +123,21 @@ function Row({ task, index, onDelete, ...a }: RowProps) {
   )
 }
 
-export default function TasksPanel({ tasks, synced, saveError, add, restore, clearDone, addMany, describe, ...actions }: Props) {
+export default function TasksPanel({ tasks, synced, saveError, localError, add, restore, clearDone, addMany, describe, ...actions }: Props) {
   const t = useT()
   const [full, setFull] = useState(false)
-  const [draft, setDraft] = useState('')
-  const [undo, setUndo] = useState<Task | null>(null)
+  // A half-typed task survives a reload or a closed tab.
+  const [draft, setDraft] = useState(readDraft)
+  useEffect(() => {
+    try {
+      if (draft) localStorage.setItem(DRAFT_KEY, draft)
+      else localStorage.removeItem(DRAFT_KEY)
+    } catch {
+      // storage blocked: the draft just lives in memory
+    }
+  }, [draft])
+  // What the last delete took away (one task, or every finished one), for Deshacer.
+  const [undo, setUndo] = useState<Task[] | null>(null)
   const [note, setNote] = useState<string | null>(null)
   const file = useRef<HTMLInputElement>(null)
   const pending = tasks.filter((t) => !t.done).length
@@ -136,7 +156,7 @@ export default function TasksPanel({ tasks, synced, saveError, add, restore, cle
       if (!(e.ctrlKey || e.metaKey) || e.shiftKey || e.altKey || e.key.toLowerCase() !== 'z') return
       if (isTypingTarget(e.target) && (e.target as HTMLInputElement).value) return
       e.preventDefault()
-      restore(undo)
+      undo.forEach((k) => restore(k))
       setUndo(null)
     }
     addEventListener('keydown', onKey)
@@ -145,7 +165,7 @@ export default function TasksPanel({ tasks, synced, saveError, add, restore, cle
 
   const del = (task: Task) => {
     actions.remove(task.id)
-    if (restore) setUndo(task)
+    if (restore) setUndo([task])
   }
 
   const exportTasks = () => {
@@ -207,10 +227,10 @@ export default function TasksPanel({ tasks, synced, saveError, add, restore, cle
       </ul>
       {undo && restore && (
         <p className="tasks-undo" role="status">
-          {t('tasks.deleted')}
+          {undo.length > 1 ? t('tasks.deletedMany', { n: undo.length }) : t('tasks.deleted')}
           <button
             onClick={() => {
-              restore(undo)
+              undo.forEach((k) => restore(k))
               setUndo(null)
             }}
           >
@@ -220,12 +240,16 @@ export default function TasksPanel({ tasks, synced, saveError, add, restore, cle
       )}
       {saveError && (
         <p className="tasks-note acc" role="alert">
-          {t('tasks.saveError')}
+          {localError ? t('tasks.saveErrorLocal') : t('tasks.saveError')}
         </p>
       )}
       {(clearDone || addMany) && (
         <div className="tasks-tools">
-          {clearDone && done > 0 && <button onClick={() => clearDone()}>{t('tasks.clearDone', { n: done })}</button>}
+          {clearDone && done > 0 && <button onClick={() => {
+            const gone = tasks.filter((k) => k.done)
+            clearDone()
+            if (restore) setUndo(gone)
+          }}>{t('tasks.clearDone', { n: done })}</button>}
           {tasks.length > 0 && <button onClick={exportTasks}>{t('tasks.export')}</button>}
           {addMany && <button onClick={() => file.current?.click()}>{t('tasks.import')}</button>}
           <input ref={file} type="file" accept=".json,.txt,.md,text/plain,application/json" hidden aria-label={t('tasks.importLabel')} onChange={(e) => importFile(e.target.files?.[0])} />

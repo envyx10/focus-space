@@ -6,7 +6,7 @@ import type { Task } from './types'
 import './tasksFocus.css'
 
 const MAX_TEXT = 500
-const MAX_DESC = 5000
+export const MAX_DESC = 20000
 const SAVE_MS = 600
 
 type Actions = {
@@ -46,6 +46,16 @@ function Detail({ task, index, ...a }: { task: Task; index: number } & Omit<Acti
     return () => clearTimeout(id)
   }, [desc])
   useEffect(() => flush, [])
+  // Closing the tab, reloading or switching away saves at once: the timer above would never get to run.
+  useEffect(() => {
+    const onHide = () => document.visibilityState === 'hidden' && flush()
+    addEventListener('pagehide', flush)
+    document.addEventListener('visibilitychange', onHide)
+    return () => {
+      removeEventListener('pagehide', flush)
+      document.removeEventListener('visibilitychange', onHide)
+    }
+  }, [])
 
   const commitTitle = () => {
     if (title.trim() && title !== task.text) a.edit(task.id, title)

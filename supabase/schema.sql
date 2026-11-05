@@ -9,7 +9,7 @@ create table if not exists public.tasks (
 );
 
 -- Added later: long notes for a task. Safe to run again.
-alter table public.tasks add column if not exists description text not null default '' check (char_length(description) <= 5000);
+alter table public.tasks add column if not exists description text not null default '' check (char_length(description) <= 20000);
 
 create index if not exists tasks_user_id_idx on public.tasks (user_id);
 

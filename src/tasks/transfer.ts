@@ -8,7 +8,7 @@ export function serializeTasks(tasks: Task[]): string {
   return JSON.stringify({ app: 'focus-space', tasks: tasks.map(({ text, done, createdAt, description }) => ({ text, done, createdAt, ...(description ? { description } : {}) })) }, null, 2)
 }
 
-const MAX_DESC = 5000
+const MAX_DESC = 20000
 
 function make(text: string, done: boolean, createdAt?: string, description?: string): Task | null {
   const clean = text.trim().slice(0, MAX_TEXT)
