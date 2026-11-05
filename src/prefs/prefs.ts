@@ -17,8 +17,8 @@ export type Scene = { name: string; volumes: Record<ChannelId, number>; variants
 export const MAX_SCENES = 8
 
 /** The mixer shows a fixed number of squares; the user picks which channel sits in each. */
-export const SLOT_COUNT = 8
-export const DEFAULT_SLOTS: ChannelId[] = ['rain', 'fire', 'cafe', 'wind', 'keys', 'water', 'night', 'noise']
+export const SLOT_COUNT = 5
+export const DEFAULT_SLOTS: ChannelId[] = ['rain', 'fire', 'cafe', 'wind', 'keys']
 
 /** Puts `id` in slot `i`; if it already sat in another slot, the two swap so no channel shows twice. */
 export function replaceSlot(slots: ChannelId[], i: number, id: ChannelId): ChannelId[] {
