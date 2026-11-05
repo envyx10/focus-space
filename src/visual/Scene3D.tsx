@@ -36,6 +36,8 @@ const COUNT = SIDE * SIDE
 const CAMERA_Z = 5.3
 const FOV = 30 // 30° (was 35°): the sphere a touch bigger
 // Share of the frame height the unit sphere spans at CAMERA_Z (~0.717).
+// How far the sphere rises in the breathing guide (fraction of the panel's height).
+const BREATH_Y = 0.16
 const SPHERE_SPAN = Math.tan(Math.asin(1 / CAMERA_Z)) / Math.tan((FOV / 2) * (Math.PI / 180))
 const STEP = 1 / 60
 
@@ -251,7 +253,7 @@ export default function Scene3D({ getLevels, accent, light = false }: Props) {
     const camera = new PerspectiveCamera(FOV, 1, 0.1, 50)
     camera.position.set(0, 0, CAMERA_Z)
 
-    const view = { w: 1, h: 1, x: 0, baseX: 0, y: 0 }
+    const view = { w: 1, h: 1, x: 0, baseX: 0, y: 0, baseY: 0 }
     const aim = () => camera.setViewOffset(view.w, view.h, view.x * view.w, view.y * view.h, view.w, view.h)
     const resize = () => {
       const { width, height } = el.getBoundingClientRect()
@@ -262,11 +264,11 @@ export default function Scene3D({ getLevels, accent, light = false }: Props) {
       camera.aspect = width / height
       if (matchMedia('(max-width: 1023px)').matches) {
         // Phone: centred, 80% of the panel's width but never taller than 90% of its height (landscape, tablets).
-        Object.assign(view, { w: width, h: height, x: 0, baseX: 0, y: 0 })
+        Object.assign(view, { w: width, h: height, x: 0, baseX: 0, y: breathing.size === null ? 0 : BREATH_Y, baseY: 0 })
         camera.zoom = Math.min(0.8 * width, 0.9 * height) / (SPHERE_SPAN * height)
       } else {
         // Scene centre at 68% / 48% of the panel, beside the clock.
-        Object.assign(view, { w: width, h: height, x: breathing.size === null ? -0.18 : 0, baseX: -0.18, y: 0.02 })
+        Object.assign(view, { w: width, h: height, x: breathing.size === null ? -0.18 : 0, baseX: -0.18, y: breathing.size === null ? 0.02 : BREATH_Y, baseY: 0.02 })
         camera.zoom = 1
       }
       aim()
@@ -299,7 +301,7 @@ export default function Scene3D({ getLevels, accent, light = false }: Props) {
       uniforms.tPosition.value = gpu.getCurrentRenderTarget(posVar).texture
       uniforms.tVelocity.value = gpu.getCurrentRenderTarget(velVar).texture
       uniforms.uAccent.value.set(...hexToRgb(accentRef.current))
-      uniforms.uGain.value = lightRef.current ? 2.2 : 1
+      uniforms.uGain.value = lightRef.current ? 2.8 : 1
       uniforms.uLight.value = lightRef.current ? 1 : 0
       // Light adds up to white on a light page, so there the dots are ink, composited over the paper instead.
       material.blending = lightRef.current ? NormalBlending : AdditiveBlending
@@ -330,13 +332,18 @@ export default function Scene3D({ getLevels, accent, light = false }: Props) {
       points.rotation.set(0.35 + tilt.y, spin + tilt.x, 0)
       // Breathing guide open: the sphere moves to the centre and swells and shrinks with the breath.
       const b = breathing.size
-      points.scale.setScalar(smooth(points.scale.x, b === null ? 1 : 0.5 + b * 0.55))
+      // sized against the panel's height: at most half of it at the top of the in-breath, about a quarter at the bottom
+      const fit = 0.44 / (SPHERE_SPAN * camera.zoom)
+      points.scale.setScalar(smooth(points.scale.x, b === null ? 1 : fit * (0.55 + b * 0.45)))
       // fill line from just under the sphere (empty) to just over it (full)
       if (b !== null) uniforms.uFill.value = b * 2.7 - 1.35
       uniforms.uFillMix.value = smooth(uniforms.uFillMix.value, b === null ? 0 : 1)
+      // and rises a little, so the cue under it reads on the paper, not over the dots
       const x = smooth(view.x, b === null ? view.baseX : 0)
-      if (Math.abs(x - view.x) > 1e-4) {
+      const y = smooth(view.y, b === null ? view.baseY : BREATH_Y)
+      if (Math.abs(x - view.x) + Math.abs(y - view.y) > 1e-4) {
         view.x = x
+        view.y = y
         aim()
         camera.updateProjectionMatrix()
       }
