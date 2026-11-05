@@ -1,119 +1,172 @@
+/* Invite: it takes the task line's place at the foot of the clock panel (in a break there is no task to show),
+   in the panel's own body type. The accent square is the clock's colon, breathing at the game's pace. */
 .br-invite {
-  position: absolute;
-  left: 50%;
-  top: 14px;
-  z-index: 4;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  border: 1px solid var(--line-strong);
-  background: var(--bg);
-  transform: translateX(-50%);
-  animation: br-in 0.4s ease-out;
-}
-
-/* focus mode keeps its exit button at the top centre */
-.app[data-immersive] .br-invite {
-  top: 52px;
-}
-
-.br-invite button {
-  white-space: nowrap;
-  min-height: 40px;
-  padding: 0 14px;
-  font-size: 11px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  gap: 4px;
+  animation: br-in 0.6s ease-out;
 }
 
 .br-invite-go {
-  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 36px;
+  white-space: nowrap;
+}
+
+.br-dot {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  background: var(--accent);
+  animation: br-breathe 10s ease-in-out infinite;
+}
+
+@media (hover: hover) {
+  .br-invite-go:hover {
+    color: var(--accent);
+  }
+
+  .br-invite-x:hover {
+    opacity: 1;
+  }
 }
 
 .br-invite-x {
-  border-left: 1px solid var(--line-strong) !important;
-  opacity: 0.6;
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  opacity: 0.45;
 }
 
-.br {
+/* 4 s in, 6 s out: the same rhythm as the game (breath.ts). */
+@keyframes br-breathe {
+  0%,
+  100% {
+    transform: scale(0.55);
+  }
+  40% {
+    transform: scale(1.25);
+  }
+}
+
+/* The game covers the clock panel and borrows its layout: number and label top left, close top right. */
+/* .focus > .br: the panel makes every child position: relative (to sit above the sphere); this one must float. */
+.br,
+.app .focus > .br {
   position: absolute;
   inset: 0;
   z-index: 4;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
   padding: 18px 20px;
   background: var(--bg);
   animation: br-in 0.4s ease-out;
 }
 
-.br-head,
-.br-score {
+.br-head {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  font-size: 11px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  align-items: flex-start;
+}
+
+.br-left {
+  margin-top: 10px;
+  font-size: 34px;
+  font-family: var(--display, var(--font));
+  font-weight: var(--display-weight, 700);
   font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
 }
 
 .br-close {
-  min-width: 40px;
-  min-height: 40px;
-  font-size: 15px;
-  opacity: 0.6;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.55;
 }
 
+/* The whole middle is the pad: hold anywhere, not on a small target. */
 .br-pad {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: min(60vmin, 360px);
-  aspect-ratio: 1;
-  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(20px, 4vh, 40px);
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
 }
 
-.br-circle {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  border: 1px solid var(--accent);
-  background: color-mix(in srgb, var(--accent) 14%, transparent);
+.br-stage {
+  display: grid;
+  place-items: center;
+  width: min(34vmin, 260px);
+  aspect-ratio: 1;
+}
+
+.br-square {
+  width: 100%;
+  height: 100%;
+  background: var(--accent);
   transform: scale(var(--s, 1));
 }
 
-.br-pad:active .br-circle {
-  background: color-mix(in srgb, var(--accent) 30%, transparent);
+/* Holding: a frame appears around the square, so the press is visible without looking away from it. */
+.br-stage.is-held {
+  outline: 1px solid var(--accent);
+  outline-offset: 10px;
 }
 
 .br-cue {
-  position: relative;
-  font-size: 18px;
-  font-weight: 500;
-  letter-spacing: -0.01em;
+  font-family: var(--display, var(--font));
+  font-weight: var(--display-weight, 700);
+  font-size: clamp(32px, 6vw, 64px);
+  letter-spacing: -0.02em;
+  line-height: 1;
 }
 
-.br-hint,
-.br-end {
-  margin: 0;
-  max-width: 34ch;
-  text-align: center;
+.br-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
   font-size: 13px;
-  opacity: 0.6;
+}
+
+.br-hint {
+  margin: 0;
+  max-width: 44ch;
+  opacity: 0.5;
+}
+
+.br-score {
+  display: flex;
+  gap: 18px;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.br-score span:last-child {
+  opacity: 0.5;
 }
 
 .br-end {
-  margin: auto 0;
-  font-size: 20px;
-  opacity: 1;
+  align-self: center;
+  justify-self: center;
+  margin: 0;
+  font-family: var(--display, var(--font));
+  font-weight: var(--display-weight, 700);
+  font-size: clamp(28px, 4vw, 44px);
+  text-align: center;
 }
 
 @keyframes br-in {
@@ -122,25 +175,23 @@
   }
 }
 
-/* No growing circle: the cue text and a steady ring carry the rhythm instead. */
+/* No scaling: the square's strength and the cue carry the rhythm instead. */
 @media (prefers-reduced-motion: reduce) {
   .br,
-  .br-invite {
+  .br-invite,
+  .br-dot {
     animation: none;
   }
 
-  .br-circle {
+  .br-square {
     transform: none;
-    opacity: calc(0.35 + var(--s, 1) * 0.65);
+    opacity: calc(0.25 + var(--s, 1) * 0.75);
   }
 }
 
-/* Phones: just above the tab bar, where a thumb already is. */
 @media (max-width: 1023px) {
-  .br-invite {
-    position: fixed;
-    top: auto;
-    bottom: calc(64px + env(safe-area-inset-bottom));
-    z-index: 6;
+  .br-foot {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
