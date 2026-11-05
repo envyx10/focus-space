@@ -214,6 +214,8 @@ export const es = {
   'settings.calm': 'Modo calma: sin esfera ni grano',
   'settings.textSize': 'Tamaño del texto',
   'settings.theme': 'Tema',
+  'theme.toLight': 'Cambiar a tema claro',
+  'theme.toDark': 'Cambiar a tema oscuro',
   'theme.dark': 'Oscuro',
   'theme.light': 'Claro',
   'theme.system': 'Sistema',
