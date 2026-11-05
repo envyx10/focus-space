@@ -35,7 +35,7 @@ export const es = {
   'focus.clockLabel': '{min} minutos {sec} segundos',
   'focus.unitMin': 'MIN',
   'focus.noTask': 'Sin tarea activa',
-  'focus.reset': '↺ Reiniciar',
+  'focus.reset': 'Reiniciar',
   'focus.extend': '+5 min',
   'focus.extendHint': 'Añadir 5 minutos a esta fase',
   'focus.skip': 'Saltar',
