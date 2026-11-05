@@ -29,8 +29,9 @@ export default function BreathGame({ remaining, ended = false, mode = false, onC
   const [breath, setBreath] = useState<Breath>(() => breathAt(0))
   const closeBtn = useRef<HTMLButtonElement>(null)
   const [why, setWhy] = useState(false)
-  // The particle sphere breathes when it is running; otherwise a flat accent square does.
-  const [sphere] = useState(() => breathing.sphere)
+  // The particle sphere breathes when it is running; otherwise a flat accent square does. Re-read every frame:
+  // calm mode can take the sphere away (or bring it back) while the guide is open.
+  const [sphere, setSphere] = useState(() => breathing.sphere)
   const secs = (breath.phase === 'in' ? INHALE_MS : EXHALE_MS) / 1000
 
   // Focus inside the panel so Esc reaches it (the Breathe view leaves focus on the button that opened it).
@@ -46,6 +47,7 @@ export default function BreathGame({ remaining, ended = false, mode = false, onC
       const b = breathAt(now - t0)
       breathing.size = b.size
       setBreath(b)
+      setSphere(breathing.sphere)
       raf = requestAnimationFrame(tick)
     }
     raf = requestAnimationFrame(tick)
