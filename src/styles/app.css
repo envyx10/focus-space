@@ -198,7 +198,7 @@ button {
     flex: none;
   }
 
-  .app .mixer {
+  .app .mx-strips {
     grid-template-columns: repeat(2, 1fr);
   }
 
@@ -296,18 +296,13 @@ button {
 
 @media (max-width: 1023px) {
   .app .mx-hint {
-    position: static;
-    transform: none;
-    grid-column: 1 / -1;
-    max-width: none;
-    width: auto;
     padding: 8px 16px;
-    border-bottom: 1px solid var(--line);
+    white-space: normal;
   }
 }
 
 @media (max-width: 1023px) {
-  .app .mixer {
+  .app .mx-strips {
     grid-auto-flow: row;
   }
 }
