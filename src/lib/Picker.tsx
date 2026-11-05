@@ -42,12 +42,14 @@ export default function Picker<T extends string>({ value, options, onChange, lab
   useLayoutEffect(() => {
     if (!open || !trigger.current) return
     const r = trigger.current.getBoundingClientRect()
-    const w = list.current?.offsetWidth ?? 0
-    const h = (list.current?.offsetHeight ?? 0) + 12
+    // The text-size setting zooms .app: measurements come back zoomed, but the list's own left/top get zoomed again.
+    const z = (trigger.current as HTMLElement & { currentCSSZoom?: number }).currentCSSZoom ?? 1
+    const w = (list.current?.offsetWidth ?? 0) * z
+    const h = (list.current?.offsetHeight ?? 0) * z + 12
     const left = Math.max(8, Math.min(r.left, innerWidth - w - 8))
     // Flip when the preferred side has no room.
     const up = placement === 'up' ? r.top >= h || r.top > innerHeight - r.bottom : innerHeight - r.bottom < h && r.top > innerHeight - r.bottom
-    setPos(up ? { left, bottom: innerHeight - r.top + 6 } : { left, top: r.bottom + 6 })
+    setPos(up ? { left: left / z, bottom: (innerHeight - r.top + 6) / z } : { left: left / z, top: (r.bottom + 6) / z })
     list.current?.focus()
   }, [open, placement])
 
@@ -81,17 +83,18 @@ export default function Picker<T extends string>({ value, options, onChange, lab
     else if (e.key === 'Home') setActive(0)
     else if (e.key === 'End') setActive(last)
     else if (e.key === 'Enter' || e.key === ' ') pick(active)
-    else if (e.key === 'Escape' || e.key === 'Tab') close(e.key === 'Escape')
+    else if (e.key === 'Escape') close()
+    // Tab: back on the trigger first, then let the browser move on from it as usual.
+    else if (e.key === 'Tab') return close()
     else if (e.key.length === 1) {
       // Type-ahead: jump to the next option starting with that letter.
       const k = e.key.toLowerCase()
       const n = options.findIndex((o, i) => i > active && o.label.toLowerCase().startsWith(k))
       const i = n !== -1 ? n : options.findIndex((o) => o.label.toLowerCase().startsWith(k))
       if (i !== -1) setActive(i)
-      else return
     } else return
     e.preventDefault()
-    e.stopPropagation() // Escape and Space must not reach the app shortcuts
+    e.stopPropagation() // Escape, Space and letters must not reach the app shortcuts (M mutes, ? opens settings)
   }
 
   return (
