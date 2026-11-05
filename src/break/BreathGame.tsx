@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useT } from '../i18n'
 import Icon from '../lib/Icon'
-import { breathAt, type Breath } from './breath'
+import { breathAt, breathing, type Breath } from './breath'
 import './break.css'
 
 type Props = {
@@ -17,6 +17,8 @@ export default function BreathGame({ remaining, ended, onClose }: Props) {
   const t = useT()
   const [breath, setBreath] = useState<Breath>(() => breathAt(0))
   const closeBtn = useRef<HTMLButtonElement>(null)
+  // The particle sphere breathes when it is running; otherwise a flat accent square does.
+  const [sphere] = useState(() => breathing.sphere)
 
   // Focus inside the panel so Esc reaches it.
   useEffect(() => closeBtn.current?.focus(), [])
@@ -26,15 +28,20 @@ export default function BreathGame({ remaining, ended, onClose }: Props) {
     let raf = 0
     const t0 = performance.now()
     const tick = (now: number) => {
-      setBreath(breathAt(now - t0))
+      const b = breathAt(now - t0)
+      breathing.size = b.size
+      setBreath(b)
       raf = requestAnimationFrame(tick)
     }
     raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
+    return () => {
+      cancelAnimationFrame(raf)
+      breathing.size = null
+    }
   }, [ended])
 
   return (
-    <div className="br" role="dialog" aria-label={t('break.title')} onKeyDown={(e) => e.key === 'Escape' && (e.preventDefault(), onClose())}>
+    <div className={`br${sphere ? ' has-sphere' : ''}`} role="dialog" aria-label={t('break.title')} onKeyDown={(e) => e.key === 'Escape' && (e.preventDefault(), onClose())}>
       <header className="br-head">
         <div>
           <div className="num">02</div>
@@ -56,7 +63,7 @@ export default function BreathGame({ remaining, ended, onClose }: Props) {
       ) : (
         <div className="br-pad">
           <span className="br-stage" aria-hidden>
-            <span className="br-square" style={{ ['--s' as string]: 0.2 + breath.size * 0.8 }} />
+            {!sphere && <span className="br-square" style={{ ['--s' as string]: 0.2 + breath.size * 0.8 }} />}
           </span>
           <p className="br-cue" aria-live="polite">
             {t(breath.phase === 'in' ? 'break.inhale' : 'break.exhale')}

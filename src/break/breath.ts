@@ -17,6 +17,14 @@ export type Breath = {
   count: number
 }
 
+/**
+ * Hand-off between the breathing guide and the particle sphere, which live in different React trees.
+ * `sphere`: the sphere is animating (not calm mode, WebGL ok, motion allowed), so the guide can use it.
+ * `size`: the guide's breath, 0..1, or null when no guide is open.
+ * shortcut: a module-level singleton, fine for one sphere and one guide; a context if either ever multiplies.
+ */
+export const breathing: { sphere: boolean; size: number | null } = { sphere: false, size: null }
+
 const ease = (x: number) => 0.5 - Math.cos(Math.PI * x) / 2
 
 export function breathAt(ms: number): Breath {
