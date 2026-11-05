@@ -304,7 +304,7 @@ export default function Scene3D({ getLevels, accent, light = false }: Props) {
       uniforms.tPosition.value = gpu.getCurrentRenderTarget(posVar).texture
       uniforms.tVelocity.value = gpu.getCurrentRenderTarget(velVar).texture
       uniforms.uAccent.value.set(...hexToRgb(accentRef.current))
-      uniforms.uGain.value = lightRef.current ? 1.6 : 1
+      uniforms.uGain.value = lightRef.current ? 3.2 : 1
       uniforms.uLight.value = lightRef.current ? 1 : 0
       renderer.render(three, camera)
     }
