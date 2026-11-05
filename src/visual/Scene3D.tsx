@@ -83,12 +83,15 @@ const renderVertex = /* glsl */ `
   varying float vHeat;
   varying float vAccent;
   varying float vRim;
+  varying float vY;
 
   void main() {
     vec4 p = texture2D(tPosition, aRef);
     vec3 v = texture2D(tVelocity, aRef).xyz;
     vec4 mv = modelViewMatrix * vec4(p.xyz, 1.0);
     gl_Position = projectionMatrix * mv;
+    // height on screen across the sphere, -1 bottom .. 1 top, whatever its scale and spin
+    vY = (mv.y - (modelViewMatrix * vec4(0.0, 0.0, 0.0, 1.0)).y) / length(modelViewMatrix[0].xyz);
     float seed = p.w;
     gl_PointSize = (0.7 + seed * seed * 0.8) * uPixelRatio * (${CAMERA_Z.toFixed(1)} / -mv.z);
     float depth = clamp((${(CAMERA_Z + 1.4).toFixed(1)} + mv.z) / 2.8, 0.0, 1.0); // 1 = nearest
@@ -110,10 +113,13 @@ const renderFragment = /* glsl */ `
   uniform float uIntro;
   uniform float uGain;
   uniform vec3 uAccent;
+  uniform float uFill;
+  uniform float uFillMix;
   varying float vAlpha;
   varying float vHeat;
   varying float vAccent;
   varying float vRim;
+  varying float vY;
 
   void main() {
     vec2 c = gl_PointCoord - 0.5;
@@ -123,7 +129,10 @@ const renderFragment = /* glsl */ `
     vec3 ember = uAccent;
     // fast-moving particles and a few seeds glow in the accent colour: motion reads as colour
     vec3 col = mix(warm, ember, max(max(vHeat * 0.85, vAccent * uIntro), vRim * 0.85));
-    float a = min(1.0, disc * vAlpha * (0.5 + vHeat * 0.4) * 0.7 * uIntro * uGain);
+    // Breathing guide: the accent fills the sphere from the bottom up on the in-breath and drains on the out-breath.
+    float fill = uFillMix * smoothstep(uFill + 0.35, uFill - 0.35, vY);
+    col = mix(col, ember, fill * 0.8);
+    float a = min(1.0, disc * vAlpha * (0.5 + vHeat * 0.4 + fill * 0.5) * 0.7 * uIntro * uGain);
     gl_FragColor = vec4(col * a, a); // premultiplied
   }
 `
@@ -213,6 +222,8 @@ export default function Scene3D({ getLevels, accent, light = false }: Props) {
       uPixelRatio: { value: 1 },
       uIntro: { value: 0 },
       uGain: { value: 1 },
+      uFill: { value: -2 },
+      uFillMix: { value: 0 },
       uAccent: { value: new Vector3(...hexToRgb(accent)) },
     }
     const material = new ShaderMaterial({
@@ -309,6 +320,9 @@ export default function Scene3D({ getLevels, accent, light = false }: Props) {
       // Breathing guide open: the sphere moves to the centre and swells and shrinks with the breath.
       const b = breathing.size
       points.scale.setScalar(smooth(points.scale.x, b === null ? 1 : 0.5 + b * 0.55))
+      // fill line from just under the sphere (empty) to just over it (full)
+      if (b !== null) uniforms.uFill.value = b * 2.7 - 1.35
+      uniforms.uFillMix.value = smooth(uniforms.uFillMix.value, b === null ? 0 : 1)
       const x = smooth(view.x, b === null ? view.baseX : 0)
       if (Math.abs(x - view.x) > 1e-4) {
         view.x = x

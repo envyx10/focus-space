@@ -208,7 +208,7 @@ export const es = {
   'break.inhale': 'Inspira por la nariz',
   'break.exhale': 'Suelta despacio por la boca',
   'break.how': 'Una mano sobre él: que suba al inspirar y baje al soltar el aire. El pecho, casi quieto.',
-  'break.breaths': 'Respiraciones',
+  'break.breaths': 'respiraciones',
   'break.howLead': 'Respira con el abdomen',
   'break.why': '¿Por qué así?',
   'break.whyClose': 'Cerrar la explicación',
