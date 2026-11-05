@@ -1,8 +1,15 @@
 .mixer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.mx-strips {
+  flex: 1;
+  min-height: 0;
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: minmax(104px, 1fr);
-  height: 100%;
   overflow-x: auto;
 }
 
@@ -101,20 +108,14 @@
   background: var(--fg);
 }
 
-/* First-run nudge: floats over the empty strips so the grid keeps its size. */
-.mixer {
-  position: relative;
-}
-
+/* First-run nudge: a line of its own above the strips. Floating over them, it covered the numbers on short windows. */
 .mx-hint {
-  position: absolute;
-  top: 50%;
-  left: 16px;
-  transform: translateY(-50%);
-  width: fit-content;
-  max-width: calc(100% - 32px);
-  padding: 0 8px 0 0;
-  background: var(--bg);
+  flex: none;
+  padding: 6px 16px;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   margin: 0;
   font-size: 10px;
   text-transform: uppercase;
