@@ -101,17 +101,19 @@ export default function MixerBar({ prefs, onVolume, onVariant, onSlots }: Props)
           {t('mixer.silent')}
         </p>
       )}
-      {shown.map((ch, i) => (
-        <Strip
-          key={ch.id}
-          ch={ch}
-          volume={prefs.volumes[ch.id]}
-          variant={prefs.variants[ch.id]}
-          onSwap={i < prefs.slots.length ? (id) => onSlots(replaceSlot(prefs.slots, i, id)) : undefined}
-          onVolume={onVolume}
-          onVariant={onVariant}
-        />
-      ))}
+      <div className="mx-strips">
+        {shown.map((ch, i) => (
+          <Strip
+            key={ch.id}
+            ch={ch}
+            volume={prefs.volumes[ch.id]}
+            variant={prefs.variants[ch.id]}
+            onSwap={i < prefs.slots.length ? (id) => onSlots(replaceSlot(prefs.slots, i, id)) : undefined}
+            onVolume={onVolume}
+            onVariant={onVariant}
+          />
+        ))}
+      </div>
     </div>
   )
 }
