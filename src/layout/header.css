@@ -77,3 +77,10 @@
     gap: 8px;
   }
 }
+
+/* Narrowest phones: four buttons squeeze the brand into the icons. Settings > Screen > Theme still has it. */
+@media (max-width: 369px) {
+  .hd-theme {
+    display: none !important;
+  }
+}
