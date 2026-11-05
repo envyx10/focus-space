@@ -76,13 +76,13 @@ describe('local data never lost', () => {
   })
 
   it('"Limpiar hechas" can be undone', async () => {
-    const restore = vi.fn(async () => {})
+    const restore = vi.fn(async (_task: Task) => {})
     const noop = async () => {}
     render(<TasksPanel tasks={[task('a', { done: true }), task('b', { done: true }), task('c')]} synced add={noop} toggle={noop} edit={noop} remove={noop} setActive={noop} restore={restore} clearDone={noop} />)
     await userEvent.click(screen.getByRole('button', { name: /Limpiar hechas/ }))
     expect(screen.getByRole('status')).toHaveTextContent('2 tareas borradas')
     await userEvent.click(screen.getByRole('button', { name: 'Deshacer' }))
-    expect(restore.mock.calls.map(([t]) => (t as Task).id)).toEqual(['a', 'b'])
+    expect(restore.mock.calls.map(([t]) => t.id)).toEqual(['a', 'b'])
   })
 
   it('a half-typed new task survives a reload', async () => {
