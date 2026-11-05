@@ -82,7 +82,6 @@ export const es = {
   'tasks.localOnly': 'Guardado solo en este navegador · Inicia sesión para sincronizar',
 
   // mixer
-  'mixer.silent': 'Todo en silencio · haz clic o arrastra una barra para subir un sonido',
   'mixer.swap': 'Sonido del cuadrado {channel}',
   'mixer.nextVariant': 'Siguiente grabación',
   'mixer.changeVariant': '{channel}: {variant}. Cambiar variante',
