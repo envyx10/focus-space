@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useT } from '../i18n'
 import Icon from '../lib/Icon'
+import Picker from '../lib/Picker'
 import { channel, CHANNEL_IDS, type ChannelId } from '../audio/channels'
 import { DEFAULT_SLOTS, moveSlot, replaceSlot } from '../prefs/prefs'
 
@@ -62,13 +63,13 @@ export default function MixerSlots({ slots, variants, onSlots }: Props) {
               <span className="set-slot-n" aria-hidden>
                 {String(i + 1).padStart(2, '0')}
               </span>
-              <select value={id} aria-label={t('settings.slot', { n: i + 1 })} onChange={(e) => onSlots(replaceSlot(slots, i, e.target.value as ChannelId))}>
-                {CHANNEL_IDS.map((c) => (
-                  <option key={c} value={c}>
-                    {t(`channel.${c}`)}
-                  </option>
-                ))}
-              </select>
+              <Picker
+                className="set-slot-pick"
+                value={id}
+                options={CHANNEL_IDS.map((c) => ({ id: c, label: t(`channel.${c}`) }))}
+                onChange={(c) => onSlots(replaceSlot(slots, i, c))}
+                label={t('settings.slot', { n: i + 1 })}
+              />
               <button className="set-x" aria-label={t('settings.slotPreview', { name })} title={t('settings.slotPreview', { name })} onClick={() => play(id)}>
                 <Icon name="play" />
               </button>
