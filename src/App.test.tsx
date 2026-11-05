@@ -21,12 +21,11 @@ describe('App', () => {
     expect(screen.getByRole('button', { name: 'Sonidos' })).toHaveAttribute('aria-pressed', 'true')
   })
 
-  it('the header button flips between dark and light', async () => {
+  it('stays dark even when a light theme was saved (light mode is switched off)', () => {
+    localStorage.setItem(PREFS_KEY, JSON.stringify({ v: 1, theme: 'light' }))
     render(<App />)
-    await userEvent.click(screen.getByRole('button', { name: 'Cambiar a tema claro' }))
-    expect(document.documentElement.dataset.theme).toBe('light')
-    await userEvent.click(screen.getByRole('button', { name: 'Cambiar a tema oscuro' }))
     expect(document.documentElement.dataset.theme).toBe('dark')
+    expect(screen.queryByRole('button', { name: /tema claro/i })).not.toBeInTheDocument()
   })
 
   it('with the breathing invite turned off, the clock panel still shows the task line', () => {
