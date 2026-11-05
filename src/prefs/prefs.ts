@@ -1,4 +1,4 @@
-import { channel, CHANNEL_IDS, type ChannelId } from '../audio/channels'
+import { channel, CHANNEL_IDS, CHANNELS, type ChannelId } from '../audio/channels'
 import { DEFAULT_ACCENT, isHex } from './accent'
 import { isRecord, readJSON, writeJSON } from '../lib/storage'
 import { TYPEFACES } from '../visual/typefaces'
@@ -37,8 +37,8 @@ export type Prefs = {
 
 export const DEFAULT_PREFS: Prefs = {
   v: 1,
-  volumes: { rain: 0, fire: 0, cafe: 0, wind: 0, keys: 0 },
-  variants: { rain: 'suave', fire: 'hoguera', cafe: 'cafeteria', wind: 'suave', keys: 'marron' },
+  volumes: Object.fromEntries(CHANNEL_IDS.map((id) => [id, 0])) as Record<ChannelId, number>,
+  variants: { ...(Object.fromEntries(CHANNELS.map((c) => [c.id, c.variants[0].id])) as Record<ChannelId, string>), keys: 'marron' },
   lofiVolume: 0.6,
   font: 'mono',
   chimeVolume: 0.4,
