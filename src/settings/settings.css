@@ -490,19 +490,10 @@ kbd {
   font-variant-numeric: tabular-nums;
 }
 
-.set-slot select {
+.set-slot .set-slot-pick {
   flex: 1;
-  min-width: 0;
-  padding: 4px 0;
-  color: inherit;
-  background: transparent;
-  border: 0;
-  font: inherit;
-  cursor: pointer;
-}
-
-.set-slot select option {
-  background: var(--bg);
+  justify-content: space-between;
+  min-height: 32px;
 }
 
 .set-slot .set-x {
