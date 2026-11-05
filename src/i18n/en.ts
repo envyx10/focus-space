@@ -206,7 +206,7 @@ export const en: Record<Key, string> = {
   'break.inhale': 'Breathe in through your nose',
   'break.exhale': 'Breathe out slowly through your mouth',
   'break.how': 'One hand on it: it rises as you breathe in and falls as you let go. Your chest stays almost still.',
-  'break.breaths': 'Breaths',
+  'break.breaths': 'breaths',
   'break.howLead': 'Breathe with your belly',
   'break.why': 'Why like this?',
   'break.whyClose': 'Close the explanation',

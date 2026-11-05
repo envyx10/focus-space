@@ -103,8 +103,8 @@ export default function BreathGame({ remaining, ended = false, mode = false, onC
         </div>
         <div className="br-side">
           <p className="br-score">
-            <span className="lbl">{t('break.breaths')}</span>
             <b>{breath.count}</b>
+            <span>{t('break.breaths')}</span>
           </p>
           <button className="br-why-btn" aria-expanded={why} aria-controls="br-why" onClick={() => setWhy(!why)}>
             {t('break.why')}
