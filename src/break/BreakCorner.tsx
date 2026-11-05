@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from 'react'
+import { lazy, Suspense, useEffect, useState, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { useT } from '../i18n'
 import Icon from '../lib/Icon'
@@ -22,31 +22,31 @@ type Props = {
 export default function BreakCorner({ inBreak, breakId, remaining, fallback = null }: Props) {
   const t = useT()
   const [dismissed, setDismissed] = useState<string | null>(null)
-  const [open, setOpen] = useState(false)
-  const anchor = useRef<HTMLElement>(null)
+  // The open game, drawn on the whole clock panel (the task line it lives in is too small to hold it).
+  const [panel, setPanel] = useState<Element | 'inline' | null>(null)
+  const open = panel !== null
+  const close = () => setPanel(null)
 
   // Break over while playing: say so, then close on its own.
   useEffect(() => {
     if (inBreak || !open) return
-    const id = setTimeout(() => setOpen(false), ENDED_MS)
+    const id = setTimeout(close, ENDED_MS)
     return () => clearTimeout(id)
   }, [inBreak, open])
 
   if (open) {
     const game = (
       <Suspense fallback={null}>
-        <BreathGame remaining={remaining} ended={!inBreak} onClose={() => setOpen(false)} />
+        <BreathGame remaining={remaining} ended={!inBreak} onClose={close} />
       </Suspense>
     )
-    // Drawn on the whole clock panel: the task line it lives in is too small to hold it.
-    const panel = anchor.current?.closest('.focus')
-    return <span ref={anchor as React.RefObject<HTMLSpanElement>}>{panel ? createPortal(game, panel) : game}</span>
+    return panel === 'inline' ? game : createPortal(game, panel)
   }
 
-  if (!inBreak || dismissed === breakId) return <span ref={anchor as React.RefObject<HTMLSpanElement>}>{fallback}</span>
+  if (!inBreak || dismissed === breakId) return fallback
   return (
-    <div className="br-invite" role="status" ref={anchor as React.RefObject<HTMLDivElement>}>
-      <button className="br-invite-go" onClick={() => setOpen(true)}>
+    <div className="br-invite" role="status">
+      <button className="br-invite-go" onClick={(e) => setPanel(e.currentTarget.closest('.focus') ?? 'inline')}>
         <span className="br-dot" aria-hidden />
         {t('break.invite')}
       </button>
