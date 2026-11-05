@@ -192,7 +192,7 @@ export default function App() {
         )}
       </main>
       <section className="region-mixer" data-region="mixer">
-        <MixerBar prefs={prefs} onVolume={ambient.setVolume} onVariant={ambient.setVariant} />
+        <MixerBar prefs={prefs} onVolume={ambient.setVolume} onVariant={ambient.setVariant} onSlots={ambient.setSlots} />
       </section>
       <section className="region-lofi" data-region="lofi">
         <LofiBlock
