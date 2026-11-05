@@ -93,17 +93,13 @@
   opacity: 0.55;
 }
 
-/* The whole middle is the pad: hold anywhere, not on a small target. */
+/* The guide: the square breathes, the cue says how and counts the seconds down. */
 .br-pad {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: clamp(20px, 4vh, 40px);
-  touch-action: none;
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
 }
 
 .br-stage {
@@ -120,18 +116,22 @@
   transform: scale(var(--s, 1));
 }
 
-/* Holding: a frame appears around the square, so the press is visible without looking away from it. */
-.br-stage.is-held {
-  outline: 1px solid var(--accent);
-  outline-offset: 10px;
-}
-
 .br-cue {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+  margin: 0;
   font-family: var(--display, var(--font));
   font-weight: var(--display-weight, 700);
-  font-size: clamp(32px, 6vw, 64px);
+  font-size: clamp(22px, 3.2vw, 40px);
   letter-spacing: -0.02em;
-  line-height: 1;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.br-count {
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
 }
 
 .br-foot {
@@ -144,19 +144,15 @@
 
 .br-hint {
   margin: 0;
-  max-width: 44ch;
-  opacity: 0.5;
+  max-width: 60ch;
+  opacity: 0.7;
 }
 
 .br-score {
-  display: flex;
-  gap: 18px;
+  margin: 0;
+  opacity: 0.5;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
-}
-
-.br-score span:last-child {
-  opacity: 0.5;
 }
 
 .br-end {
