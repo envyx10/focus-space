@@ -92,6 +92,7 @@ export function useAmbient() {
   const setChimeVolume = useCallback((chimeVolume: number) => setPrefs((p) => ({ ...p, chimeVolume })), [])
   const setChimeSound = useCallback((chimeSound: Chime) => setPrefs((p) => ({ ...p, chimeSound })), [])
   const setNotify = useCallback((notify: boolean) => setPrefs((p) => ({ ...p, notify })), [])
+  const setBreakGame = useCallback((breakGame: boolean) => setPrefs((p) => ({ ...p, breakGame })), [])
   const setCalm = useCallback((calm: boolean) => setPrefs((p) => ({ ...p, calm })), [])
   const setTextScale = useCallback((textScale: TextScale) => setPrefs((p) => ({ ...p, textScale })), [])
   const setTheme = useCallback((theme: Theme) => setPrefs((p) => ({ ...p, theme })), [])
@@ -121,6 +122,7 @@ export function useAmbient() {
     setChimeSound,
     setNotify,
     setCalm,
+    setBreakGame,
     setTextScale,
     setLofiStation,
     setAccent,

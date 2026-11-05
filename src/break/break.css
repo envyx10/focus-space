@@ -1,0 +1,146 @@
+.br-invite {
+  position: absolute;
+  left: 50%;
+  top: 14px;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--line-strong);
+  background: var(--bg);
+  transform: translateX(-50%);
+  animation: br-in 0.4s ease-out;
+}
+
+/* focus mode keeps its exit button at the top centre */
+.app[data-immersive] .br-invite {
+  top: 52px;
+}
+
+.br-invite button {
+  white-space: nowrap;
+  min-height: 40px;
+  padding: 0 14px;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.br-invite-go {
+  color: var(--accent);
+}
+
+.br-invite-x {
+  border-left: 1px solid var(--line-strong) !important;
+  opacity: 0.6;
+}
+
+.br {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  background: var(--bg);
+  animation: br-in 0.4s ease-out;
+}
+
+.br-head,
+.br-score {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+}
+
+.br-close {
+  min-width: 40px;
+  min-height: 40px;
+  font-size: 15px;
+  opacity: 0.6;
+}
+
+.br-pad {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(60vmin, 360px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.br-circle {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  transform: scale(var(--s, 1));
+}
+
+.br-pad:active .br-circle {
+  background: color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+.br-cue {
+  position: relative;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.br-hint,
+.br-end {
+  margin: 0;
+  max-width: 34ch;
+  text-align: center;
+  font-size: 13px;
+  opacity: 0.6;
+}
+
+.br-end {
+  margin: auto 0;
+  font-size: 20px;
+  opacity: 1;
+}
+
+@keyframes br-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* No growing circle: the cue text and a steady ring carry the rhythm instead. */
+@media (prefers-reduced-motion: reduce) {
+  .br,
+  .br-invite {
+    animation: none;
+  }
+
+  .br-circle {
+    transform: none;
+    opacity: calc(0.35 + var(--s, 1) * 0.65);
+  }
+}
+
+/* Phones: just above the tab bar, where a thumb already is. */
+@media (max-width: 1023px) {
+  .br-invite {
+    position: fixed;
+    top: auto;
+    bottom: calc(64px + env(safe-area-inset-bottom));
+    z-index: 6;
+  }
+}
