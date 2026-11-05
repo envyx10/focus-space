@@ -53,6 +53,13 @@ export function useAmbient() {
     setPrefs((p) => ({ ...p, variants: { ...p.variants, [ch]: id } }))
   }, [])
 
+  const setSlots = useCallback((slots: ChannelId[]) => {
+    // A channel taken off the mixer fades out instead of playing on where it can't be turned down.
+    const gone = prefsRef.current.slots.filter((id) => !slots.includes(id) && prefsRef.current.volumes[id] > 0)
+    for (const id of gone) engineRef.current?.setVolume(id, 0)
+    setPrefs((p) => ({ ...p, slots, volumes: { ...p.volumes, ...Object.fromEntries(gone.map((id) => [id, 0])) } }))
+  }, [])
+
   const setMuted = useCallback((muted: boolean) => {
     engineRef.current?.setMuted(muted)
     setPrefs((p) => ({ ...p, muted }))
@@ -102,6 +109,7 @@ export function useAmbient() {
     prefs,
     setVolume,
     setVariant,
+    setSlots,
     setMuted,
     saveScene,
     applyScene,

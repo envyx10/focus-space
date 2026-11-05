@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { DEFAULT_PREFS, loadPrefs, PREFS_KEY, savePrefs } from './prefs'
+import { DEFAULT_PREFS, loadPrefs, moveSlot, PREFS_KEY, replaceSlot, savePrefs, SLOT_COUNT } from './prefs'
 
 describe('prefs', () => {
   it('defaults: every ambient channel silent until the user raises it', () => {
@@ -26,6 +26,22 @@ describe('prefs', () => {
     expect(p.variants.rain).toBe('suave')
   })
 
+
+  it('mixer squares: unknown and repeated ids dropped, short lists topped up to SLOT_COUNT', () => {
+    localStorage.setItem(PREFS_KEY, JSON.stringify({ v: 1, slots: ['asmr', 'lava', 'asmr', 'rain'] }))
+    const slots = loadPrefs().slots
+    expect(slots).toHaveLength(SLOT_COUNT)
+    expect(slots.slice(0, 3)).toEqual(['asmr', 'rain', 'fire'])
+    expect(new Set(slots).size).toBe(SLOT_COUNT)
+  })
+
+  it('replaceSlot swaps a channel that is already shown; moveSlot shifts the rest', () => {
+    const s = DEFAULT_PREFS.slots
+    expect(replaceSlot(s, 0, 'asmr')).toEqual(['asmr', ...s.slice(1)])
+    expect(replaceSlot(s, 0, 'cafe')).toEqual(['cafe', 'fire', 'rain', ...s.slice(3)])
+    expect(moveSlot(['a', 'b', 'c'] as never[], 0, 2)).toEqual(['b', 'c', 'a'])
+    expect(moveSlot(s, 0, -1)).toBe(s)
+  })
 
   it('typeface defaults to Mono and rejects unknown ids', () => {
     expect(loadPrefs().font).toBe('mono')

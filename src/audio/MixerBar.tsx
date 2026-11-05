@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { useT } from '../i18n'
 import Icon from '../lib/Icon'
-import { CHANNELS, nextVariant, type Channel, type ChannelId } from './channels'
+import { channel, CHANNEL_IDS, nextVariant, type Channel, type ChannelId } from './channels'
 import type { Prefs } from '../prefs/prefs'
 import './mixer.css'
 
@@ -76,7 +76,9 @@ function Strip({ ch, volume, variant, onVolume, onVariant }: { ch: Channel; volu
 
 export default function MixerBar({ prefs, onVolume, onVariant }: Props) {
   const t = useT()
-  const silent = CHANNELS.every((ch) => prefs.volumes[ch.id] === 0)
+  // A saved mix may play a channel that has no square; it shows up at the end so it can still be turned down.
+  const shown = [...prefs.slots, ...CHANNEL_IDS.filter((id) => !prefs.slots.includes(id) && prefs.volumes[id] > 0)].map(channel)
+  const silent = shown.every((ch) => prefs.volumes[ch.id] === 0)
   return (
     <div className="mixer">
       {silent && !prefs.muted && (
@@ -84,7 +86,7 @@ export default function MixerBar({ prefs, onVolume, onVariant }: Props) {
           {t('mixer.silent')}
         </p>
       )}
-      {CHANNELS.map((ch) => (
+      {shown.map((ch) => (
         <Strip key={ch.id} ch={ch} volume={prefs.volumes[ch.id]} variant={prefs.variants[ch.id]} onVolume={onVolume} onVariant={onVariant} />
       ))}
     </div>

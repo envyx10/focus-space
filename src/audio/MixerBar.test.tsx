@@ -16,6 +16,12 @@ describe('MixerBar', () => {
     expect(onVariant).toHaveBeenLastCalledWith('rain', 'suave')
   })
 
+  it('shows the chosen squares in order, plus any hidden channel a saved mix left playing', () => {
+    const prefs = { ...DEFAULT_PREFS, slots: ['asmr', 'rain'] as typeof DEFAULT_PREFS.slots, volumes: { ...DEFAULT_PREFS.volumes, birds: 0.3 } }
+    render(<MixerBar prefs={prefs} onVolume={() => {}} onVariant={() => {}} />)
+    expect(screen.getAllByRole('slider').map((s) => s.getAttribute('aria-label'))).toEqual(['Volumen ASMR', 'Volumen Lluvia', 'Volumen Pájaros'])
+  })
+
   it('variant button is not inside the slider (ARIA sliders hide their children from screen readers)', () => {
     render(<MixerBar prefs={DEFAULT_PREFS} onVolume={() => {}} onVariant={() => {}} />)
     const slider = screen.getByRole('slider', { name: /volumen lluvia/i })
