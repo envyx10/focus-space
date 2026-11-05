@@ -125,7 +125,7 @@
   background: none;
   color: inherit;
   border: 0;
-  border-bottom: 1px solid #3a3a3a;
+  border-bottom: 1px solid var(--line-strong);
   border-radius: 0;
   outline: none;
   transition: border-color 0.15s;
@@ -148,7 +148,7 @@
 
 .set-num:hover,
 .set-scene input:hover {
-  border-color: #8a8984;
+  border-color: var(--muted);
 }
 
 .set-num:focus,
@@ -159,7 +159,7 @@
 .set-seg {
   display: inline-flex;
   flex: none;
-  border: 1px solid #3a3a3a;
+  border: 1px solid var(--line-strong);
 }
 
 .set-seg button {
@@ -169,12 +169,12 @@
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-variant-numeric: tabular-nums;
-  color: #8a8984;
+  color: var(--muted);
   transition: background 0.15s, color 0.15s;
 }
 
 .set-seg button + button {
-  border-left: 1px solid #3a3a3a;
+  border-left: 1px solid var(--line-strong);
 }
 
 .set-seg button:hover {
@@ -202,7 +202,7 @@
   width: 32px;
   height: 16px;
   margin: 0;
-  border: 1px solid #3a3a3a;
+  border: 1px solid var(--line-strong);
   border-radius: 0;
   background: none;
   cursor: inherit;
@@ -216,12 +216,12 @@
   left: 2px;
   width: 10px;
   height: 10px;
-  background: #8a8984;
+  background: var(--muted);
   transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), background 0.18s;
 }
 
 .set-toggle:hover .set-switch:not(:disabled) {
-  border-color: #8a8984;
+  border-color: var(--muted);
 }
 
 .set-switch:checked {
@@ -409,7 +409,7 @@ kbd {
   display: inline-block;
   min-width: 24px;
   padding: 2px 7px;
-  border: 1px solid #3a3a3a;
+  border: 1px solid var(--line-strong);
   font: inherit;
   font-size: 11px;
   text-align: center;
@@ -429,7 +429,7 @@ kbd {
   width: 20px;
   height: 20px;
   padding: 0;
-  border: 1px solid #3a3a3a;
+  border: 1px solid var(--line-strong);
   border-radius: 0;
 }
 

@@ -26,6 +26,7 @@ import Grain from './visual/Grain'
 import Cycler from './visual/Cycler'
 import { TYPEFACES } from './visual/typefaces'
 import { useTypeface } from './visual/useTypeface'
+import { useTheme } from './prefs/useTheme'
 
 // three.js is ~150 kB gzip: load it after the first paint so the clock and tasks appear instantly.
 const Scene3D = lazy(() => import('./visual/Scene3D'))
@@ -36,6 +37,7 @@ export default function App() {
   const { t } = useI18n()
   const ambient = useAmbient()
   const { prefs } = ambient
+  const theme = useTheme(prefs.theme)
   const [stats, setStats] = useState(loadStats)
   useEffect(() => saveStats(stats), [stats])
   const timer = useTimer({
@@ -128,6 +130,7 @@ export default function App() {
               onMuted={ambient.setMuted}
               onTextScale={ambient.setTextScale}
               onAccent={ambient.setAccent}
+              onTheme={ambient.setTheme}
               onSaveScene={ambient.saveScene}
               onApplyScene={ambient.applyScene}
               onDeleteScene={ambient.deleteScene}
@@ -180,7 +183,7 @@ export default function App() {
         >
           {!prefs.calm && (
             <Suspense fallback={null}>
-              <Scene3D getLevels={getLevels} accent={prefs.accent} />
+              <Scene3D getLevels={getLevels} accent={prefs.accent} light={theme === 'light'} />
             </Suspense>
           )}
         </FocusPanel>
