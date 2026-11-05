@@ -82,6 +82,7 @@ export const en: Record<Key, string> = {
   // mixer
   'mixer.silent': 'All quiet · click or drag a bar to turn a sound up',
   'mixer.swap': 'Sound in the {channel} square',
+  'mixer.nextVariant': 'Next recording',
   'mixer.changeVariant': '{channel}: {variant}. Change variant',
   'mixer.volume': '{channel} volume',
   'mixer.valueText': '{pct} %, {variant}',
@@ -224,6 +225,7 @@ export const en: Record<Key, string> = {
   'settings.slotsNote': 'Mixer squares · pick a sound for each one and drag or use the arrows to reorder',
   'settings.slot': 'Square {n}',
   'settings.slotPreview': 'Preview {name}',
+  'settings.slotStop': 'Stop {name}',
   'settings.slotUp': 'Move {name} up',
   'settings.slotDown': 'Move {name} down',
   'settings.slotsReset': 'Restore default squares',
