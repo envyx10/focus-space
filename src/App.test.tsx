@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { render } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import App from './App'
 
 describe('App', () => {
@@ -8,5 +9,13 @@ describe('App', () => {
     for (const region of ['header', 'tasks', 'focus', 'mixer', 'lofi']) {
       expect(container.querySelector(`[data-region="${region}"]`)).toBeInTheDocument()
     }
+  })
+
+  it('the header button flips between dark and light', async () => {
+    render(<App />)
+    await userEvent.click(screen.getByRole('button', { name: 'Cambiar a tema claro' }))
+    expect(document.documentElement.dataset.theme).toBe('light')
+    await userEvent.click(screen.getByRole('button', { name: 'Cambiar a tema oscuro' }))
+    expect(document.documentElement.dataset.theme).toBe('dark')
   })
 })

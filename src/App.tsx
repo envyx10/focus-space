@@ -26,6 +26,7 @@ import Grain from './visual/Grain'
 import Cycler from './visual/Cycler'
 import { TYPEFACES } from './visual/typefaces'
 import { useTypeface } from './visual/useTypeface'
+import { useTheme } from './prefs/useTheme'
 
 // three.js is ~150 kB gzip: load it after the first paint so the clock and tasks appear instantly.
 const Scene3D = lazy(() => import('./visual/Scene3D'))
@@ -36,6 +37,7 @@ export default function App() {
   const { t } = useI18n()
   const ambient = useAmbient()
   const { prefs } = ambient
+  const theme = useTheme(prefs.theme)
   const [stats, setStats] = useState(loadStats)
   useEffect(() => saveStats(stats), [stats])
   const timer = useTimer({
@@ -112,6 +114,13 @@ export default function App() {
               <Icon name={prefs.muted ? 'muted' : 'sound'} />
             </button>
           }
+          themeSlot={
+            // Like the mute button: the label shows the current theme, the accessible name says what a click does.
+            <button className="hd-mute hd-theme" aria-label={t(theme === 'light' ? 'theme.toDark' : 'theme.toLight')} title={t(theme === 'light' ? 'theme.toDark' : 'theme.toLight')} onClick={() => ambient.setTheme(theme === 'light' ? 'dark' : 'light')}>
+              <span className="hd-mute-label">{t(`theme.${theme}`)}</span>
+              <Icon name={theme === 'light' ? 'sun' : 'moon'} />
+            </button>
+          }
           settingsSlot={
             <SettingsMenu
               prefs={prefs}
@@ -128,6 +137,7 @@ export default function App() {
               onMuted={ambient.setMuted}
               onTextScale={ambient.setTextScale}
               onAccent={ambient.setAccent}
+              onTheme={ambient.setTheme}
               onSaveScene={ambient.saveScene}
               onApplyScene={ambient.applyScene}
               onDeleteScene={ambient.deleteScene}
@@ -180,7 +190,7 @@ export default function App() {
         >
           {!prefs.calm && (
             <Suspense fallback={null}>
-              <Scene3D getLevels={getLevels} accent={prefs.accent} />
+              <Scene3D getLevels={getLevels} accent={prefs.accent} light={theme === 'light'} />
             </Suspense>
           )}
         </FocusPanel>

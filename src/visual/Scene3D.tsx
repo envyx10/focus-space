@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import {
   AdditiveBlending,
+  NormalBlending,
   BufferAttribute,
   BufferGeometry,
   DataTexture,
@@ -19,7 +20,13 @@ import { hexToRgb } from '../prefs/accent'
 import { fibonacciSphere, follow, smooth } from './sphereMath'
 
 type Levels = { bass: number; high: number }
-type Props = { getLevels: () => Levels | null; /** Highlight colour: the glowing particles take it. */ accent: string }
+type Props = {
+  getLevels: () => Levels | null
+  /** Highlight colour: the glowing particles take it. */
+  accent: string
+  /** Light page: CSS inverts the canvas into ink, which reads paler than light on black, so the dots get denser. */
+  light?: boolean
+}
 
 // 256² = 65 536 particles, simulated entirely on the GPU (position + velocity textures).
 const SIDE = typeof navigator !== 'undefined' && (navigator.hardwareConcurrency ?? 8) <= 4 ? 180 : 256
@@ -71,6 +78,7 @@ const renderVertex = /* glsl */ `
   uniform sampler2D tVelocity;
   uniform float uPixelRatio;
   uniform float uIntro;
+  uniform float uLight;
   varying float vAlpha;
   varying float vHeat;
   varying float vAccent;
@@ -87,7 +95,10 @@ const renderVertex = /* glsl */ `
     // Lights fixed to the camera, so the sphere turns under them: a soft key from the upper
     // left and a warm back light grazing the lower right edge. Unlit side stays near-dark.
     vec3 n = normalize(mat3(modelViewMatrix) * p.xyz);
-    float key = smoothstep(-0.15, 1.0, dot(n, normalize(vec3(-0.6, 0.55, 0.6))));
+    // Light page: the canvas is inverted, so density reads as ink, not light. Turning the key to the opposite side
+    // puts the ink on the shadow side, like pencil shading, instead of a photographic negative.
+    vec3 keyDir = uLight > 0.5 ? vec3(0.6, -0.55, 0.6) : vec3(-0.6, 0.55, 0.6);
+    float key = smoothstep(-0.15, 1.0, dot(n, normalize(keyDir)));
     // only particles already on the shell catch the warm light: no orange specks while gathering
     float onShell = 1.0 - smoothstep(0.04, 0.25, abs(length(p.xyz) - 1.0));
     vRim = pow(max(dot(n, normalize(vec3(0.75, -0.45, -0.5))), 0.0), 2.0) * onShell * uIntro * uIntro;
@@ -100,6 +111,8 @@ const renderVertex = /* glsl */ `
 
 const renderFragment = /* glsl */ `
   uniform float uIntro;
+  uniform float uGain;
+  uniform float uLight;
   uniform vec3 uAccent;
   varying float vAlpha;
   varying float vHeat;
@@ -110,11 +123,12 @@ const renderFragment = /* glsl */ `
     vec2 c = gl_PointCoord - 0.5;
     float d = length(c);
     float disc = 1.0 - smoothstep(0.32, 0.5, d); // crisp dot, just antialiased
-    vec3 warm = vec3(0.86, 0.85, 0.81);
+    // Dark page: warm light adding up. Light page: graphite ink laid over the paper, the accent in its true colour.
+    vec3 warm = mix(vec3(0.86, 0.85, 0.81), vec3(0.1, 0.1, 0.1), uLight);
     vec3 ember = uAccent;
     // fast-moving particles and a few seeds glow in the accent colour: motion reads as colour
     vec3 col = mix(warm, ember, max(max(vHeat * 0.85, vAccent * uIntro), vRim * 0.85));
-    float a = disc * vAlpha * (0.5 + vHeat * 0.4) * 0.7 * uIntro;
+    float a = min(1.0, disc * vAlpha * (0.5 + vHeat * 0.4) * 0.7 * uIntro * uGain);
     gl_FragColor = vec4(col * a, a); // premultiplied
   }
 `
@@ -143,7 +157,12 @@ function sphereTexture(): DataTexture {
   return t
 }
 
-export default function Scene3D({ getLevels, accent }: Props) {
+export default function Scene3D({ getLevels, accent, light = false }: Props) {
+  const lightRef = useRef(light)
+  lightRef.current = light
+  // Reduced motion draws one still frame; this redraws it when the theme or accent changes.
+  const redraw = useRef<(() => void) | null>(null)
+  useEffect(() => redraw.current?.(), [light, accent])
   const host = useRef<HTMLDivElement>(null)
   const levelsRef = useRef(getLevels)
   levelsRef.current = getLevels
@@ -201,6 +220,8 @@ export default function Scene3D({ getLevels, accent }: Props) {
       tVelocity: { value: gpu.getCurrentRenderTarget(velVar).texture },
       uPixelRatio: { value: 1 },
       uIntro: { value: 0 },
+      uGain: { value: 1 },
+      uLight: { value: 0 },
       uAccent: { value: new Vector3(...hexToRgb(accent)) },
     }
     const material = new ShaderMaterial({
@@ -265,6 +286,10 @@ export default function Scene3D({ getLevels, accent }: Props) {
       uniforms.tPosition.value = gpu.getCurrentRenderTarget(posVar).texture
       uniforms.tVelocity.value = gpu.getCurrentRenderTarget(velVar).texture
       uniforms.uAccent.value.set(...hexToRgb(accentRef.current))
+      uniforms.uGain.value = lightRef.current ? 2.2 : 1
+      uniforms.uLight.value = lightRef.current ? 1 : 0
+      // Light adds up to white on a light page, so there the dots are ink, composited over the paper instead.
+      material.blending = lightRef.current ? NormalBlending : AdditiveBlending
       renderer.render(three, camera)
     }
 
@@ -299,9 +324,11 @@ export default function Scene3D({ getLevels, accent }: Props) {
       for (let i = 0; i < 240; i++) step(i * STEP)
       uniforms.uIntro.value = 1
       draw()
+      redraw.current = draw
     } else raf = requestAnimationFrame(frame)
 
     return () => {
+      redraw.current = null
       cancelAnimationFrame(raf)
       removeEventListener('pointermove', onMove)
       ro.disconnect()
