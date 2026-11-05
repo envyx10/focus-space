@@ -78,6 +78,7 @@ const renderVertex = /* glsl */ `
   uniform sampler2D tVelocity;
   uniform float uPixelRatio;
   uniform float uIntro;
+  uniform float uLight;
   varying float vAlpha;
   varying float vHeat;
   varying float vAccent;
@@ -94,7 +95,10 @@ const renderVertex = /* glsl */ `
     // Lights fixed to the camera, so the sphere turns under them: a soft key from the upper
     // left and a warm back light grazing the lower right edge. Unlit side stays near-dark.
     vec3 n = normalize(mat3(modelViewMatrix) * p.xyz);
-    float key = smoothstep(-0.15, 1.0, dot(n, normalize(vec3(-0.6, 0.55, 0.6))));
+    // Light page: the canvas is inverted, so density reads as ink, not light. Turning the key to the opposite side
+    // puts the ink on the shadow side, like pencil shading, instead of a photographic negative.
+    vec3 keyDir = uLight > 0.5 ? vec3(0.6, -0.55, 0.6) : vec3(-0.6, 0.55, 0.6);
+    float key = smoothstep(-0.15, 1.0, dot(n, normalize(keyDir)));
     // only particles already on the shell catch the warm light: no orange specks while gathering
     float onShell = 1.0 - smoothstep(0.04, 0.25, abs(length(p.xyz) - 1.0));
     vRim = pow(max(dot(n, normalize(vec3(0.75, -0.45, -0.5))), 0.0), 2.0) * onShell * uIntro * uIntro;
@@ -212,6 +216,7 @@ export default function Scene3D({ getLevels, accent, light = false }: Props) {
       uPixelRatio: { value: 1 },
       uIntro: { value: 0 },
       uGain: { value: 1 },
+      uLight: { value: 0 },
       uAccent: { value: new Vector3(...hexToRgb(accent)) },
     }
     const material = new ShaderMaterial({
@@ -277,6 +282,7 @@ export default function Scene3D({ getLevels, accent, light = false }: Props) {
       uniforms.tVelocity.value = gpu.getCurrentRenderTarget(velVar).texture
       uniforms.uAccent.value.set(...hexToRgb(accentRef.current))
       uniforms.uGain.value = lightRef.current ? 2.2 : 1
+      uniforms.uLight.value = lightRef.current ? 1 : 0
       renderer.render(three, camera)
     }
 
