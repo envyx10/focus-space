@@ -81,6 +81,7 @@ export const en: Record<Key, string> = {
 
   // mixer
   'mixer.silent': 'All quiet · click or drag a bar to turn a sound up',
+  'mixer.swap': 'Sound in the {channel} square',
   'mixer.changeVariant': '{channel}: {variant}. Change variant',
   'mixer.volume': '{channel} volume',
   'mixer.valueText': '{pct} %, {variant}',
