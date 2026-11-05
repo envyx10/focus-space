@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { useT } from '../i18n'
 import Icon from '../lib/Icon'
+import Picker from '../lib/Picker'
 import { channel, CHANNEL_IDS, nextVariant, type Channel, type ChannelId } from './channels'
 import { replaceSlot, type Prefs } from '../prefs/prefs'
 import './mixer.css'
@@ -30,13 +31,14 @@ function Strip({ ch, volume, variant, onSwap, onVolume, onVariant }: StripProps)
       <div className="mx-name">
         {/* The channel name is the picker: change which sound this square plays, right here. */}
         {onSwap ? (
-          <select className="mx-swap" value={ch.id} aria-label={t('mixer.swap', { channel: chLabel })} onChange={(e) => onSwap(e.target.value as ChannelId)}>
-            {CHANNEL_IDS.map((id) => (
-              <option key={id} value={id}>
-                {t(`channel.${id}`)}
-              </option>
-            ))}
-          </select>
+          <Picker
+            className="mx-swap"
+            value={ch.id}
+            options={CHANNEL_IDS.map((id) => ({ id, label: t(`channel.${id}`) }))}
+            onChange={onSwap}
+            label={t('mixer.swap', { channel: chLabel })}
+            placement="up"
+          />
         ) : (
           <span>{chLabel}</span>
         )}

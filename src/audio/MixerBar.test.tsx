@@ -8,11 +8,11 @@ describe('MixerBar', () => {
   it('clicking channel name cycles variant', async () => {
     const onVariant = vi.fn()
     const { rerender } = render(<MixerBar prefs={DEFAULT_PREFS} onVolume={() => {}} onVariant={onVariant} onSlots={() => {}} />)
-    await userEvent.click(screen.getByRole('button', { name: /lluvia/i }))
+    await userEvent.click(screen.getByRole('button', { name: /lluvia: .*variante/i }))
     expect(onVariant).toHaveBeenCalledWith('rain', 'ventana')
     const prefs = { ...DEFAULT_PREFS, variants: { ...DEFAULT_PREFS.variants, rain: 'tienda' } }
     rerender(<MixerBar prefs={prefs} onVolume={() => {}} onVariant={onVariant} onSlots={() => {}} />)
-    await userEvent.click(screen.getByRole('button', { name: /lluvia/i }))
+    await userEvent.click(screen.getByRole('button', { name: /lluvia: .*variante/i }))
     expect(onVariant).toHaveBeenLastCalledWith('rain', 'suave')
   })
 
@@ -25,14 +25,15 @@ describe('MixerBar', () => {
   it('the channel name is a picker that swaps the sound in that square', async () => {
     const onSlots = vi.fn()
     render(<MixerBar prefs={DEFAULT_PREFS} onVolume={() => {}} onVariant={() => {}} onSlots={onSlots} />)
-    await userEvent.selectOptions(screen.getByLabelText('Sonido del cuadrado Café'), 'asmr')
+    await userEvent.click(screen.getByRole('button', { name: 'Sonido del cuadrado Café' }))
+    await userEvent.click(screen.getByRole('option', { name: 'ASMR' }))
     expect(onSlots).toHaveBeenCalledWith(['rain', 'fire', 'asmr', 'wind', 'keys'])
   })
 
   it('variant button is not inside the slider (ARIA sliders hide their children from screen readers)', () => {
     render(<MixerBar prefs={DEFAULT_PREFS} onVolume={() => {}} onVariant={() => {}} onSlots={() => {}} />)
     const slider = screen.getByRole('slider', { name: /volumen lluvia/i })
-    expect(slider.contains(screen.getByRole('button', { name: /lluvia/i }))).toBe(false)
+    expect(slider.contains(screen.getByRole('button', { name: /lluvia: .*variante/i }))).toBe(false)
   })
 
   it('shows volume as 00–100 and exposes a slider', () => {

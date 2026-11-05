@@ -102,7 +102,8 @@ describe('SettingsMenu', () => {
 
   it('mixer squares: replace one (swapping duplicates), reorder with arrows and restore defaults', async () => {
     const f = setup()
-    await userEvent.selectOptions(screen.getByLabelText('Cuadrado 1'), 'fire')
+    await userEvent.click(screen.getByRole('button', { name: 'Cuadrado 1' }))
+    await userEvent.click(screen.getByRole('option', { name: 'Fuego' }))
     expect(f.onSlots).toHaveBeenLastCalledWith(['fire', 'rain', ...DEFAULT_PREFS.slots.slice(2)])
     await userEvent.click(screen.getByRole('button', { name: 'Bajar Lluvia' }))
     expect(f.onSlots).toHaveBeenLastCalledWith(['fire', 'rain', ...DEFAULT_PREFS.slots.slice(2)])
