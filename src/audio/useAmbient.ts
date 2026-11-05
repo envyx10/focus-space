@@ -25,19 +25,20 @@ export function useAmbient() {
     engineRef.current = engine
     freq.current = new Uint8Array(engine.analyser.frequencyBinCount)
 
-    // Browsers keep audio suspended until a user gesture; the first one anywhere starts the saved mix.
-    const detach = () => {
-      removeEventListener('pointerdown', unlock)
-      removeEventListener('keydown', unlock)
-    }
-    const unlock = () => {
+    // Browsers keep audio suspended until a user gesture, and the OS can suspend it again later (sleep, a headset
+    // change, a call, a phone tab in the background). Every gesture and every return to the tab wakes it; resume()
+    // does nothing when it is already running.
+    const wake = () => {
       engine.resume().catch(() => {})
-      detach()
     }
-    addEventListener('pointerdown', unlock)
-    addEventListener('keydown', unlock)
+    const onVisible = () => document.visibilityState === 'visible' && wake()
+    addEventListener('pointerdown', wake)
+    addEventListener('keydown', wake)
+    document.addEventListener('visibilitychange', onVisible)
     return () => {
-      detach()
+      removeEventListener('pointerdown', wake)
+      removeEventListener('keydown', wake)
+      document.removeEventListener('visibilitychange', onVisible)
       ctx.close().catch(() => {})
     }
     // Engine is created once; later pref changes are pushed through setVolume/setVariant.
