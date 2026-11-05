@@ -46,7 +46,7 @@
   min-width: 248px;
   padding: 6px;
   background: var(--bg);
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--line-strong, #3a3a3a);
   outline: none;
   font-size: 13px;
   animation: pk-in 0.14s ease-out;

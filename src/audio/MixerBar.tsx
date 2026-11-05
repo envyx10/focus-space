@@ -42,10 +42,20 @@ function Strip({ ch, volume, variant, onSwap, onVolume, onVariant }: StripProps)
         ) : (
           <span>{chLabel}</span>
         )}
-        <button className="mx-variant" onClick={() => onVariant(ch.id, nextVariant(ch.id, variant))} aria-label={t('mixer.changeVariant', { channel: chLabel, variant: variantLabel })}>
-          {variantLabel}
-          <Icon name="refresh" />
-        </button>
+        {/* "Suave >": which recording is playing, and that the next one is a click away. */}
+        {ch.variants.length > 1 ? (
+          <button
+            className="mx-variant"
+            onClick={() => onVariant(ch.id, nextVariant(ch.id, variant))}
+            aria-label={t('mixer.changeVariant', { channel: chLabel, variant: variantLabel })}
+            title={t('mixer.nextVariant')}
+          >
+            <span className="mx-variant-name">{variantLabel}</span>
+            <Icon name="next" />
+          </button>
+        ) : (
+          <span className="mx-variant is-single">{variantLabel}</span>
+        )}
       </div>
       {/* Sibling of the button: ARIA sliders make their children presentational. */}
       <div

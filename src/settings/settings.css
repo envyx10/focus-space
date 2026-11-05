@@ -496,19 +496,40 @@ kbd {
   min-height: 32px;
 }
 
-.set-slot .set-x {
-  min-width: 28px;
-  min-height: 28px;
+/* Square, framed icon buttons: they read as buttons, and a thumb can hit them. */
+.set-icon {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--line-strong, #3a3a3a);
+  color: var(--muted, #8a8984);
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.set-icon .ico {
+  width: 14px;
+  height: 14px;
+}
+
+.set-icon.is-on {
+  color: var(--accent);
+  border-color: var(--accent);
 }
 
 @media (hover: hover) {
-  .set-slot .set-x:hover:not(:disabled) {
-    opacity: 1;
+  .set-icon:hover:not(:disabled) {
     color: var(--accent);
+    border-color: var(--accent);
   }
 }
 
-.set-slot .set-x:disabled {
-  opacity: 0.15;
+.set-icon:disabled {
+  opacity: 0.25;
   cursor: default;
+}
+
+.set-slot {
+  gap: 6px;
 }
