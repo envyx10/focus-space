@@ -7,6 +7,8 @@ import { LIMITS } from '../timer/timerStore'
 import { formatDuration, rangeMs, streak, type Stats } from '../stats/stats'
 import { ACCENTS } from '../prefs/accent'
 import { TEXT_SCALES, type Prefs, type TextScale } from '../prefs/prefs'
+import MixerSlots from './MixerSlots'
+import type { ChannelId } from '../audio/channels'
 import './settings.css'
 
 const MIN = 60_000
@@ -48,6 +50,7 @@ type Props = {
   onApplyScene: (name: string) => void
   onDeleteScene: (name: string) => void
   onImmersive: () => void
+  onSlots: (slots: ChannelId[]) => void
 }
 
 /** One group of settings: a quiet label, then rows. */
@@ -272,6 +275,8 @@ export default function SettingsMenu(p: Props) {
 
           <Group title={t('settings.sound')}>
             <Switch label={t('settings.muteAll')} checked={prefs.muted} onChange={p.onMuted} />
+            <p className="set-note">{t('settings.slotsNote')}</p>
+            <MixerSlots slots={prefs.slots} variants={prefs.variants} onSlots={p.onSlots} />
             <form
               className="set-row set-scene"
               onSubmit={(e) => {

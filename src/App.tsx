@@ -132,6 +132,7 @@ export default function App() {
               onApplyScene={ambient.applyScene}
               onDeleteScene={ambient.deleteScene}
               onImmersive={enterImmersive}
+              onSlots={ambient.setSlots}
             />
           }
           accountSlot={<AccountMenu session={session} />}

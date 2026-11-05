@@ -129,6 +129,7 @@ describe('the app in English', () => {
           onApplyScene={noop}
           onDeleteScene={noop}
           onImmersive={noop}
+          onSlots={noop}
         />
       </I18nProvider>,
     )

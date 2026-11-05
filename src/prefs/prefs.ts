@@ -13,6 +13,27 @@ export type TextScale = (typeof TEXT_SCALES)[number]
 export type Scene = { name: string; volumes: Record<ChannelId, number>; variants: Record<ChannelId, string> }
 export const MAX_SCENES = 8
 
+/** The mixer shows a fixed number of squares; the user picks which channel sits in each. */
+export const SLOT_COUNT = 8
+export const DEFAULT_SLOTS: ChannelId[] = ['rain', 'fire', 'cafe', 'wind', 'keys', 'water', 'night', 'noise']
+
+/** Puts `id` in slot `i`; if it already sat in another slot, the two swap so no channel shows twice. */
+export function replaceSlot(slots: ChannelId[], i: number, id: ChannelId): ChannelId[] {
+  const out = [...slots]
+  const j = out.indexOf(id)
+  if (j !== -1) out[j] = out[i]
+  out[i] = id
+  return out
+}
+
+/** Moves slot `from` to position `to`, shifting the ones in between. */
+export function moveSlot(slots: ChannelId[], from: number, to: number): ChannelId[] {
+  if (to < 0 || to >= slots.length || from === to) return slots
+  const out = [...slots]
+  out.splice(to, 0, ...out.splice(from, 1))
+  return out
+}
+
 export type Prefs = {
   v: 1
   volumes: Record<ChannelId, number>
@@ -33,6 +54,8 @@ export type Prefs = {
   accent: string
   lofiStation: number
   scenes: Scene[]
+  /** Channels shown in the mixer, in order. */
+  slots: ChannelId[]
 }
 
 export const DEFAULT_PREFS: Prefs = {
@@ -50,6 +73,7 @@ export const DEFAULT_PREFS: Prefs = {
   accent: DEFAULT_ACCENT,
   lofiStation: 0,
   scenes: [],
+  slots: DEFAULT_SLOTS,
 }
 
 const isVolume = (x: unknown): x is number => typeof x === 'number' && x >= 0 && x <= 1
@@ -64,6 +88,14 @@ function parseMix(vols: unknown, vars: unknown) {
     if (channel(id).variants.some((x) => x.id === w[id])) variants[id] = w[id] as string
   }
   return { volumes, variants }
+}
+
+function parseSlots(raw: unknown): ChannelId[] {
+  if (!Array.isArray(raw)) return DEFAULT_SLOTS
+  const ids = [...new Set(raw.filter((x): x is ChannelId => CHANNEL_IDS.includes(x as ChannelId)))]
+  // Top up with defaults so a short or stale list still fills every square.
+  for (const d of [...DEFAULT_SLOTS, ...CHANNEL_IDS]) if (ids.length < SLOT_COUNT && !ids.includes(d)) ids.push(d)
+  return ids.slice(0, SLOT_COUNT)
 }
 
 function parseScenes(raw: unknown): Scene[] {
@@ -94,6 +126,7 @@ export function loadPrefs(): Prefs {
     accent: isHex(r.accent) ? r.accent.toLowerCase() : DEFAULT_ACCENT,
     lofiStation: Number.isInteger(r.lofiStation) && (r.lofiStation as number) >= 0 ? (r.lofiStation as number) : 0,
     scenes: parseScenes(r.scenes),
+    slots: parseSlots(r.slots),
   }
 }
 

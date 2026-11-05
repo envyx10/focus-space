@@ -454,3 +454,56 @@ kbd {
 .set-color::-moz-color-swatch {
   border: 0;
 }
+
+.set-slots {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.set-slot {
+  gap: 10px;
+  min-height: 40px;
+  cursor: grab;
+}
+
+.set-slot.is-drag {
+  opacity: 0.4;
+}
+
+.set-slot-n {
+  flex: none !important;
+  font-size: 10px;
+  opacity: 0.45;
+  font-variant-numeric: tabular-nums;
+}
+
+.set-slot select {
+  flex: 1;
+  min-width: 0;
+  padding: 4px 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+.set-slot select option {
+  background: var(--bg);
+}
+
+.set-slot .set-x {
+  min-width: 28px;
+  min-height: 28px;
+}
+
+.set-slot .set-x:hover:not(:disabled) {
+  opacity: 1;
+  color: var(--accent);
+}
+
+.set-slot .set-x:disabled {
+  opacity: 0.15;
+  cursor: default;
+}
