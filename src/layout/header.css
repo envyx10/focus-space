@@ -66,3 +66,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* Below 1280 px the header has no room for a fourth label: the theme button keeps just its icon. */
+@media (max-width: 1279px) {
+  .hd-theme .hd-mute-label {
+    display: none;
+  }
+
+  .hd-account {
+    gap: 8px;
+  }
+}

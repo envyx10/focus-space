@@ -19,4 +19,12 @@ describe('App', () => {
     expect(app).toHaveAttribute('data-tab', 'mixer')
     expect(screen.getByRole('button', { name: 'Sonidos' })).toHaveAttribute('aria-pressed', 'true')
   })
+
+  it('the header button flips between dark and light', async () => {
+    render(<App />)
+    await userEvent.click(screen.getByRole('button', { name: 'Cambiar a tema claro' }))
+    expect(document.documentElement.dataset.theme).toBe('light')
+    await userEvent.click(screen.getByRole('button', { name: 'Cambiar a tema oscuro' }))
+    expect(document.documentElement.dataset.theme).toBe('dark')
+  })
 })

@@ -125,6 +125,13 @@ export default function App() {
               <Icon name={prefs.muted ? 'muted' : 'sound'} />
             </button>
           }
+          themeSlot={
+            // Like the mute button: the label shows the current theme, the accessible name says what a click does.
+            <button className="hd-mute hd-theme" aria-label={t(theme === 'light' ? 'theme.toDark' : 'theme.toLight')} title={t(theme === 'light' ? 'theme.toDark' : 'theme.toLight')} onClick={() => ambient.setTheme(theme === 'light' ? 'dark' : 'light')}>
+              <span className="hd-mute-label">{t(`theme.${theme}`)}</span>
+              <Icon name={theme === 'light' ? 'sun' : 'moon'} />
+            </button>
+          }
           settingsSlot={
             <SettingsMenu
               prefs={prefs}

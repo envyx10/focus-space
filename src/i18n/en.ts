@@ -229,6 +229,8 @@ export const en: Record<Key, string> = {
   'settings.calm': 'Calm mode: no sphere or grain',
   'settings.textSize': 'Text size',
   'settings.theme': 'Theme',
+  'theme.toLight': 'Switch to light theme',
+  'theme.toDark': 'Switch to dark theme',
   'theme.dark': 'Dark',
   'theme.light': 'Light',
   'theme.system': 'System',
