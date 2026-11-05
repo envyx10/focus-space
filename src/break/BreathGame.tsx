@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { useT } from '../i18n'
 import Icon from '../lib/Icon'
-import { breathAt, breathing, type Breath } from './breath'
+import { breathAt, breathing, EXHALE_MS, INHALE_MS, type Breath } from './breath'
 import './break.css'
 
 type Props = {
@@ -31,6 +31,7 @@ export default function BreathGame({ remaining, ended = false, mode = false, onC
   const [why, setWhy] = useState(false)
   // The particle sphere breathes when it is running; otherwise a flat accent square does.
   const [sphere] = useState(() => breathing.sphere)
+  const secs = (breath.phase === 'in' ? INHALE_MS : EXHALE_MS) / 1000
 
   // Focus inside the panel so Esc reaches it (the Breathe view leaves focus on the button that opened it).
   useEffect(() => {
@@ -87,12 +88,18 @@ export default function BreathGame({ remaining, ended = false, mode = false, onC
           <span className="br-stage" aria-hidden>
             {!sphere && <span className="br-square" style={{ ['--s' as string]: 0.2 + breath.size * 0.8 }} />}
           </span>
-          <p className="br-cue" aria-live="polite">
-            {t(breath.phase === 'in' ? 'break.inhale' : 'break.exhale')}
-            <span className="br-count" aria-hidden>
-              {breath.left}
+          <div className="br-cue">
+            <p aria-live="polite">
+              <span className="br-verb">{t(breath.phase === 'in' ? 'break.inhale' : 'break.exhale')}</span>
+              <span className="br-manner">{t(breath.phase === 'in' ? 'break.inhaleHow' : 'break.exhaleHow')}</span>
+            </p>
+            {/* One square per second of this phase (4 in, 6 out), lit as the seconds pass: the clock's colon square. */}
+            <span className="br-secs" aria-hidden>
+              {Array.from({ length: secs }, (_, i) => (
+                <i key={i} className={i < secs - breath.left + 1 ? 'on' : undefined} />
+              ))}
             </span>
-          </p>
+          </div>
         </div>
       )}
 
