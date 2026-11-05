@@ -43,6 +43,14 @@ describe('prefs', () => {
     expect(moveSlot(s, 0, -1)).toBe(s)
   })
 
+  it('theme follows the system by default and rejects unknown values', () => {
+    expect(DEFAULT_PREFS.theme).toBe('system')
+    localStorage.setItem(PREFS_KEY, JSON.stringify({ v: 1, theme: 'light' }))
+    expect(loadPrefs().theme).toBe('light')
+    localStorage.setItem(PREFS_KEY, JSON.stringify({ v: 1, theme: 'sepia' }))
+    expect(loadPrefs().theme).toBe('system')
+  })
+
   it('typeface defaults to Mono and rejects unknown ids', () => {
     expect(loadPrefs().font).toBe('mono')
     localStorage.setItem(PREFS_KEY, JSON.stringify({ v: 1, font: 'grotesk' }))
