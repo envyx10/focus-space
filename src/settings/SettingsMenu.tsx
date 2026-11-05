@@ -43,6 +43,7 @@ type Props = {
   onChimeSound: (s: Chime) => void
   onNotify: (on: boolean) => void
   onCalm: (on: boolean) => void
+  onBreakGame: (on: boolean) => void
   onMuted: (on: boolean) => void
   onTextScale: (s: TextScale) => void
   onAccent: (hex: string) => void
@@ -172,6 +173,7 @@ export default function SettingsMenu(p: Props) {
             <Minutes label={t('settings.longMin')} value={cfg.long / MIN} limits={LIMITS.long} onCommit={(v) => setMin('long', v)} />
             <Minutes label={t('settings.longEvery')} value={cfg.longEvery} limits={LIMITS.longEvery} onCommit={(v) => p.onConfig({ ...cfg, longEvery: v })} />
             <Switch label={t('settings.autoNext')} checked={cfg.autoNext} onChange={(on) => p.onConfig({ ...cfg, autoNext: on })} />
+            <Switch label={t('settings.breakGame')} checked={prefs.breakGame} onChange={p.onBreakGame} />
             {customized && (
               <button className="set-act" onClick={() => p.onConfig(DEFAULT_CONFIG)}>
                 {t('settings.reset')}
