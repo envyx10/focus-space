@@ -23,6 +23,18 @@ describe('BreakCorner', () => {
     expect(screen.getByRole('status')).toHaveTextContent('Se acabó el descanso. Vuelta al foco')
   })
 
+  it('explains why the breathing works, and Esc closes the explanation before the guide', async () => {
+    render(<BreakCorner inBreak breakId="1-short" remaining="4:12" />)
+    await userEvent.click(screen.getByText('¿Respiramos un rato?'))
+    await screen.findByRole('dialog')
+    await userEvent.click(screen.getByRole('button', { name: /por qué así/i }))
+    expect(screen.getByRole('region', { name: 'Por qué respirar así' })).toHaveTextContent('Unas 6 por minuto')
+    screen.getByRole('button', { name: /por qué así/i }).focus()
+    await userEvent.keyboard('{Escape}')
+    expect(screen.queryByRole('region', { name: 'Por qué respirar así' })).not.toBeInTheDocument()
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+  })
+
   it('Esc closes the game', async () => {
     render(<BreakCorner inBreak breakId="1-short" remaining="4:12" />)
     await userEvent.click(screen.getByText('¿Respiramos un rato?'))

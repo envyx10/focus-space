@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import { useT } from '../i18n'
 import Icon from '../lib/Icon'
 import { breathAt, breathing, type Breath } from './breath'
@@ -14,11 +15,20 @@ type Props = {
   onClose: () => void
 }
 
-/** Guided diaphragmatic breathing: follow the square, nothing to press or score. */
+const WHY = ['diaphragm', 'pace', 'exhale', 'nose', 'time'] as const
+
+// Phones: the explanation is a bottom sheet, drawn at the app's root so the panels stacked below can't cover it.
+const sheet = (node: ReactNode) => {
+  const app = globalThis.matchMedia?.('(max-width: 1023px)').matches ? document.querySelector('.app') : null
+  return app ? createPortal(node, app) : node
+}
+
+/** Guided diaphragmatic breathing: follow the sphere (or the square), nothing to press or score. */
 export default function BreathGame({ remaining, ended = false, mode = false, onClose }: Props) {
   const t = useT()
   const [breath, setBreath] = useState<Breath>(() => breathAt(0))
   const closeBtn = useRef<HTMLButtonElement>(null)
+  const [why, setWhy] = useState(false)
   // The particle sphere breathes when it is running; otherwise a flat accent square does.
   const [sphere] = useState(() => breathing.sphere)
 
@@ -49,7 +59,8 @@ export default function BreathGame({ remaining, ended = false, mode = false, onC
       className={`br${sphere ? ' has-sphere' : ''}${mode ? ' is-mode' : ''}`}
       role={mode ? 'region' : 'dialog'}
       aria-label={t('break.title')}
-      onKeyDown={(e) => e.key === 'Escape' && (e.preventDefault(), onClose())}
+      // Esc closes the explanation first, then the guide.
+      onKeyDown={(e) => e.key === 'Escape' && (e.preventDefault(), why ? setWhy(false) : onClose())}
     >
       {!mode && (
         <header className="br-head">
@@ -86,9 +97,42 @@ export default function BreathGame({ remaining, ended = false, mode = false, onC
       )}
 
       <footer className="br-foot">
-        <p className="br-hint">{t('break.how')}</p>
-        <p className="br-score">{t('break.breaths', { n: breath.count })}</p>
+        <div className="br-how">
+          <p className="br-how-lead">{t('break.howLead')}</p>
+          <p className="br-hint">{t('break.how')}</p>
+        </div>
+        <div className="br-side">
+          <p className="br-score">
+            <span className="lbl">{t('break.breaths')}</span>
+            <b>{breath.count}</b>
+          </p>
+          <button className="br-why-btn" aria-expanded={why} aria-controls="br-why" onClick={() => setWhy(!why)}>
+            {t('break.why')}
+            <Icon name={why ? 'close' : 'up'} />
+          </button>
+        </div>
       </footer>
+
+      {why && sheet(
+        <section id="br-why" className="br-why" aria-label={t('break.whyTitle')}>
+          <header className="br-why-head">
+            <h3>{t('break.whyTitle')}</h3>
+            <button className="br-why-x" aria-label={t('break.whyClose')} title={t('break.whyClose')} onClick={() => setWhy(false)}>
+              <Icon name="close" />
+            </button>
+          </header>
+          <dl>
+            {WHY.map((k) => (
+              <div key={k}>
+                <dt>{t(`break.why.${k}.t`)}</dt>
+                <dd>{t(`break.why.${k}.b`)}</dd>
+              </div>
+            ))}
+          </dl>
+          <p className="br-why-note">{t('break.why.note')}</p>
+          <p className="br-why-src">{t('break.why.src')}</p>
+        </section>,
+      )}
     </div>
   )
 }
