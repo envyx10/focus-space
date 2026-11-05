@@ -45,7 +45,7 @@ button {
   position: relative;
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  grid-template-rows: 44px 1fr minmax(120px, auto);
+  grid-template-rows: 44px 1fr minmax(140px, auto);
   /* --zoom is the text-size setting: the whole grid scales and the viewport it must fit shrinks to match */
   zoom: var(--zoom, 1);
   height: calc(100vh / var(--zoom, 1));
@@ -193,7 +193,7 @@ button {
     flex: none;
   }
 
-  .app .mixer {
+  .app .mx-strips {
     grid-template-columns: repeat(2, 1fr);
   }
 
@@ -290,19 +290,7 @@ button {
 }
 
 @media (max-width: 1023px) {
-  .app .mx-hint {
-    position: static;
-    transform: none;
-    grid-column: 1 / -1;
-    max-width: none;
-    width: auto;
-    padding: 8px 16px;
-    border-bottom: 1px solid var(--line);
-  }
-}
-
-@media (max-width: 1023px) {
-  .app .mixer {
+  .app .mx-strips {
     grid-auto-flow: row;
   }
 }

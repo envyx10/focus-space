@@ -22,6 +22,7 @@ function setup(over: Partial<Parameters<typeof SettingsMenu>[0]> = {}) {
     onApplyScene: vi.fn(),
     onDeleteScene: vi.fn(),
     onImmersive: vi.fn(),
+    onSlots: vi.fn(),
   }
   render(<SettingsMenu prefs={DEFAULT_PREFS} config={DEFAULT_CONFIG} stats={{}} today="2026-10-30" open {...fns} {...over} />)
   return fns
@@ -88,6 +89,23 @@ describe('SettingsMenu', () => {
     expect(f.onSaveScene).toHaveBeenCalledWith('Noche')
     await userEvent.click(screen.getByRole('button', { name: 'Examen' }))
     expect(f.onApplyScene).toHaveBeenCalledWith('Examen')
+  })
+
+  it('mixer squares: replace one (swapping duplicates), reorder with arrows and restore defaults', async () => {
+    const f = setup()
+    await userEvent.click(screen.getByRole('button', { name: 'Cuadrado 1' }))
+    await userEvent.click(screen.getByRole('option', { name: 'Fuego' }))
+    expect(f.onSlots).toHaveBeenLastCalledWith(['fire', 'rain', ...DEFAULT_PREFS.slots.slice(2)])
+    await userEvent.click(screen.getByRole('button', { name: 'Bajar Lluvia' }))
+    expect(f.onSlots).toHaveBeenLastCalledWith(['fire', 'rain', ...DEFAULT_PREFS.slots.slice(2)])
+    expect(screen.getByRole('button', { name: 'Subir Lluvia' })).toBeDisabled()
+    expect(screen.queryByText('Restaurar cuadrados por defecto')).not.toBeInTheDocument()
+  })
+
+  it('offers restoring the default squares once they changed', async () => {
+    const f = setup({ prefs: { ...DEFAULT_PREFS, slots: ['asmr', ...DEFAULT_PREFS.slots.slice(1)] } })
+    await userEvent.click(screen.getByText('Restaurar cuadrados por defecto'))
+    expect(f.onSlots).toHaveBeenCalledWith(DEFAULT_PREFS.slots)
   })
 
   it('shows today, the last 7 days and the streak', () => {

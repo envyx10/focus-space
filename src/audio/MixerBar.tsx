@@ -1,20 +1,25 @@
 import { useRef } from 'react'
 import { useT } from '../i18n'
 import Icon from '../lib/Icon'
-import { CHANNELS, nextVariant, type Channel, type ChannelId } from './channels'
-import type { Prefs } from '../prefs/prefs'
+import Picker from '../lib/Picker'
+import { channel, CHANNEL_IDS, nextVariant, type Channel, type ChannelId } from './channels'
+import { replaceSlot, type Prefs } from '../prefs/prefs'
 import './mixer.css'
 
 type Props = {
   prefs: Prefs
   onVolume: (ch: ChannelId, v: number) => void
   onVariant: (ch: ChannelId, variantId: string) => void
+  /** Puts another sound in the squares (swapping if it is already shown). */
+  onSlots: (slots: ChannelId[]) => void
 }
 
 const STEP = 0.05
 const round = (v: number) => Math.round(Math.min(1, Math.max(0, v)) * 100) / 100
 
-function Strip({ ch, volume, variant, onVolume, onVariant }: { ch: Channel; volume: number; variant: string } & Omit<Props, 'prefs'>) {
+type StripProps = { ch: Channel; volume: number; variant: string; onSwap?: (id: ChannelId) => void } & Pick<Props, 'onVolume' | 'onVariant'>
+
+function Strip({ ch, volume, variant, onSwap, onVolume, onVariant }: StripProps) {
   const drag = useRef<{ x: number; v: number; moved: boolean } | null>(null)
   const pct = Math.round(volume * 100)
   const t = useT()
@@ -23,13 +28,35 @@ function Strip({ ch, volume, variant, onVolume, onVariant }: { ch: Channel; volu
 
   return (
     <div className={`mx${volume > 0 ? ' live' : ''}`}>
-      <button className="mx-name" onClick={() => onVariant(ch.id, nextVariant(ch.id, variant))} aria-label={t('mixer.changeVariant', { channel: chLabel, variant: variantLabel })}>
-        {chLabel}
-        <span className="mx-variant">
-          {variantLabel}
-          <Icon name="refresh" />
-        </span>
-      </button>
+      <div className="mx-name">
+        {/* The channel name is the picker: change which sound this square plays, right here. */}
+        {onSwap ? (
+          <Picker
+            className="mx-swap"
+            value={ch.id}
+            options={CHANNEL_IDS.map((id) => ({ id, label: t(`channel.${id}`) }))}
+            onChange={onSwap}
+            label={t('mixer.swap', { channel: chLabel })}
+            placement="up"
+          />
+        ) : (
+          <span>{chLabel}</span>
+        )}
+        {/* "Suave >": which recording is playing, and that the next one is a click away. */}
+        {ch.variants.length > 1 ? (
+          <button
+            className="mx-variant"
+            onClick={() => onVariant(ch.id, nextVariant(ch.id, variant))}
+            aria-label={t('mixer.changeVariant', { channel: chLabel, variant: variantLabel })}
+            title={t('mixer.nextVariant')}
+          >
+            <span className="mx-variant-name">{variantLabel}</span>
+            <Icon name="next" />
+          </button>
+        ) : (
+          <span className="mx-variant is-single">{variantLabel}</span>
+        )}
+      </div>
       {/* Sibling of the button: ARIA sliders make their children presentational. */}
       <div
         className="mx-slider"
@@ -74,19 +101,24 @@ function Strip({ ch, volume, variant, onVolume, onVariant }: { ch: Channel; volu
   )
 }
 
-export default function MixerBar({ prefs, onVolume, onVariant }: Props) {
-  const t = useT()
-  const silent = CHANNELS.every((ch) => prefs.volumes[ch.id] === 0)
+export default function MixerBar({ prefs, onVolume, onVariant, onSlots }: Props) {
+  // A saved mix may play a channel that has no square; it shows up at the end so it can still be turned down.
+  const shown = [...prefs.slots, ...CHANNEL_IDS.filter((id) => !prefs.slots.includes(id) && prefs.volumes[id] > 0)].map(channel)
   return (
     <div className="mixer">
-      {silent && !prefs.muted && (
-        <p className="mx-hint" aria-live="polite">
-          {t('mixer.silent')}
-        </p>
-      )}
-      {CHANNELS.map((ch) => (
-        <Strip key={ch.id} ch={ch} volume={prefs.volumes[ch.id]} variant={prefs.variants[ch.id]} onVolume={onVolume} onVariant={onVariant} />
-      ))}
+      <div className="mx-strips">
+        {shown.map((ch, i) => (
+          <Strip
+            key={ch.id}
+            ch={ch}
+            volume={prefs.volumes[ch.id]}
+            variant={prefs.variants[ch.id]}
+            onSwap={i < prefs.slots.length ? (id) => onSlots(replaceSlot(prefs.slots, i, id)) : undefined}
+            onVolume={onVolume}
+            onVariant={onVariant}
+          />
+        ))}
+      </div>
     </div>
   )
 }
