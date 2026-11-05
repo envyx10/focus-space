@@ -28,6 +28,7 @@ export const en: Record<Key, string> = {
   'focus.modeGroup': 'Timer mode',
   'focus.modeClock': 'Clock',
   'focus.modePomodoro': 'Pomodoro',
+  'focus.modeBreathe': 'Breathe',
   'focus.modeFree': 'Free',
   'focus.nowIs': 'It is {time}',
   'focus.clockLabel': '{min} minutes {sec} seconds',
