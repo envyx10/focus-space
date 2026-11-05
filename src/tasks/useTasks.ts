@@ -82,6 +82,12 @@ export function useTasks(repo: TaskRepo) {
     [commit],
   )
 
+  const describe = useCallback(
+    (id: string, description: string) =>
+      commit(tasksRef.current.map((t) => (t.id === id && (t.description ?? '') !== description ? { ...t, description } : t))),
+    [commit],
+  )
+
   const setActive = useCallback(
     (id: string | null) =>
       commit(
@@ -126,5 +132,5 @@ export function useTasks(repo: TaskRepo) {
     [commit],
   )
 
-  return { tasks, loaded, error, reload, add, toggle, edit, remove, setActive, restore, clearDone, addMany }
+  return { tasks, loaded, error, reload, add, toggle, edit, describe, remove, setActive, restore, clearDone, addMany }
 }

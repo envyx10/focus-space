@@ -26,6 +26,7 @@ const PATHS = {
   edit: <path d="M3 13l.6-2.8 6.9-6.9 2.2 2.2-6.9 6.9zM9 4.8L11.2 7" />,
   sound: <path d="M2 6.5h2.5L8 3.5v9L4.5 9.5H2zM10.5 6a3 3 0 0 1 0 4M12.5 4a6 6 0 0 1 0 8" />,
   muted: <path d="M2 6.5h2.5L8 3.5v9L4.5 9.5H2zM10.5 6.5l3.5 3.5M14 6.5L10.5 10" />,
+  expand: <path d="M9.5 2.5h4v4M13.5 2.5L9 7M6.5 13.5h-4v-4M2.5 13.5L7 9" />,
   close:<path d="M4 4l8 8M12 4l-8 8" />,
   sun: (
     <>

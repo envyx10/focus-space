@@ -1,15 +1,15 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { Task, TaskRepo } from './types'
 
-type Row = { id: string; text: string; done: boolean; active: boolean; created_at: string }
+type Row = { id: string; text: string; done: boolean; active: boolean; created_at: string; description?: string | null }
 
-const toTask = (r: Row): Task => ({ id: r.id, text: r.text, done: r.done, active: r.active, createdAt: r.created_at })
+const toTask = (r: Row): Task => ({ id: r.id, text: r.text, done: r.done, active: r.active, createdAt: r.created_at, ...(r.description ? { description: r.description } : {}) })
 
 export function supabaseRepo(client: SupabaseClient, userId: string): TaskRepo {
   const table = () => client.from('tasks')
   return {
     async list() {
-      const { data, error } = await table().select('id,text,done,active,created_at').eq('user_id', userId).order('created_at')
+      const { data, error } = await table().select('*').eq('user_id', userId).order('created_at')
       if (error) throw error
       return (data as Row[]).map(toTask)
     },
@@ -21,6 +21,8 @@ export function supabaseRepo(client: SupabaseClient, userId: string): TaskRepo {
         done: t.done,
         active: t.active,
         created_at: t.createdAt,
+        // Only sent once a task has had a description, so accounts that haven't run the description migration keep syncing.
+        ...(t.description !== undefined ? { description: t.description } : {}),
       })
       if (error) throw error
     },

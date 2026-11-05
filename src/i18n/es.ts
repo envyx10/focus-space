@@ -80,6 +80,14 @@ export const es = {
   'tasks.importLabel': 'Importar tareas',
   'tasks.imported': '{n} tareas importadas',
   'tasks.importedNone': 'No se encontró ninguna tarea en el archivo',
+  'tasks.focus.open': 'Pantalla completa · descripciones',
+  'tasks.focus.title': 'Tareas en pantalla completa',
+  'tasks.focus.listLabel': 'Lista de tareas',
+  'tasks.focus.titleLabel': 'Título de la tarea',
+  'tasks.focus.descLabel': 'Descripción de la tarea',
+  'tasks.focus.descPlaceholder': 'Añade notas, pasos, enlaces… Se guarda solo.',
+  'tasks.focus.hasNotes': 'Tiene descripción',
+  'tasks.focus.empty': 'Aún no hay tareas. Cierra esta vista y añade la primera.',
   'tasks.localOnly': 'Guardado solo en este navegador · Inicia sesión para sincronizar',
 
   // mixer

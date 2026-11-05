@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useT } from '../i18n'
 import Icon from '../lib/Icon'
 import { isTypingTarget } from '../lib/useShortcuts'
+import TasksFocus from './TasksFocus'
 import { parseImport, serializeTasks } from './transfer'
 import type { Task } from './types'
 import './tasks.css'
@@ -18,6 +19,7 @@ type Props = {
   add: (text: string) => Promise<void>
   toggle: (id: string) => Promise<void>
   edit: (id: string, text: string) => Promise<void>
+  describe?: (id: string, description: string) => Promise<void>
   remove: (id: string) => Promise<void>
   setActive: (id: string | null) => Promise<void>
   restore?: (task: Task) => Promise<void>
@@ -111,8 +113,9 @@ function Row({ task, index, onDelete, ...a }: RowProps) {
   )
 }
 
-export default function TasksPanel({ tasks, synced, saveError, add, restore, clearDone, addMany, ...actions }: Props) {
+export default function TasksPanel({ tasks, synced, saveError, add, restore, clearDone, addMany, describe, ...actions }: Props) {
   const t = useT()
+  const [full, setFull] = useState(false)
   const [draft, setDraft] = useState('')
   const [undo, setUndo] = useState<Task | null>(null)
   const [note, setNote] = useState<string | null>(null)
@@ -164,8 +167,17 @@ export default function TasksPanel({ tasks, synced, saveError, add, restore, cle
 
   return (
     <div className="tasks">
-      <div className="num">01</div>
-      <div className="lbl">{t('tasks.pending', { n: pending })}</div>
+      <div className="tasks-head">
+        <div>
+          <div className="num">01</div>
+          <div className="lbl">{t('tasks.pending', { n: pending })}</div>
+        </div>
+        {describe && (
+          <button className="tasks-expand" aria-label={t('tasks.focus.open')} title={t('tasks.focus.open')} onClick={() => setFull(true)}>
+            <Icon name="expand" />
+          </button>
+        )}
+      </div>
       <ul className="tk-list">
         {tasks.map((t, i) => (
           <Row key={t.id} task={t} index={i} onDelete={del} toggle={actions.toggle} edit={actions.edit} setActive={actions.setActive} />
@@ -225,6 +237,9 @@ export default function TasksPanel({ tasks, synced, saveError, add, restore, cle
         </p>
       )}
       {!synced && <p className="tasks-note">{t('tasks.localOnly')}</p>}
+      {full && describe && (
+        <TasksFocus tasks={tasks} describe={describe} toggle={actions.toggle} edit={actions.edit} setActive={actions.setActive} onClose={() => setFull(false)} />
+      )}
     </div>
   )
 }

@@ -161,6 +161,7 @@ export default function App() {
           add={tasks.add}
           toggle={tasks.toggle}
           edit={tasks.edit}
+          describe={tasks.describe}
           remove={tasks.remove}
           setActive={tasks.setActive}
           restore={tasks.restore}

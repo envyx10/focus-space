@@ -16,6 +16,8 @@ export const STATIONS: Station[] = [
   { id: 'TfmECBzmOn4', name: 'Lofi Fruits', title: 'upbeat lofi /\nhip hop radio' },
   // Added 2026-11-04; oEmbed returns 200, so embedding is allowed. A third-party 24/7 stream: if it goes down the radio skips to the next station.
   { id: 'wqayWHJciTk', name: 'kno Music', title: 'disney piano /\nbedtime' },
+  // Added 2026-11-05: live and embeddable when checked (isLiveNow, playableInEmbed). Older city pop streams on YouTube are offline or block embedding.
+  { id: 'vZ-Q7lM5Sv8', name: 'Citypop Radio', title: '80s japanese /\ncity pop disco' },
 ]
 export const LOFI_VIDEO_IDS = STATIONS.map((s) => s.id)
 const READY_TIMEOUT_MS = 8000

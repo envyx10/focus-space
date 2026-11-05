@@ -78,6 +78,14 @@ export const en: Record<Key, string> = {
   'tasks.importLabel': 'Import tasks',
   'tasks.imported': '{n} tasks imported',
   'tasks.importedNone': 'No tasks found in the file',
+  'tasks.focus.open': 'Full screen · descriptions',
+  'tasks.focus.title': 'Tasks, full screen',
+  'tasks.focus.listLabel': 'Task list',
+  'tasks.focus.titleLabel': 'Task title',
+  'tasks.focus.descLabel': 'Task description',
+  'tasks.focus.descPlaceholder': 'Add notes, steps, links… Saved automatically.',
+  'tasks.focus.hasNotes': 'Has a description',
+  'tasks.focus.empty': 'No tasks yet. Close this view and add the first one.',
   'tasks.localOnly': 'Saved only in this browser · Sign in to sync',
 
   // mixer

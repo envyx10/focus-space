@@ -9,6 +9,27 @@
   margin-bottom: 14px;
 }
 
+.tasks-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.tasks-expand {
+  opacity: 0.4;
+}
+
+@media (hover: hover) {
+  .tasks-expand:hover {
+    opacity: 1;
+    color: var(--accent);
+  }
+}
+
+.tasks-expand:focus-visible {
+  opacity: 1;
+}
+
 .tk-list {
   list-style: none;
   margin: 0;

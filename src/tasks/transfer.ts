@@ -5,15 +5,19 @@ const MAX_TEXT = 500
 const MAX_TASKS = 500
 
 export function serializeTasks(tasks: Task[]): string {
-  return JSON.stringify({ app: 'focus-space', tasks: tasks.map(({ text, done, createdAt }) => ({ text, done, createdAt })) }, null, 2)
+  return JSON.stringify({ app: 'focus-space', tasks: tasks.map(({ text, done, createdAt, description }) => ({ text, done, createdAt, ...(description ? { description } : {}) })) }, null, 2)
 }
 
-function make(text: string, done: boolean, createdAt?: string): Task | null {
+const MAX_DESC = 5000
+
+function make(text: string, done: boolean, createdAt?: string, description?: string): Task | null {
   const clean = text.trim().slice(0, MAX_TEXT)
   if (!clean) return null
   // Always ISO: it sorts as text and Postgres accepts it, which a loose Date.parse string may not.
   const when = new Date(createdAt && !Number.isNaN(Date.parse(createdAt)) ? createdAt : Date.now()).toISOString()
-  return { id: crypto.randomUUID(), text: clean, done, active: false, createdAt: when }
+  const task: Task = { id: crypto.randomUUID(), text: clean, done, active: false, createdAt: when }
+  if (description?.trim()) task.description = description.slice(0, MAX_DESC)
+  return task
 }
 
 /** Reads a file this app exported, or a plain list with one task per line. Imported tasks always get new ids. */
@@ -30,7 +34,7 @@ export function parseImport(raw: string): Task[] {
   const list = Array.isArray(json) ? json : isRecord(json) && Array.isArray(json.tasks) ? json.tasks : null
   if (list) {
     for (const x of list) {
-      const t = typeof x === 'string' ? make(x, false) : isRecord(x) && typeof x.text === 'string' ? make(x.text, x.done === true, typeof x.createdAt === 'string' ? x.createdAt : undefined) : null
+      const t = typeof x === 'string' ? make(x, false) : isRecord(x) && typeof x.text === 'string' ? make(x.text, x.done === true, typeof x.createdAt === 'string' ? x.createdAt : undefined, typeof x.description === 'string' ? x.description : undefined) : null
       if (t) out.push(t)
     }
   } else if (json === undefined) {
