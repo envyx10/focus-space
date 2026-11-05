@@ -18,17 +18,20 @@ export default function MixerSlots({ slots, variants, onSlots }: Props) {
   const t = useT()
   const [dragFrom, setDragFrom] = useState<number | null>(null)
   const preview = useRef<{ el: HTMLAudioElement; timer: ReturnType<typeof setTimeout> } | null>(null)
+  const [playing, setPlaying] = useState<ChannelId | null>(null)
 
   const stopPreview = () => {
+    setPlaying(null)
     if (!preview.current) return
     clearTimeout(preview.current.timer)
     preview.current.el.pause()
     preview.current = null
   }
-  useEffect(() => stopPreview, [])
+  useEffect(() => () => preview.current?.el.pause(), [])
 
   const play = (id: ChannelId) => {
     stopPreview()
+    setPlaying(id)
     const src = channel(id).variants.find((v) => v.id === variants[id])?.src ?? channel(id).variants[0].src
     const el = new Audio(src)
     el.volume = 0.5
@@ -70,14 +73,25 @@ export default function MixerSlots({ slots, variants, onSlots }: Props) {
                 onChange={(c) => onSlots(replaceSlot(slots, i, c))}
                 label={t('settings.slot', { n: i + 1 })}
               />
-              <button className="set-x" aria-label={t('settings.slotPreview', { name })} title={t('settings.slotPreview', { name })} onClick={() => play(id)}>
-                <Icon name="play" />
+              <button
+                className={`set-icon${playing === id ? ' is-on' : ''}`}
+                aria-label={t(playing === id ? 'settings.slotStop' : 'settings.slotPreview', { name })}
+                title={t(playing === id ? 'settings.slotStop' : 'settings.slotPreview', { name })}
+                onClick={() => (playing === id ? stopPreview() : play(id))}
+              >
+                <Icon name={playing === id ? 'stop' : 'play'} />
               </button>
-              <button className="set-x" disabled={i === 0} aria-label={t('settings.slotUp', { name })} onClick={() => onSlots(moveSlot(slots, i, i - 1))}>
-                ↑
+              <button className="set-icon" disabled={i === 0} aria-label={t('settings.slotUp', { name })} title={t('settings.slotUp', { name })} onClick={() => onSlots(moveSlot(slots, i, i - 1))}>
+                <Icon name="up" />
               </button>
-              <button className="set-x" disabled={i === slots.length - 1} aria-label={t('settings.slotDown', { name })} onClick={() => onSlots(moveSlot(slots, i, i + 1))}>
-                ↓
+              <button
+                className="set-icon"
+                disabled={i === slots.length - 1}
+                aria-label={t('settings.slotDown', { name })}
+                title={t('settings.slotDown', { name })}
+                onClick={() => onSlots(moveSlot(slots, i, i + 1))}
+              >
+                <Icon name="down" />
               </button>
             </li>
           )
