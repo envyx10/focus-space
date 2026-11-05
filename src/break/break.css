@@ -66,6 +66,21 @@
   animation: br-in 0.4s ease-out;
 }
 
+/* With the sphere: the panel shows through (the sphere is the guide), and the clock's own content steps aside. */
+.app .focus > .br.has-sphere {
+  background: transparent;
+}
+
+.focus:has(> .br.has-sphere) > :not(.focus-bg):not(.br) {
+  visibility: hidden;
+}
+
+/* Keep the cue and notes legible over the particles. */
+.br.has-sphere .br-cue,
+.br.has-sphere .br-foot {
+  text-shadow: 0 0 12px var(--bg), 0 0 4px var(--bg);
+}
+
 .br-head {
   display: flex;
   justify-content: space-between;

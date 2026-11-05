@@ -17,6 +17,7 @@ import { GPUComputationRenderer } from 'three/examples/jsm/misc/GPUComputationRe
 import { noiseGlsl } from './shaders/noise'
 import { hexToRgb } from '../prefs/accent'
 import { fibonacciSphere, follow, smooth } from './sphereMath'
+import { breathing } from '../break/breath'
 
 type Levels = { bass: number; high: number }
 type Props = {
@@ -231,6 +232,8 @@ export default function Scene3D({ getLevels, accent, light = false }: Props) {
     const camera = new PerspectiveCamera(FOV, 1, 0.1, 50)
     camera.position.set(0, 0, CAMERA_Z)
 
+    const view = { w: 1, h: 1, x: 0, baseX: 0, y: 0 }
+    const aim = () => camera.setViewOffset(view.w, view.h, view.x * view.w, view.y * view.h, view.w, view.h)
     const resize = () => {
       const { width, height } = el.getBoundingClientRect()
       if (!width || !height) return
@@ -240,13 +243,14 @@ export default function Scene3D({ getLevels, accent, light = false }: Props) {
       camera.aspect = width / height
       if (matchMedia('(max-width: 1023px)').matches) {
         // Phone: centred, 80% of the panel's width but never taller than 90% of its height (landscape, tablets).
-        camera.setViewOffset(width, height, 0, 0, width, height)
+        Object.assign(view, { w: width, h: height, x: 0, baseX: 0, y: 0 })
         camera.zoom = Math.min(0.8 * width, 0.9 * height) / (SPHERE_SPAN * height)
       } else {
         // Scene centre at 68% / 48% of the panel, beside the clock.
-        camera.setViewOffset(width, height, -0.18 * width, 0.02 * height, width, height)
+        Object.assign(view, { w: width, h: height, x: breathing.size === null ? -0.18 : 0, baseX: -0.18, y: 0.02 })
         camera.zoom = 1
       }
+      aim()
       camera.updateProjectionMatrix()
       uniforms.uPixelRatio.value = pr * 1.08 // dots grow with the sphere so it stays as dense
     }
@@ -302,9 +306,19 @@ export default function Scene3D({ getLevels, accent, light = false }: Props) {
       tilt.y = smooth(tilt.y, pointer.y)
       spin += elapsed * (0.08 + lv.bass * 0.12)
       points.rotation.set(0.35 + tilt.y, spin + tilt.x, 0)
+      // Breathing guide open: the sphere moves to the centre and swells and shrinks with the breath.
+      const b = breathing.size
+      points.scale.setScalar(smooth(points.scale.x, b === null ? 1 : 0.5 + b * 0.55))
+      const x = smooth(view.x, b === null ? view.baseX : 0)
+      if (Math.abs(x - view.x) > 1e-4) {
+        view.x = x
+        aim()
+        camera.updateProjectionMatrix()
+      }
       draw()
     }
 
+    breathing.sphere = !still
     if (still) {
       // settle the particles onto the shape, then hold a single frame
       sim.uStir.value = 0
@@ -314,6 +328,7 @@ export default function Scene3D({ getLevels, accent, light = false }: Props) {
     } else raf = requestAnimationFrame(frame)
 
     return () => {
+      breathing.sphere = false
       cancelAnimationFrame(raf)
       removeEventListener('pointermove', onMove)
       ro.disconnect()
