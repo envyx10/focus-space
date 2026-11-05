@@ -1,0 +1,110 @@
+.pk-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.pk-value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pk-chevron {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  opacity: 0.45;
+  transition: opacity 0.15s;
+}
+
+.pk-trigger[aria-expanded='true'] .pk-chevron {
+  opacity: 1;
+  color: var(--accent);
+}
+
+@media (hover: hover) {
+  .pk-trigger:hover .pk-chevron {
+    opacity: 1;
+  }
+}
+
+/* Two columns filled top to bottom: fourteen sounds read as a short panel, not a long column. */
+.pk-list {
+  position: fixed;
+  z-index: 50;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(var(--rows), auto);
+  min-width: 248px;
+  padding: 6px;
+  background: var(--bg);
+  border: 1px solid var(--line-strong, #3a3a3a);
+  outline: none;
+  font-size: 13px;
+  animation: pk-in 0.14s ease-out;
+}
+
+.pk-up {
+  transform-origin: bottom left;
+}
+
+.pk-down {
+  transform-origin: top left;
+}
+
+.pk-opt {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 12px 0 22px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.pk-opt.is-active {
+  background: color-mix(in srgb, var(--fg) 8%, transparent);
+}
+
+.pk-list:focus-visible .pk-opt.is-active {
+  outline: 1px solid var(--accent);
+  outline-offset: -1px;
+}
+
+/* The chosen sound carries the same accent square as the clock's colon. */
+.pk-opt[aria-selected='true']::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+}
+
+@keyframes pk-in {
+  from {
+    opacity: 0;
+    transform: scaleY(0.96);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pk-list {
+    animation: none;
+  }
+}
+
+/* Phones: rows tall enough for a thumb. */
+@media (pointer: coarse) {
+  .pk-opt {
+    min-height: 44px;
+  }
+}
