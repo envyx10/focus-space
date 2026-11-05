@@ -45,7 +45,7 @@ button {
   position: relative;
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  grid-template-rows: 44px 1fr minmax(120px, auto);
+  grid-template-rows: 44px 1fr minmax(140px, auto);
   /* --zoom is the text-size setting: the whole grid scales and the viewport it must fit shrinks to match */
   zoom: var(--zoom, 1);
   height: calc(100vh / var(--zoom, 1));
