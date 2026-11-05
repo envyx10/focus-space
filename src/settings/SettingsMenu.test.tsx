@@ -70,6 +70,13 @@ describe('SettingsMenu', () => {
     expect(f.onAccent).toHaveBeenCalledWith('#123abc')
   })
 
+  it('picks the theme', async () => {
+    const f = setup()
+    expect(screen.getByRole('button', { name: 'Sistema' })).toHaveAttribute('aria-pressed', 'true')
+    await userEvent.click(screen.getByRole('button', { name: 'Claro' }))
+    expect(f.onTheme).toHaveBeenCalledWith('light')
+  })
+
   it('picks the end-of-phase tone', async () => {
     const f = setup()
     expect(screen.getByRole('button', { name: 'Campana' })).toHaveAttribute('aria-pressed', 'true')
