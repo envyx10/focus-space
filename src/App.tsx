@@ -14,6 +14,7 @@ import { onAccent } from './prefs/accent'
 import SettingsMenu from './settings/SettingsMenu'
 import { addFocus, loadStats, saveStats } from './stats/stats'
 import FocusTasks from './tasks/FocusTasks'
+import BreakCorner from './break/BreakCorner'
 import TasksPanel from './tasks/TasksPanel'
 import { useTaskRepo } from './tasks/useTaskRepo'
 import { useTasks } from './tasks/useTasks'
@@ -32,6 +33,11 @@ import { useTheme } from './prefs/useTheme'
 const Scene3D = lazy(() => import('./visual/Scene3D'))
 
 const ZOOM = { m: 1, l: 1.15, xl: 1.3 }
+
+const clock = (ms: number) => {
+  const s = Math.ceil(ms / 1000)
+  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`
+}
 
 const MOBILE_TABS = ['tasks', 'mixer', 'lofi'] as const
 type MobileTab = (typeof MOBILE_TABS)[number]
@@ -139,6 +145,7 @@ export default function App() {
               onChimeSound={ambient.setChimeSound}
               onNotify={ambient.setNotify}
               onCalm={ambient.setCalm}
+              onBreakGame={ambient.setBreakGame}
               onMuted={ambient.setMuted}
               onTextScale={ambient.setTextScale}
               onAccent={ambient.setAccent}
@@ -177,6 +184,17 @@ export default function App() {
           phase={timer.state.phase}
           freeMinutes={timer.freeMinutes}
           activeTaskText={activeTask?.text ?? null}
+          taskSlot={
+            // undefined, not false, when off: the panel falls back to the task line only on null/undefined
+            prefs.breakGame ? (
+              <BreakCorner
+                inBreak={timer.state.mode === 'pomodoro' && timer.state.phase !== 'work' && (timer.status === 'running' || timer.status === 'paused')}
+                breakId={`${timer.sessionNumber}-${timer.state.phase}`}
+                remaining={clock(timer.remainingMs)}
+                fallback={activeTask?.text ?? <span className="focus-dim">{t('focus.noTask')}</span>}
+              />
+            ) : undefined
+          }
           onStart={timer.start}
           onPause={timer.pause}
           onReset={timer.reset}
