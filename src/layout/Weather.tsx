@@ -22,8 +22,9 @@ function loadPlace(): Place | null {
 }
 
 // City-level location from the IP: no permission prompt (geolocation is off in our Permissions-Policy). No API keys.
+// BigDataCloud moved this API to api-bdc.io; the old host only redirects there, which the CSP would block.
 async function locate(lang: string): Promise<Place> {
-  const r = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?localityLanguage=${lang}`).then((r) => r.json())
+  const r = await fetch(`https://api-bdc.io/data/reverse-geocode-client?localityLanguage=${lang}`).then((r) => r.json())
   if (typeof r.latitude !== 'number' || typeof r.longitude !== 'number') throw new Error('no location')
   const lat = Math.round(r.latitude * 100) / 100
   const lon = Math.round(r.longitude * 100) / 100
