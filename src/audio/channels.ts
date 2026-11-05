@@ -1,4 +1,4 @@
-export type ChannelId = 'rain' | 'fire' | 'cafe' | 'wind' | 'keys'
+export type ChannelId = 'rain' | 'fire' | 'cafe' | 'wind' | 'keys' | 'water' | 'night' | 'birds' | 'thunder' | 'noise' | 'travel' | 'drone' | 'paper' | 'asmr'
 /** Display names live in the i18n dictionaries: `channel.<id>` and `variant.<channel>.<id>`. */
 export type Variant = { id: string; src: string }
 export type Channel = { id: ChannelId; variants: Variant[] }
@@ -14,6 +14,15 @@ export const CHANNELS: Channel[] = [
   channelOf('cafe', ['cafeteria', 'biblioteca']),
   channelOf('wind', ['suave', 'bosque']),
   channelOf('keys', ['azul', 'azul2', 'marron', 'marron2', 'rojo']),
+  channelOf('water', ['olas', 'arroyo', 'rio', 'fuente']),
+  channelOf('night', ['grillos', 'selva']),
+  channelOf('birds', ['amanecer', 'primavera']),
+  channelOf('thunder', ['lejano']),
+  channelOf('noise', ['blanco', 'rosa', 'marron']),
+  channelOf('travel', ['tren', 'avion']),
+  channelOf('drone', ['cuenco', 'espacio']),
+  channelOf('paper', ['lapiz', 'paginas']),
+  channelOf('asmr', ['tapping', 'cepillo', 'plastico', 'ronroneo']),
 ]
 
 export const CHANNEL_IDS = CHANNELS.map((c) => c.id)
