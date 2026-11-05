@@ -86,10 +86,16 @@
   cursor: default;
 }
 
-.mx-variant:hover:not(.is-single),
 .mx-variant:active:not(.is-single) {
   color: var(--accent);
   border-color: var(--accent);
+}
+
+@media (hover: hover) {
+  .mx-variant:hover:not(.is-single) {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
 }
 
 .mx b {

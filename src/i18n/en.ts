@@ -33,7 +33,7 @@ export const en: Record<Key, string> = {
   'focus.clockLabel': '{min} minutes {sec} seconds',
   'focus.unitMin': 'MIN',
   'focus.noTask': 'No active task',
-  'focus.reset': '↺ Reset',
+  'focus.reset': 'Reset',
   'focus.extend': '+5 min',
   'focus.extendHint': 'Add 5 minutes to this phase',
   'focus.skip': 'Skip',
@@ -80,6 +80,10 @@ export const en: Record<Key, string> = {
   'tasks.localOnly': 'Saved only in this browser · Sign in to sync',
 
   // mixer
+  'tabs.label': 'Panels',
+  'tabs.tasks': 'Tasks',
+  'tabs.mixer': 'Sounds',
+  'tabs.lofi': 'Radio',
   'mixer.swap': 'Sound in the {channel} square',
   'mixer.nextVariant': 'Next recording',
   'mixer.changeVariant': '{channel}: {variant}. Change variant',

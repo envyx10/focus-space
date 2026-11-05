@@ -47,9 +47,11 @@
   outline: none;
 }
 
-.acct-act:hover,
+@media (hover: hover) {
+  .acct-act:hover,
 .acct-row button:hover {
-  color: var(--accent);
+    color: var(--accent);
+  }
 }
 
 .acct-dim {
