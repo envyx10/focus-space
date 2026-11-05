@@ -1,30 +1,28 @@
-/** Guided breathing: inhale while holding, exhale while released. The score is how much of the time the two matched. */
-
+/**
+ * Paced diaphragmatic breathing at about 6 breaths a minute: 4 s in through the nose, 6 s out slowly through the
+ * mouth. This is the resonance-frequency rate used in clinical breathing and HRV-biofeedback protocols
+ * (Lehrer & Gevirtz), and the longer out-breath is the part that brings the calming (parasympathetic) response.
+ */
 export const INHALE_MS = 4000
 export const EXHALE_MS = 6000
 const CYCLE_MS = INHALE_MS + EXHALE_MS
 
-export type Breath = { phase: 'in' | 'out'; /** 0..1 through the current phase */ progress: number; /** circle size 0..1 */ size: number }
+export type Breath = {
+  phase: 'in' | 'out'
+  /** Square size 0..1. */
+  size: number
+  /** Whole seconds left in this phase, for the countdown. */
+  left: number
+  /** Breaths completed so far. */
+  count: number
+}
 
 const ease = (x: number) => 0.5 - Math.cos(Math.PI * x) / 2
 
 export function breathAt(ms: number): Breath {
-  const t = ((ms % CYCLE_MS) + CYCLE_MS) % CYCLE_MS
-  if (t < INHALE_MS) {
-    const progress = t / INHALE_MS
-    return { phase: 'in', progress, size: ease(progress) }
-  }
-  const progress = (t - INHALE_MS) / EXHALE_MS
-  return { phase: 'out', progress, size: 1 - ease(progress) }
+  const t = Math.max(0, ms)
+  const count = Math.floor(t / CYCLE_MS)
+  const c = t % CYCLE_MS
+  if (c < INHALE_MS) return { phase: 'in', size: ease(c / INHALE_MS), left: Math.ceil((INHALE_MS - c) / 1000), count }
+  return { phase: 'out', size: 1 - ease((c - INHALE_MS) / EXHALE_MS), left: Math.ceil((CYCLE_MS - c) / 1000), count }
 }
-
-export type Score = { matchedMs: number; totalMs: number }
-export const NO_SCORE: Score = { matchedMs: 0, totalMs: 0 }
-
-/** Adds `dt` ms of play; holding during an inhale or letting go during an exhale counts as matched. */
-export function scoreStep(s: Score, held: boolean, phase: Breath['phase'], dt: number): Score {
-  const ok = held === (phase === 'in')
-  return { matchedMs: s.matchedMs + (ok ? dt : 0), totalMs: s.totalMs + dt }
-}
-
-export const percent = (s: Score) => (s.totalMs ? Math.round((s.matchedMs / s.totalMs) * 100) : 0)
