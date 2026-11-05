@@ -47,7 +47,7 @@
 .cycler {
   display: flex;
   align-items: stretch;
-  border: 1px solid #3a3a3a;
+  border: 1px solid var(--line-strong);
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -57,7 +57,7 @@
   width: 34px;
   font-size: 15px;
   line-height: 1;
-  color: #8a8984;
+  color: var(--muted);
   transition: background 0.15s, color 0.15s;
 }
 
@@ -72,11 +72,11 @@
 }
 
 .cycler button:first-child {
-  border-right: 1px solid #3a3a3a;
+  border-right: 1px solid var(--line-strong);
 }
 
 .cycler button:last-child {
-  border-left: 1px solid #3a3a3a;
+  border-left: 1px solid var(--line-strong);
 }
 
 .cycler-mid {
@@ -115,7 +115,7 @@
 .seg,
 .stepper {
   display: flex;
-  border: 1px solid #3a3a3a;
+  border: 1px solid var(--line-strong);
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
@@ -126,12 +126,12 @@
   padding: 9px 16px;
   text-transform: inherit;
   letter-spacing: inherit;
-  color: #8a8984;
+  color: var(--muted);
   transition: background 0.15s, color 0.15s;
 }
 
 .seg button + button {
-  border-left: 1px solid #3a3a3a;
+  border-left: 1px solid var(--line-strong);
 }
 
 .seg button:hover {
@@ -173,7 +173,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  border: 1px solid #3a3a3a;
+  border: 1px solid var(--line-strong);
   transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
 
@@ -225,7 +225,7 @@
 
 /* Solid, lower-contrast seconds: hierarchy without hairline outlines that blur into the sphere. */
 .big .sec {
-  color: #5b5a56;
+  color: var(--faint);
 }
 
 .big sup {

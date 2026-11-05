@@ -6,6 +6,9 @@ import { CHIMES, type Chime } from '../timer/alerts'
 
 export const PREFS_KEY = 'focus-space:prefs'
 
+export const THEMES = ['dark', 'light', 'system'] as const
+export type Theme = (typeof THEMES)[number]
+
 export const TEXT_SCALES = ['m', 'l', 'xl'] as const
 export type TextScale = (typeof TEXT_SCALES)[number]
 
@@ -50,6 +53,8 @@ export type Prefs = {
   /** Mutes every sound without touching the saved mix. */
   muted: boolean
   textScale: TextScale
+  /** 'system' follows prefers-color-scheme. */
+  theme: Theme
   /** Highlight colour, #rrggbb. */
   accent: string
   lofiStation: number
@@ -70,6 +75,7 @@ export const DEFAULT_PREFS: Prefs = {
   calm: false,
   muted: false,
   textScale: 'm',
+  theme: 'system',
   accent: DEFAULT_ACCENT,
   lofiStation: 0,
   scenes: [],
@@ -123,6 +129,7 @@ export function loadPrefs(): Prefs {
     calm: r.calm === true,
     muted: r.muted === true,
     textScale: TEXT_SCALES.includes(r.textScale as TextScale) ? (r.textScale as TextScale) : DEFAULT_PREFS.textScale,
+    theme: THEMES.includes(r.theme as Theme) ? (r.theme as Theme) : DEFAULT_PREFS.theme,
     accent: isHex(r.accent) ? r.accent.toLowerCase() : DEFAULT_ACCENT,
     lofiStation: Number.isInteger(r.lofiStation) && (r.lofiStation as number) >= 0 ? (r.lofiStation as number) : 0,
     scenes: parseScenes(r.scenes),

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { CHANNEL_IDS, type ChannelId } from './channels'
 import { createEngine, type Engine } from './engine'
 import { bandLevels } from './levels'
-import { loadPrefs, MAX_SCENES, savePrefs, type Prefs, type Scene, type TextScale } from '../prefs/prefs'
+import { loadPrefs, MAX_SCENES, savePrefs, type Prefs, type Scene, type TextScale, type Theme } from '../prefs/prefs'
 import type { Chime } from '../timer/alerts'
 
 export function useAmbient() {
@@ -94,6 +94,7 @@ export function useAmbient() {
   const setNotify = useCallback((notify: boolean) => setPrefs((p) => ({ ...p, notify })), [])
   const setCalm = useCallback((calm: boolean) => setPrefs((p) => ({ ...p, calm })), [])
   const setTextScale = useCallback((textScale: TextScale) => setPrefs((p) => ({ ...p, textScale })), [])
+  const setTheme = useCallback((theme: Theme) => setPrefs((p) => ({ ...p, theme })), [])
   const setAccent = useCallback((accent: string) => setPrefs((p) => ({ ...p, accent })), [])
   const setLofiStation = useCallback((lofiStation: number) => setPrefs((p) => ({ ...p, lofiStation })), [])
 
@@ -123,6 +124,7 @@ export function useAmbient() {
     setTextScale,
     setLofiStation,
     setAccent,
+    setTheme,
     getLevels,
   }
 }

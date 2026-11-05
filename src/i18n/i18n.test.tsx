@@ -130,6 +130,7 @@ describe('the app in English', () => {
           onDeleteScene={noop}
           onImmersive={noop}
           onSlots={noop}
+          onTheme={noop}
         />
       </I18nProvider>,
     )

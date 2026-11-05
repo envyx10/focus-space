@@ -23,6 +23,7 @@ function setup(over: Partial<Parameters<typeof SettingsMenu>[0]> = {}) {
     onDeleteScene: vi.fn(),
     onImmersive: vi.fn(),
     onSlots: vi.fn(),
+    onTheme: vi.fn(),
   }
   render(<SettingsMenu prefs={DEFAULT_PREFS} config={DEFAULT_CONFIG} stats={{}} today="2026-10-30" open {...fns} {...over} />)
   return fns

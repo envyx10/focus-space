@@ -6,7 +6,7 @@ import { DEFAULT_CONFIG, type TimerConfig } from '../timer/timer'
 import { LIMITS } from '../timer/timerStore'
 import { formatDuration, rangeMs, streak, type Stats } from '../stats/stats'
 import { ACCENTS } from '../prefs/accent'
-import { TEXT_SCALES, type Prefs, type TextScale } from '../prefs/prefs'
+import { TEXT_SCALES, THEMES, type Prefs, type TextScale, type Theme } from '../prefs/prefs'
 import MixerSlots from './MixerSlots'
 import type { ChannelId } from '../audio/channels'
 import './settings.css'
@@ -46,6 +46,7 @@ type Props = {
   onMuted: (on: boolean) => void
   onTextScale: (s: TextScale) => void
   onAccent: (hex: string) => void
+  onTheme: (t: Theme) => void
   onSaveScene: (name: string) => void
   onApplyScene: (name: string) => void
   onDeleteScene: (name: string) => void
@@ -238,6 +239,16 @@ export default function SettingsMenu(p: Props) {
                 {LANGS.map((l) => (
                   <button key={l} aria-pressed={lang === l} onClick={() => setLang(l)} lang={l}>
                     {l.toUpperCase()}
+                  </button>
+                ))}
+              </span>
+            </div>
+            <div className="set-row">
+              <span>{t('settings.theme')}</span>
+              <span className="set-seg" role="group" aria-label={t('settings.theme')}>
+                {THEMES.map((th) => (
+                  <button key={th} aria-pressed={prefs.theme === th} onClick={() => p.onTheme(th)}>
+                    {t(`theme.${th}`)}
                   </button>
                 ))}
               </span>
