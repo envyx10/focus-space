@@ -58,13 +58,24 @@ export default function BreathGame({ remaining, ended, onClose }: Props) {
     }
   }, [pct, score.totalMs, best])
 
-  const hold = (on: boolean) => (held.current = on)
+  const [isHeld, setIsHeld] = useState(false)
+  const hold = (on: boolean) => {
+    held.current = on
+    setIsHeld(on)
+  }
 
   return (
     <div className="br" role="dialog" aria-label={t('break.title')} onKeyDown={(e) => e.key === 'Escape' && (e.preventDefault(), onClose())}>
       <header className="br-head">
-        <span>{t('break.left', { time: remaining })}</span>
-        <button className="br-close" onClick={onClose} aria-label={t('break.close')}>
+        <div>
+          <div className="num">02</div>
+          <div className="lbl">{t('break.title')}</div>
+          <div className="br-left" aria-label={t('break.left', { time: remaining })}>
+            {remaining}
+          </div>
+        </div>
+        <button className="br-close" onClick={onClose} title={t('break.close')}>
+          {t('break.closeShort')}
           <Icon name="close" />
         </button>
       </header>
@@ -74,8 +85,7 @@ export default function BreathGame({ remaining, ended, onClose }: Props) {
           {t('break.ended')}
         </p>
       ) : (
-        <>
-          <button
+        <button
             ref={pad}
             className={`br-pad${breath.phase === 'in' ? ' is-in' : ''}`}
             aria-label={t('break.pad')}
@@ -93,18 +103,21 @@ export default function BreathGame({ remaining, ended, onClose }: Props) {
             onKeyUp={() => hold(false)}
             onContextMenu={(e) => e.preventDefault()}
           >
-            <span className="br-circle" style={{ ['--s' as string]: 0.35 + breath.size * 0.65 }} />
+            <span className={`br-stage${isHeld ? ' is-held' : ''}`}>
+              <span className="br-square" style={{ ['--s' as string]: 0.2 + breath.size * 0.8 }} />
+            </span>
             <span className="br-cue" aria-live="polite">
               {t(breath.phase === 'in' ? 'break.inhale' : 'break.exhale')}
             </span>
           </button>
-          <p className="br-hint">{t('break.hint')}</p>
-        </>
       )}
 
-      <footer className="br-score">
-        <span>{t('break.score', { pct })}</span>
-        <span>{t('break.best', { pct: best })}</span>
+      <footer className="br-foot">
+        <p className="br-hint">{t('break.hint')}</p>
+        <p className="br-score">
+          <span>{t('break.score', { pct })}</span>
+          <span>{t('break.best', { pct: best })}</span>
+        </p>
       </footer>
     </div>
   )

@@ -17,10 +17,10 @@ describe('BreakCorner', () => {
   it('opens the game with the break time visible, and announces the end of the break', async () => {
     const { rerender } = render(<BreakCorner inBreak breakId="1-short" remaining="4:12" />)
     await userEvent.click(screen.getByText('¿Respiramos un rato?'))
-    expect(await screen.findByRole('dialog', { name: 'Descanso para respirar' })).toBeInTheDocument()
-    expect(screen.getByText('Descanso · quedan 4:12')).toBeInTheDocument()
+    expect(await screen.findByRole('dialog', { name: 'Respirar' })).toBeInTheDocument()
+    expect(screen.getByLabelText('Descanso · quedan 4:12')).toBeInTheDocument()
     rerender(<BreakCorner inBreak={false} breakId="1-short" remaining="0:00" />)
-    expect(screen.getByRole('status')).toHaveTextContent('Fin del descanso · vuelta al foco')
+    expect(screen.getByRole('status')).toHaveTextContent('Se acabó el descanso. Vuelta al foco')
   })
 
   it('Esc closes the game', async () => {

@@ -184,6 +184,16 @@ export default function App() {
           phase={timer.state.phase}
           freeMinutes={timer.freeMinutes}
           activeTaskText={activeTask?.text ?? null}
+          taskSlot={
+            prefs.breakGame && (
+              <BreakCorner
+                inBreak={timer.state.mode === 'pomodoro' && timer.state.phase !== 'work' && (timer.status === 'running' || timer.status === 'paused')}
+                breakId={`${timer.sessionNumber}-${timer.state.phase}`}
+                remaining={clock(timer.remainingMs)}
+                fallback={activeTask?.text ?? <span className="focus-dim">{t('focus.noTask')}</span>}
+              />
+            )
+          }
           onStart={timer.start}
           onPause={timer.pause}
           onReset={timer.reset}
@@ -206,13 +216,6 @@ export default function App() {
             </Suspense>
           )}
         </FocusPanel>
-        {prefs.breakGame && (
-          <BreakCorner
-            inBreak={timer.state.mode === 'pomodoro' && timer.state.phase !== 'work' && (timer.status === 'running' || timer.status === 'paused')}
-            breakId={`${timer.sessionNumber}-${timer.state.phase}`}
-            remaining={clock(timer.remainingMs)}
-          />
-        )}
         {immersive && <FocusTasks tasks={tasks.tasks} />}
         {immersive && (
           <button className="exit-immersive" onClick={exitImmersive}>

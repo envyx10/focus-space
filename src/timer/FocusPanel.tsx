@@ -13,6 +13,8 @@ type Props = {
   phase: Phase
   freeMinutes: number
   activeTaskText: string | null
+  /** Takes the task line's place when given (the break invite and game live there). */
+  taskSlot?: ReactNode
   onStart: () => void
   onPause: () => void
   onReset: () => void
@@ -126,7 +128,7 @@ export default function FocusPanel(p: Props) {
       </div>
 
       <div className="focus-meta">
-        <span>{p.activeTaskText ?? <span className="focus-dim">{t('focus.noTask')}</span>}</span>
+        <span>{p.taskSlot ?? p.activeTaskText ?? <span className="focus-dim">{t('focus.noTask')}</span>}</span>
         <span className="actions">
           {!clock && (
             <button className="btn" onClick={() => sure(t('focus.confirmReset')) && p.onReset()}>
