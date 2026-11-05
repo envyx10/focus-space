@@ -71,8 +71,23 @@
   background: transparent;
 }
 
-.focus:has(> .br.has-sphere) > :not(.focus-bg):not(.br) {
+.focus:has(> .br.has-sphere) > :not(.focus-bg):not(.br):not(.focus-top),
+.focus:has(> .br.has-sphere:not(.is-mode)) > .focus-top {
   visibility: hidden;
+}
+
+/* Breathe view: the panel's top bar (label, mode switch) stays above the guide, which needs no header of its own. */
+.focus:has(> .br.is-mode) > .focus-top {
+  z-index: 5;
+}
+
+.br.is-mode {
+  grid-template-rows: 1fr auto;
+  padding-top: 0;
+}
+
+.br.is-mode .br-pad {
+  padding-top: 120px;
 }
 
 /* Keep the cue and notes legible over the particles. */
@@ -204,5 +219,18 @@
   .br-foot {
     flex-direction: column;
     align-items: flex-start;
+  }
+}
+
+/* Four views in the clock panel's switch: on the narrowest phones they share the width instead of overflowing. */
+@media (max-width: 400px) {
+  .app .seg {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .app .seg button {
+    padding-inline: 2px;
+    letter-spacing: 0.02em;
   }
 }

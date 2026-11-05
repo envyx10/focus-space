@@ -30,6 +30,7 @@ export const es = {
   'focus.modeGroup': 'Modo del temporizador',
   'focus.modeClock': 'Hora',
   'focus.modePomodoro': 'Pomodoro',
+  'focus.modeBreathe': 'Respirar',
   'focus.modeFree': 'Libre',
   'focus.nowIs': 'Son las {time}',
   'focus.clockLabel': '{min} minutos {sec} segundos',
