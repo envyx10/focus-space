@@ -93,6 +93,13 @@ export default function App() {
     return () => document.removeEventListener('fullscreenchange', onChange)
   }, [])
 
+  // Closing or reloading the tab while a task's text is being edited: blur commits it before the page goes.
+  useEffect(() => {
+    const onHide = () => (document.activeElement as HTMLElement | null)?.blur?.()
+    addEventListener('pagehide', onHide)
+    return () => removeEventListener('pagehide', onHide)
+  }, [])
+
   useShortcuts({
     toggleTimer: () => setToggleSignal((n) => n + 1),
     newTask: () => document.querySelector<HTMLInputElement>('[data-new-task]')?.focus(),
@@ -158,9 +165,11 @@ export default function App() {
           tasks={tasks.tasks}
           synced={synced}
           saveError={tasks.error}
+          localError={tasks.localError}
           add={tasks.add}
           toggle={tasks.toggle}
           edit={tasks.edit}
+          describe={tasks.describe}
           remove={tasks.remove}
           setActive={tasks.setActive}
           restore={tasks.restore}
