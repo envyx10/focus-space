@@ -87,6 +87,7 @@ export const es = {
   'tabs.mixer': 'Sonidos',
   'tabs.lofi': 'Radio',
   'mixer.silent': 'Todo en silencio · haz clic o arrastra una barra para subir un sonido',
+  'mixer.swap': 'Sonido del cuadrado {channel}',
   'mixer.changeVariant': '{channel}: {variant}. Cambiar variante',
   'mixer.volume': 'Volumen {channel}',
   'mixer.valueText': '{pct} %, {variant}',
