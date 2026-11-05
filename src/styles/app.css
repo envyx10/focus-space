@@ -84,6 +84,7 @@ button {
 
 .region-mixer {
   grid-column: 1 / 9;
+  min-width: 0;
   border-top: 1px solid var(--line);
 }
 
