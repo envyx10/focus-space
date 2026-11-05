@@ -84,7 +84,6 @@ export const en: Record<Key, string> = {
   'tabs.tasks': 'Tasks',
   'tabs.mixer': 'Sounds',
   'tabs.lofi': 'Radio',
-  'mixer.silent': 'All quiet · click or drag a bar to turn a sound up',
   'mixer.swap': 'Sound in the {channel} square',
   'mixer.nextVariant': 'Next recording',
   'mixer.changeVariant': '{channel}: {variant}. Change variant',
