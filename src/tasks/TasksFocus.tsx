@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import { createPortal } from 'react-dom'
+import { createPortal, flushSync } from 'react-dom'
 import { useT } from '../i18n'
 import Icon from '../lib/Icon'
+import Markdown from './Markdown'
 import type { Task } from './types'
 import './tasksFocus.css'
 
@@ -25,6 +26,9 @@ function Detail({ task, index, ...a }: { task: Task; index: number } & Omit<Acti
   const [title, setTitle] = useState(task.text)
   const [desc, setDesc] = useState(task.description ?? '')
   const [saving, setSaving] = useState(false)
+  // A task with notes opens formatted; Edit shows the raw text. An empty one is always the editor.
+  const [editing, setEditing] = useState(!task.description?.trim())
+  const area = useRef<HTMLTextAreaElement>(null)
   const saved = useRef(task.description ?? '')
   const latest = useRef(desc)
   latest.current = desc
@@ -62,6 +66,12 @@ function Detail({ task, index, ...a }: { task: Task; index: number } & Omit<Acti
     else setTitle(task.text)
   }
 
+  const showEditor = editing || !desc.trim()
+  const startEditing = () => {
+    flushSync(() => setEditing(true))
+    area.current?.focus()
+  }
+
   const status = task.done ? t('tasks.focus.statusDone') : task.active ? t('tasks.focus.statusNow') : t('tasks.focus.statusPending')
 
   return (
@@ -69,6 +79,11 @@ function Detail({ task, index, ...a }: { task: Task; index: number } & Omit<Acti
       <div className="tf-meta">
         <span className="num">{num(index)}</span>
         <span className={`lbl${task.active && !task.done ? ' acc' : ''}`}>{status}</span>
+        {desc.trim() && (
+          <button className="tf-mode" onClick={showEditor ? () => setEditing(false) : startEditing}>
+            {showEditor ? t('tasks.focus.view') : t('tasks.edit')}
+          </button>
+        )}
       </div>
       <textarea
         className="tf-title"
@@ -85,15 +100,22 @@ function Detail({ task, index, ...a }: { task: Task; index: number } & Omit<Acti
           }
         }}
       />
-      <textarea
-        className="tf-desc"
-        aria-label={t('tasks.focus.descLabel')}
-        placeholder={t('tasks.focus.descPlaceholder')}
-        maxLength={MAX_DESC}
-        value={desc}
-        onChange={(e) => setDesc(e.target.value)}
-        onBlur={flush}
-      />
+      {showEditor ? (
+        <textarea
+          ref={area}
+          className="tf-desc"
+          aria-label={t('tasks.focus.descLabel')}
+          placeholder={t('tasks.focus.descPlaceholder')}
+          maxLength={MAX_DESC}
+          value={desc}
+          onChange={(e) => setDesc(e.target.value)}
+          onBlur={flush}
+        />
+      ) : (
+        <div className="tf-desc tf-rendered" onDoubleClick={startEditing}>
+          <Markdown text={desc} />
+        </div>
+      )}
       <footer className="tf-foot">
         <span className="lbl" role="status">
           {saving ? t('tasks.focus.saving') : desc ? t('tasks.focus.saved') : ''}
