@@ -21,10 +21,24 @@ function loadPlace(): Place | null {
   return isRecord(v) && typeof v.lat === 'number' && typeof v.lon === 'number' && typeof v.city === 'string' ? (v as Place) : null
 }
 
-// City-level location from the IP: no permission prompt (geolocation is off in our Permissions-Policy). No API keys.
+// The device's real position (GPS/Wi-Fi); IP lookup often lands on the ISP's city instead. Null if denied/unavailable.
+function devicePosition(): Promise<GeolocationCoordinates | null> {
+  return new Promise((resolve) => {
+    if (!navigator.geolocation) return resolve(null)
+    navigator.geolocation.getCurrentPosition(
+      (p) => resolve(p.coords),
+      () => resolve(null),
+      { timeout: 10_000, maximumAge: 10 * 60_000 },
+    )
+  })
+}
+
 // BigDataCloud moved this API to api-bdc.io; the old host only redirects there, which the CSP would block.
+// With coordinates it reverse-geocodes them; without, it falls back to the IP. No API keys.
 async function locate(lang: string): Promise<Place> {
-  const r = await fetch(`https://api-bdc.io/data/reverse-geocode-client?localityLanguage=${lang}`).then((r) => r.json())
+  const c = await devicePosition()
+  const at = c ? `&latitude=${c.latitude}&longitude=${c.longitude}` : ''
+  const r = await fetch(`https://api-bdc.io/data/reverse-geocode-client?localityLanguage=${lang}${at}`).then((r) => r.json())
   if (typeof r.latitude !== 'number' || typeof r.longitude !== 'number') throw new Error('no location')
   const lat = Math.round(r.latitude * 100) / 100
   const lon = Math.round(r.longitude * 100) / 100
