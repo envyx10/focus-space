@@ -9,11 +9,17 @@ const task = (id: string, text: string, extra: Partial<Task> = {}): Task => ({ i
 const base = { add: noop, toggle: noop, edit: noop, remove: noop, setActive: noop }
 
 describe('tasks full screen', () => {
-  it('opens from the panel, shows the description and closes with Esc', async () => {
-    render(<TasksPanel tasks={[task('1', 'Uno', { description: 'notas de uno' })]} synced describe={noop} {...base} />)
+  it('opens from the panel, shows the description formatted, edits it raw and closes with Esc', async () => {
+    render(<TasksPanel tasks={[task('1', 'Uno', { description: 'notas **de** uno' })]} synced describe={noop} {...base} />)
     await userEvent.click(screen.getByRole('button', { name: /Pantalla completa/ }))
     expect(screen.getByRole('dialog')).toBeInTheDocument()
-    expect(screen.getByLabelText('Descripción de la tarea')).toHaveValue('notas de uno')
+    expect(screen.getByText('de').tagName).toBe('STRONG')
+    expect(screen.queryByLabelText('Descripción de la tarea')).not.toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: 'Editar' }))
+    expect(screen.getByLabelText('Descripción de la tarea')).toHaveValue('notas **de** uno')
+    expect(screen.getByLabelText('Descripción de la tarea')).toHaveFocus()
+    await userEvent.click(screen.getByRole('button', { name: 'Ver' }))
+    expect(screen.getByText('de').tagName).toBe('STRONG')
     await userEvent.keyboard('{Escape}')
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   })
