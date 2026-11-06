@@ -1,10 +1,12 @@
-import { useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { createPortal, flushSync } from 'react-dom'
 import { useT } from '../i18n'
 import Icon from '../lib/Icon'
-import Markdown from './Markdown'
 import type { Task } from './types'
 import './tasksFocus.css'
+
+// The Markdown renderer only loads once a formatted description is shown.
+const Markdown = lazy(() => import('./Markdown'))
 
 const MAX_TEXT = 500
 export const MAX_DESC = 20000
@@ -29,6 +31,8 @@ function Detail({ task, index, ...a }: { task: Task; index: number } & Omit<Acti
   // A task with notes opens formatted; Edit shows the raw text. An empty one is always the editor.
   const [editing, setEditing] = useState(!task.description?.trim())
   const area = useRef<HTMLTextAreaElement>(null)
+  const picker = useRef<HTMLInputElement>(null)
+  const [importError, setImportError] = useState<'' | 'type' | 'size'>('')
   const saved = useRef(task.description ?? '')
   const latest = useRef(desc)
   latest.current = desc
@@ -72,18 +76,54 @@ function Detail({ task, index, ...a }: { task: Task; index: number } & Omit<Acti
     area.current?.focus()
   }
 
+  // A .md file (picked or dropped) is added after what is already written, never over it.
+  const importFile = async (file: File) => {
+    if (!/\.(md|markdown|txt)$/i.test(file.name)) return setImportError('type')
+    const text = (await file.text()).replace(/\r\n?/g, '\n')
+    const next = latest.current.trim() ? `${latest.current.trimEnd()}\n\n${text}` : text
+    if (next.length > MAX_DESC) return setImportError('size')
+    setImportError('')
+    setDesc(next)
+    setEditing(false)
+  }
+
   const status = task.done ? t('tasks.focus.statusDone') : task.active ? t('tasks.focus.statusNow') : t('tasks.focus.statusPending')
 
   return (
-    <article className={`tf-detail${task.done ? ' dn' : ''}`}>
+    <article
+      className={`tf-detail${task.done ? ' dn' : ''}`}
+      onDragOver={(e) => e.dataTransfer.types.includes('Files') && e.preventDefault()}
+      onDrop={(e) => {
+        const file = e.dataTransfer.files[0]
+        if (!file) return
+        e.preventDefault()
+        importFile(file)
+      }}
+    >
       <div className="tf-meta">
         <span className="num">{num(index)}</span>
         <span className={`lbl${task.active && !task.done ? ' acc' : ''}`}>{status}</span>
-        {desc.trim() && (
-          <button className="tf-mode" onClick={showEditor ? () => setEditing(false) : startEditing}>
-            {showEditor ? t('tasks.focus.view') : t('tasks.edit')}
+        <span className="tf-tools">
+          <button className="tf-mode" onClick={() => picker.current?.click()}>
+            {t('tasks.focus.import')}
           </button>
-        )}
+          <input
+            ref={picker}
+            type="file"
+            accept=".md,.markdown,.txt,text/markdown,text/plain"
+            hidden
+            onChange={(e) => {
+              const file = e.target.files?.[0]
+              e.target.value = ''
+              if (file) importFile(file)
+            }}
+          />
+          {desc.trim() && (
+            <button className="tf-mode" onClick={showEditor ? () => setEditing(false) : startEditing}>
+              {showEditor ? t('tasks.focus.view') : t('tasks.edit')}
+            </button>
+          )}
+        </span>
       </div>
       <textarea
         className="tf-title"
@@ -113,12 +153,20 @@ function Detail({ task, index, ...a }: { task: Task; index: number } & Omit<Acti
         />
       ) : (
         <div className="tf-desc tf-rendered" onDoubleClick={startEditing}>
-          <Markdown text={desc} />
+          <Suspense fallback={<p>{desc}</p>}>
+            <Markdown text={desc} />
+          </Suspense>
         </div>
       )}
       <footer className="tf-foot">
         <span className="lbl" role="status">
-          {saving ? t('tasks.focus.saving') : desc ? t('tasks.focus.saved') : ''}
+          {importError
+            ? t(importError === 'type' ? 'tasks.focus.importType' : 'tasks.focus.importSize', { n: MAX_DESC })
+            : saving
+              ? t('tasks.focus.saving')
+              : desc
+                ? t('tasks.focus.saved')
+                : ''}
         </span>
         <span className="tf-actions">
           <button className="btn" onClick={() => a.toggle(task.id)}>
