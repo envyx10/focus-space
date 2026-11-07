@@ -21,7 +21,8 @@ export function isTask(v: unknown): v is Task {
     typeof v.done === 'boolean' &&
     typeof v.active === 'boolean' &&
     typeof v.createdAt === 'string' &&
-    (v.description === undefined || typeof v.description === 'string')
+    (v.description === undefined || typeof v.description === 'string') &&
+    (v.position === undefined || (typeof v.position === 'number' && Number.isFinite(v.position)))
   )
 }
 

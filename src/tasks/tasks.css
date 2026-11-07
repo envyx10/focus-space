@@ -80,9 +80,70 @@
 }
 
 .tk-arrow,
-.tk-del {
+.tk-del,
+.tk-grip {
   opacity: 0;
   transition: opacity 0.15s;
+}
+
+/* Reordering: the handle shows like the other actions; on touch screens, where nothing hovers, it is always there. */
+.tk-grip {
+  cursor: grab;
+  touch-action: none;
+}
+
+@media (hover: hover) {
+  .tk:hover .tk-grip {
+    opacity: 0.5;
+  }
+
+  .tk-grip:hover {
+    opacity: 1;
+    color: var(--accent);
+  }
+}
+
+@media (hover: none) {
+  .tk-grip {
+    opacity: 0.35;
+  }
+}
+
+.tk:focus-within .tk-grip {
+  opacity: 0.5;
+}
+
+.tk-grip:focus-visible {
+  opacity: 1;
+  color: var(--accent);
+}
+
+.sorting .tk {
+  transition: transform 0.15s ease;
+}
+
+.sorting,
+.sorting * {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.tk.drag {
+  position: relative;
+  z-index: 1;
+  background: var(--bg);
+  transition: none;
+}
+
+.tk.drag .tk-grip {
+  opacity: 1;
+  color: var(--accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sorting .tk {
+    transition: none;
+  }
 }
 
 @media (hover: hover) {

@@ -4,8 +4,34 @@ import type { Task, TaskRepo } from './types'
 
 const RETRY_MS = 10_000
 
+/** Where a task sits: the place it was dragged to, or else when it was created (so new tasks land at the end). */
+export const rank = (t: Task): number => t.position ?? Date.parse(t.createdAt)
+
 export function sortTasks(tasks: Task[]): Task[] {
-  return [...tasks].sort((a, b) => Number(a.done) - Number(b.done) || a.createdAt.localeCompare(b.createdAt))
+  return [...tasks].sort((a, b) => Number(a.done) - Number(b.done) || rank(a) - rank(b) || a.createdAt.localeCompare(b.createdAt))
+}
+
+/** Gap left between neighbours when a task goes to either end of the list, or when the list is renumbered. */
+const STEP = 1024
+
+/**
+ * The tasks to save so that pending task `id` ends up at index `to` among the pending ones. Normally only the moved
+ * task changes (it takes a position between its new neighbours); when there is no room left between them, every
+ * pending task is renumbered.
+ */
+export function reorder(tasks: Task[], id: string, to: number): Task[] {
+  const pending = sortTasks(tasks).filter((t) => !t.done)
+  const from = pending.findIndex((t) => t.id === id)
+  if (from === -1) return []
+  const rest = pending.filter((t) => t.id !== id)
+  const at = Math.max(0, Math.min(to, rest.length))
+  if (at === from) return []
+  const before = rest[at - 1]
+  const after = rest[at]
+  const position = !before ? rank(after) - STEP : !after ? rank(before) + STEP : (rank(before) + rank(after)) / 2
+  if ((!before || position > rank(before)) && (!after || position < rank(after))) return [{ ...pending[from], position }]
+  rest.splice(at, 0, pending[from])
+  return rest.map((t, i) => ({ ...t, position: (i + 1) * STEP }))
 }
 
 export function useTasks(repo: TaskRepo) {
@@ -133,6 +159,15 @@ export function useTasks(repo: TaskRepo) {
     [commit],
   )
 
+  // Drag (or Alt+arrow) a pending task to another place among the pending ones.
+  const move = useCallback(
+    async (id: string, to: number) => {
+      const changed = new Map(reorder(tasksRef.current, id, to).map((t) => [t.id, t]))
+      if (changed.size) await commit(tasksRef.current.map((t) => changed.get(t.id) ?? t))
+    },
+    [commit],
+  )
+
   const remove = useCallback(
     async (id: string) => {
       show(tasksRef.current.filter((t) => t.id !== id))
@@ -166,5 +201,5 @@ export function useTasks(repo: TaskRepo) {
     [commit],
   )
 
-  return { tasks, loaded, error, localError, reload, add, toggle, edit, describe, remove, setActive, restore, clearDone, addMany }
+  return { tasks, loaded, error, localError, reload, add, toggle, edit, describe, move, remove, setActive, restore, clearDone, addMany }
 }

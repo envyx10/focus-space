@@ -172,6 +172,7 @@ export default function App() {
           describe={tasks.describe}
           remove={tasks.remove}
           setActive={tasks.setActive}
+          move={tasks.move}
           restore={tasks.restore}
           clearDone={tasks.clearDone}
           addMany={tasks.addMany}
