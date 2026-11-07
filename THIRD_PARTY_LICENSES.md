@@ -1,7 +1,7 @@
 # Third-party licenses · Licencias de terceros
 
-Focus/Space's own code is under [FSL-1.1-MIT](LICENSE) (© 2026 envyx10). This file lists what else is in, or loaded by, the app and under which terms.
-*El código propio de Focus/Space está bajo [FSL-1.1-MIT](LICENSE) (© 2026 envyx10). Este archivo lista qué más contiene o carga la app y bajo qué condiciones.*
+Focus/Space's own code is under [FSL-1.1-MIT](LICENSE), © 2026 Pablo Gil Diaz (envyx10). This file lists what else is in, or loaded by, the app and under which terms.
+*El código propio de Focus/Space está bajo [FSL-1.1-MIT](LICENSE), © 2026 Pablo Gil Diaz (envyx10). Este archivo lista qué más contiene o carga la app y bajo qué condiciones.*
 
 ## What ships in the production bundle · Lo que va en el paquete de producción
 
@@ -51,6 +51,11 @@ All ambient sounds, the keyboard recordings and the end-of-phase chime are **CC0
 ## Lofi radio · Radio lofi
 
 The radio is an official YouTube embed (the IFrame Player API). The streams are not part of this repository and belong to their owners; YouTube's [Terms of Service](https://www.youtube.com/t/terms) apply. Focus/Space does not download, record or redistribute them.
+
+## Logo and name · Logo y nombre
+
+The name, logo and icons are not under FSL: see [TRADEMARK.md](TRADEMARK.md).
+*El nombre, el logo y los iconos no están bajo FSL: ver [TRADEMARK.md](TRADEMARK.md).*
 
 ## Trademarks · Marcas
 
