@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { RUNTIME_PACKAGES, buildLicensesText, findLicenseFile } from './licenses-plugin.ts'
+import { RUNTIME_PACKAGES, buildLicensesText, findLicenseFile, packageOf } from './licenses-plugin.ts'
 
 const root = process.cwd()
 
@@ -13,6 +13,14 @@ describe('licenses.txt', () => {
     const doc = readFileSync('THIRD_PARTY_LICENSES.md', 'utf8')
     for (const pkg of RUNTIME_PACKAGES) expect(doc, pkg).toContain(`[${pkg}]`)
     expect(doc).toContain(`These ${RUNTIME_PACKAGES.length} packages`)
+  })
+
+  it('tells which package a bundled module comes from', () => {
+    expect(packageOf('C:\\app\\node_modules\\react-dom\\cjs\\react-dom.production.js')).toBe('react-dom')
+    expect(packageOf('/app/node_modules/@supabase/auth-js/dist/module/index.js')).toBe('@supabase/auth-js')
+    expect(packageOf('/app/node_modules/a/node_modules/@ungap/structured-clone/esm/index.js')).toBe('@ungap/structured-clone')
+    expect(packageOf('/app/src/main.tsx')).toBeUndefined()
+    expect(packageOf('\0vite/preload-helper.js')).toBeUndefined()
   })
 
   it('carries our license and every dependency notice', () => {

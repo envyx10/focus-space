@@ -3,9 +3,10 @@ import { join } from 'node:path'
 import type { Plugin } from 'vite'
 
 /**
- * The packages compiled into the production bundle. MIT and 0BSD ask that each copyright notice
- * travels with the code, and the bundler does not keep them, so the build writes them to
- * `licenses.txt`. Keep this list in step with THIRD_PARTY_LICENSES.md (a test checks it).
+ * The packages compiled into the production bundle. MIT, ISC, BSD and 0BSD ask that each copyright
+ * notice travels with the code, and the bundler does not keep them, so the build writes them to
+ * `licenses.txt`. Keep this list in step with THIRD_PARTY_LICENSES.md (a test checks it); the build
+ * fails if the bundle contains a package that is not here.
  */
 export const RUNTIME_PACKAGES = [
   '@supabase/auth-js',
@@ -21,7 +22,91 @@ export const RUNTIME_PACKAGES = [
   'scheduler',
   'three',
   'tslib',
+  // Markdown renderer for task descriptions, in its own lazy chunk.
+  '@ungap/structured-clone',
+  'bail',
+  'ccount',
+  'comma-separated-tokens',
+  'decode-named-character-reference',
+  'devlop',
+  'escape-string-regexp',
+  'estree-util-is-identifier-name',
+  'extend',
+  'hast-util-to-jsx-runtime',
+  'hast-util-to-text',
+  'hast-util-whitespace',
+  'highlight.js',
+  'html-url-attributes',
+  'inline-style-parser',
+  'is-plain-obj',
+  'longest-streak',
+  'lowlight',
+  'markdown-table',
+  'mdast-util-find-and-replace',
+  'mdast-util-from-markdown',
+  'mdast-util-gfm',
+  'mdast-util-gfm-autolink-literal',
+  'mdast-util-gfm-footnote',
+  'mdast-util-gfm-strikethrough',
+  'mdast-util-gfm-table',
+  'mdast-util-gfm-task-list-item',
+  'mdast-util-phrasing',
+  'mdast-util-to-hast',
+  'mdast-util-to-markdown',
+  'mdast-util-to-string',
+  'micromark',
+  'micromark-core-commonmark',
+  'micromark-extension-gfm',
+  'micromark-extension-gfm-autolink-literal',
+  'micromark-extension-gfm-footnote',
+  'micromark-extension-gfm-strikethrough',
+  'micromark-extension-gfm-table',
+  'micromark-extension-gfm-task-list-item',
+  'micromark-factory-destination',
+  'micromark-factory-label',
+  'micromark-factory-space',
+  'micromark-factory-title',
+  'micromark-factory-whitespace',
+  'micromark-util-character',
+  'micromark-util-chunked',
+  'micromark-util-classify-character',
+  'micromark-util-combine-extensions',
+  'micromark-util-decode-numeric-character-reference',
+  'micromark-util-decode-string',
+  'micromark-util-edit-map',
+  'micromark-util-html-tag-name',
+  'micromark-util-normalize-identifier',
+  'micromark-util-resolve-all',
+  'micromark-util-sanitize-uri',
+  'micromark-util-subtokenize',
+  'property-information',
+  'react-markdown',
+  'rehype-highlight',
+  'remark-gfm',
+  'remark-parse',
+  'remark-rehype',
+  'space-separated-tokens',
+  'style-to-object',
+  'trim-lines',
+  'trough',
+  'unified',
+  'unist-util-is',
+  'unist-util-position',
+  'unist-util-stringify-position',
+  'unist-util-visit',
+  'unist-util-visit-parents',
+  'vfile',
+  'vfile-message',
 ]
+
+/**
+ * The package a bundled module comes from: the last `node_modules/<name>` (or
+ * `node_modules/@scope/<name>`) in its path, or undefined for our own code and virtual modules.
+ */
+export function packageOf(id: string): string | undefined {
+  const all = id.replaceAll('\\', '/').match(/node_modules\/(?:@[^/]+\/)?[^/]+/g)
+  return all?.at(-1)?.slice('node_modules/'.length)
+}
 
 /** The package's own license file, wherever it keeps it (LICENSE, LICENSE.md, LICENSE.txt…). */
 export function findLicenseFile(root: string, pkg: string): string | undefined {
@@ -57,7 +142,22 @@ export function licensesPlugin(): Plugin {
     configResolved(config) {
       root = config.root
     },
-    generateBundle() {
+    generateBundle(_, bundle) {
+      const listed = new Set(RUNTIME_PACKAGES)
+      const missing = new Set<string>()
+      for (const out of Object.values(bundle)) {
+        if (out.type !== 'chunk') continue
+        for (const id of out.moduleIds) {
+          const pkg = packageOf(id)
+          if (pkg && !listed.has(pkg)) missing.add(pkg)
+        }
+      }
+      if (missing.size) {
+        this.error(
+          `licenses: the bundle includes packages missing from RUNTIME_PACKAGES: ${[...missing].sort().join(', ')}. ` +
+            'Add them to licenses-plugin.ts and THIRD_PARTY_LICENSES.md.',
+        )
+      }
       this.emitFile({ type: 'asset', fileName: 'licenses.txt', source: buildLicensesText(root) })
     },
   }
