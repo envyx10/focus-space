@@ -3,9 +3,18 @@ import { useT } from '../i18n'
 import Icon from '../lib/Icon'
 import Picker from '../lib/Picker'
 import { channel, CHANNEL_IDS, type ChannelId } from '../audio/channels'
+import { SYNTH_PREFIX, synthesize, toWav } from '../audio/synth'
 import { DEFAULT_SLOTS, moveSlot, replaceSlot } from '../prefs/prefs'
 
 const PREVIEW_MS = 3000
+const PREVIEW_RATE = 44_100
+
+/** A playable URL for a channel's loop: generated sounds are rendered to a short WAV in memory. */
+function previewUrl(src: string): { url: string; revoke?: () => void } {
+  if (!src.startsWith(SYNTH_PREFIX)) return { url: src }
+  const url = URL.createObjectURL(toWav(synthesize(src, PREVIEW_RATE), PREVIEW_RATE, PREVIEW_MS / 1000 + 0.5))
+  return { url, revoke: () => URL.revokeObjectURL(url) }
+}
 
 type Props = {
   slots: ChannelId[]
@@ -17,7 +26,7 @@ type Props = {
 export default function MixerSlots({ slots, variants, onSlots }: Props) {
   const t = useT()
   const [dragFrom, setDragFrom] = useState<number | null>(null)
-  const preview = useRef<{ el: HTMLAudioElement; timer: ReturnType<typeof setTimeout> } | null>(null)
+  const preview = useRef<{ el: HTMLAudioElement; timer: ReturnType<typeof setTimeout>; revoke?: () => void } | null>(null)
   const [playing, setPlaying] = useState<ChannelId | null>(null)
 
   const stopPreview = () => {
@@ -25,18 +34,26 @@ export default function MixerSlots({ slots, variants, onSlots }: Props) {
     if (!preview.current) return
     clearTimeout(preview.current.timer)
     preview.current.el.pause()
+    preview.current.revoke?.()
     preview.current = null
   }
-  useEffect(() => () => preview.current?.el.pause(), [])
+  useEffect(
+    () => () => {
+      preview.current?.el.pause()
+      preview.current?.revoke?.()
+    },
+    [],
+  )
 
   const play = (id: ChannelId) => {
     stopPreview()
     setPlaying(id)
     const src = channel(id).variants.find((v) => v.id === variants[id])?.src ?? channel(id).variants[0].src
-    const el = new Audio(src)
+    const { url, revoke } = previewUrl(src)
+    const el = new Audio(url)
     el.volume = 0.5
     el.play().catch(() => {})
-    preview.current = { el, timer: setTimeout(stopPreview, PREVIEW_MS) }
+    preview.current = { el, timer: setTimeout(stopPreview, PREVIEW_MS), revoke }
   }
 
   const isDefault = slots.join() === DEFAULT_SLOTS.join()

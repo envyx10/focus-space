@@ -123,6 +123,7 @@ Five ambient channels you can layer, each with real recordings to choose from. N
       <b>Ambient mixer</b>
       <ul>
         <li><b>Rain</b> (soft, window, storm, tent), <b>fire</b> (campfire, fireplace), <b>café</b> (coffee shop, library), <b>wind</b> (soft, forest) and <b>keyboard</b> typing recorded on Cherry MX Blue, Brown and Red switches.</li>
+        <li><b>Generated in the browser</b>: soft, dark sounds for headaches (deep noise, slow swell, warm hum), <b>frequencies</b> (alpha, theta, delta and beta binaural beats, 432 and 528 Hz) and <b>spatial</b> sounds that move around your head (orbit, chimes, sway). Binaural and spatial sounds need headphones. They are for comfort, not a medical treatment.</li>
         <li>Mix with a click, a drag, the mouse wheel or the arrow keys.</li>
         <li><b>Save mixes</b> by name and switch between them.</li>
         <li><b>Mute everything</b> with <kbd>M</kbd>. The header shows when sound is off.</li>

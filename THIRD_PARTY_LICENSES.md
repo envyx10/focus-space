@@ -48,6 +48,9 @@ The clock typefaces are **not** in this repository. The browser downloads them f
 
 All ambient sounds, the keyboard recordings and the end-of-phase chime are **CC0 1.0** recordings from [Freesound](https://freesound.org) (public domain: no attribution is required). Each file, its author and its URL are in [public/sounds/CREDITS.md](public/sounds/CREDITS.md). The keyboard files are trimmed excerpts, mixed down to mono, level-matched and looped with a short crossfade.
 
+The migraine, frequency and spatial channels are not recordings: [`src/audio/synth.ts`](src/audio/synth.ts) generates them in the browser, so they are part of the code and under its license.
+*Los canales de migraña, frecuencias y espacial no son grabaciones: [`src/audio/synth.ts`](src/audio/synth.ts) los genera en el navegador, así que forman parte del código y de su licencia.*
+
 ## Lofi radio · Radio lofi
 
 The radio is an official YouTube embed (the IFrame Player API). The streams are not part of this repository and belong to their owners; YouTube's [Terms of Service](https://www.youtube.com/t/terms) apply. Focus/Space does not download, record or redistribute them.
