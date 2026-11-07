@@ -11,6 +11,9 @@ create table if not exists public.tasks (
 -- Added later: long notes for a task. Safe to run again.
 alter table public.tasks add column if not exists description text not null default '' check (char_length(description) <= 20000);
 
+-- Added later: the order the user dragged the tasks into. Safe to run again.
+alter table public.tasks add column if not exists position double precision;
+
 create index if not exists tasks_user_id_idx on public.tasks (user_id);
 
 alter table public.tasks enable row level security;

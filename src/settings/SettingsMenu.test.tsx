@@ -7,6 +7,14 @@ import { DEFAULT_CONFIG } from '../timer/timer'
 
 const MIN = 60_000
 
+describe('About', () => {
+  it('links to the licenses served with the app and to the source', () => {
+    setup()
+    expect(screen.getByRole('link', { name: /licen[cs]/i })).toHaveAttribute('href', '/licenses.txt')
+    expect(screen.getByRole('link', { name: /source|fuente/i })).toHaveAttribute('href', 'https://github.com/envyx10/focus-space')
+  })
+})
+
 function setup(over: Partial<Parameters<typeof SettingsMenu>[0]> = {}) {
   const fns = {
     onOpenChange: vi.fn(),

@@ -71,6 +71,8 @@ export const es = {
   'tasks.edit': 'Editar',
   'tasks.deleteLabel': 'Borrar {text}',
   'tasks.delete': 'Borrar',
+  'tasks.move': 'Arrastra para cambiar el orden',
+  'tasks.moveLabel': 'Mover {text}, {n} de {total}. Las flechas arriba y abajo la mueven',
   'tasks.deleted': 'Tarea borrada',
   'tasks.deletedMany': '{n} tareas borradas',
   'tasks.undo': 'Deshacer',
@@ -215,6 +217,21 @@ export const es = {
   'variant.asmr.cepillo': 'Cepillo',
   'variant.asmr.plastico': 'Plástico',
   'variant.asmr.ronroneo': 'Ronroneo',
+  'channel.migraine': 'Migraña',
+  'channel.tones': 'Frecuencias',
+  'channel.spatial': 'Espacial',
+  'variant.migraine.oscuro': 'Profundo',
+  'variant.migraine.oleaje': 'Oleaje lento',
+  'variant.migraine.zumbido': 'Zumbido cálido',
+  'variant.tones.alfa': 'Alfa 10 Hz',
+  'variant.tones.theta': 'Theta 6 Hz',
+  'variant.tones.delta': 'Delta 2 Hz',
+  'variant.tones.beta': 'Beta 16 Hz',
+  'variant.tones.432': '432 Hz',
+  'variant.tones.528': '528 Hz',
+  'variant.spatial.orbita': 'Órbita',
+  'variant.spatial.campanas': 'Campanas',
+  'variant.spatial.vaiven': 'Vaivén',
 
   // lofi
   'lofi.play': 'Reproducir lofi',
@@ -359,4 +376,10 @@ export const es = {
   'key.c.desc': 'Modo calma',
   'key.f.desc': 'Modo focus (Esc para salir)',
   'key.help.desc': 'Abrir / cerrar ajustes',
+
+  // acerca de
+  'settings.about': 'Acerca de',
+  'settings.aboutNote': 'Código visible bajo FSL-1.1-MIT: libre para usar, modificar y alojar tú mismo, no para revenderlo como producto que compita. Cada versión pasa a MIT a los dos años. El nombre y el logo no están licenciados.',
+  'settings.aboutLicenses': 'Licencias →',
+  'settings.aboutSource': 'Código fuente →',
 } as const

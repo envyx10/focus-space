@@ -28,6 +28,7 @@ const PATHS = {
   muted: <path d="M2 6.5h2.5L8 3.5v9L4.5 9.5H2zM10.5 6.5l3.5 3.5M14 6.5L10.5 10" />,
   expand: <path d="M9.5 2.5h4v4M13.5 2.5L9 7M6.5 13.5h-4v-4M2.5 13.5L7 9" />,
   close:<path d="M4 4l8 8M12 4l-8 8" />,
+  grip: <path d="M6 3.5v.01M10 3.5v.01M6 8v.01M10 8v.01M6 12.5v.01M10 12.5v.01" strokeWidth="2.2" />,
   sun: (
     <>
       <circle cx="8" cy="8" r="2.6" />

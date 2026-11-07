@@ -123,6 +123,7 @@ Five ambient channels you can layer, each with real recordings to choose from. N
       <b>Ambient mixer</b>
       <ul>
         <li><b>Rain</b> (soft, window, storm, tent), <b>fire</b> (campfire, fireplace), <b>café</b> (coffee shop, library), <b>wind</b> (soft, forest) and <b>keyboard</b> typing recorded on Cherry MX Blue, Brown and Red switches.</li>
+        <li><b>Generated in the browser</b>: soft, dark sounds for headaches (deep noise, slow swell, warm hum), <b>frequencies</b> (alpha, theta, delta and beta binaural beats, 432 and 528 Hz) and <b>spatial</b> sounds that move around your head (orbit, chimes, sway). Binaural and spatial sounds need headphones. They are for comfort, not a medical treatment.</li>
         <li>Mix with a click, a drag, the mouse wheel or the arrow keys.</li>
         <li><b>Save mixes</b> by name and switch between them.</li>
         <li><b>Mute everything</b> with <kbd>M</kbd>. The header shows when sound is off.</li>
@@ -321,7 +322,9 @@ It's a small project and contributions are welcome: ambient sounds, typefaces, t
 2. Make your change and keep `bun run test` and `bun run lint` green.
 3. Open a pull request explaining what it changes and why.
 
-Adding a language means copying `src/i18n/en.ts`, translating it and registering it in `src/i18n/index.tsx`. New sounds must be **CC0** (or otherwise free to redistribute) and listed in [public/sounds/CREDITS.md](public/sounds/CREDITS.md). By contributing you agree your code is released under the project's license (FSL-1.1-MIT) and that the author may relicense it.
+Adding a language means copying `src/i18n/en.ts`, translating it and registering it in `src/i18n/index.tsx`. New sounds must be **CC0** (or otherwise free to redistribute) and listed in [public/sounds/CREDITS.md](public/sounds/CREDITS.md).
+
+By opening a pull request you agree to the terms in [CONTRIBUTING.md](CONTRIBUTING.md): your code is released under FSL-1.1-MIT, the author may relicense it, and your commits are signed off (`git commit -s`).
 
 Ideas or bugs? [Open an issue](https://github.com/envyx10/focus-space/issues).
 
@@ -331,14 +334,33 @@ Everything in this repository is free to read and use, but not everything is und
 
 | What | License | Details |
 |---|---|---|
-| **Source code** | [FSL-1.1-MIT](LICENSE), © 2026 envyx10 | Use it, modify it and self-host it for any purpose except a **competing commercial product or service**. Each version turns into plain MIT two years after its release. Versions published before this change remain under MIT. |
+| **Source code** | [FSL-1.1-MIT](LICENSE), © 2026 Pablo Gil Diaz (envyx10) | Use it, modify it and self-host it for any purpose except a **competing commercial product or service**. Each version turns into plain MIT two years after the date it was published. Versions published before commit `f79c394` (3 November 2026) remain under MIT. |
+| **Logo and icons** | **All rights reserved**, not under FSL | `docs/media/logo.svg`, `public/favicon.svg` and `public/icon-512.png`. See [TRADEMARK.md](TRADEMARK.md). Replace them in your fork. |
 | **Ambient and keyboard sounds**, chime | **CC0 1.0** (public domain) | Real recordings by [Freesound](https://freesound.org) authors. No attribution is required, but every file and author is listed in [public/sounds/CREDITS.md](public/sounds/CREDITS.md). The keyboard clips are trimmed, looped and level-matched. |
 | **Screenshots** (`docs/media`) | FSL-1.1-MIT, like the code | Captures of this app, taken for this README. |
 | **Clock typefaces** | [SIL Open Font License 1.1](https://openfontlicense.org) | Inter Tight, Space Grotesk, Syne, JetBrains Mono and Unbounded, loaded from [Google Fonts](https://fonts.google.com) at run time. They are not bundled here. |
-| **Dependencies** | MIT (12) and 0BSD (1) in the shipped bundle | React, Three.js and Supabase's client, among others. Full list with versions in [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md). |
+| **Dependencies** | MIT (84), ISC (1), BSD-3-Clause (1) and 0BSD (1) in the shipped bundle | React, Three.js, Supabase's client and the Markdown renderer, among others. Their full license texts are served at `/licenses.txt`. Full list with versions in [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md). |
 | **Lofi radio** | Not part of this repository | An official YouTube embed. The streams belong to their owners and YouTube's terms apply. Focus/Space does not download, record or redistribute them. |
 
-**Name and branding.** The name *Focus/Space*, its logo and its visual identity are not licensed. You may fork the code under the license above, but not present your fork as the original or reuse the name or logo.
+**Name and branding.** The name *Focus/Space*, its logo and its visual identity are not licensed. You may fork the code under the license above, but not present your fork as the original or reuse the name or logo. The rules, with examples, are in [TRADEMARK.md](TRADEMARK.md).
+
+### Licensing questions
+
+**What is a "version"?** Every commit counts as a version, and its two years start on the commit's date. The code of any commit older than two years is plain MIT. The repository has no tags, so use `git log` for the date.
+
+**Can I use it, self-host it or change it?** Yes, for yourself, your team or your company, including inside a commercial setting that is not a product built on it.
+
+**Can I fork it and publish it for free?** Yes, if it is non-commercial and you follow the rules: keep the license and copyright notices, and use your own name and logo.
+
+**Can I sell it, put ads on it, or offer it as a paid or hosted service?** Not while it is under FSL. A commercial product or service that does the same as Focus/Space is a "Competing Use". Write to me first if you want a licence for that.
+
+**Can I learn from it, or use pieces in something different?** Yes. Using parts of it in a product that does something else is allowed.
+
+**What about someone who rebuilds it without using this code?** The license covers the code, not the idea or how it looks. That is why the name, the logo and the visual identity are protected separately.
+
+**What did I get under MIT before?** The versions published before commit `f79c394` (3 November 2026) stay under MIT. That grant cannot be withdrawn.
+
+This section is a summary to help you read the license. If they differ, the [LICENSE](LICENSE) text prevails. It is not legal advice.
 
 **Trademarks.** *Cherry MX* is a trademark of Cherry GmbH and is used here only to describe the keyboard switches that were recorded. *Pomodoro Technique* is a registered trademark of Francesco Cirillo. React, Three.js, Supabase, Vite, TypeScript, YouTube and the other names and logos in the badges belong to their owners. Focus/Space is an independent project, not affiliated with or endorsed by any of them.
 

@@ -48,5 +48,11 @@ Los clips añadidos con los canales agua, noche, pájaros, truenos, ruido, viaje
 ~1 min de la previsualización HQ, con 3 s de fundido cruzado entre final y principio para que el bucle no tenga corte,
 y volumen normalizado a −32 LUFS.
 
+## Sonidos generados
+
+Los canales **migraña** (profundo, oleaje lento, zumbido cálido), **frecuencias** (binaurales alfa, theta, delta y beta;
+432 y 528 Hz) y **espacial** (órbita, campanas, vaivén) no tienen archivo: `src/audio/synth.ts` los sintetiza en el
+navegador como bucles de 32 s sin corte. Son código del proyecto, sin material de terceros.
+
 Para cambiar un sonido: sustituye el archivo manteniendo el nombre `<canal>-<variante>.mp3`
 (si cambias la extensión, actualiza `src` en `src/audio/channels.ts` y `chime` en `src/timer/useTimer.ts`).

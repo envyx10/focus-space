@@ -69,6 +69,8 @@ export const en: Record<Key, string> = {
   'tasks.edit': 'Edit',
   'tasks.deleteLabel': 'Delete {text}',
   'tasks.delete': 'Delete',
+  'tasks.move': 'Drag to change the order',
+  'tasks.moveLabel': 'Move {text}, {n} of {total}. Up and down arrows move it',
   'tasks.deleted': 'Task deleted',
   'tasks.deletedMany': '{n} tasks deleted',
   'tasks.undo': 'Undo',
@@ -213,6 +215,21 @@ export const en: Record<Key, string> = {
   'variant.asmr.cepillo': 'Brushing',
   'variant.asmr.plastico': 'Plastic',
   'variant.asmr.ronroneo': 'Purring',
+  'channel.migraine': 'Migraine',
+  'channel.tones': 'Frequencies',
+  'channel.spatial': 'Spatial',
+  'variant.migraine.oscuro': 'Deep',
+  'variant.migraine.oleaje': 'Slow swell',
+  'variant.migraine.zumbido': 'Warm hum',
+  'variant.tones.alfa': 'Alpha 10 Hz',
+  'variant.tones.theta': 'Theta 6 Hz',
+  'variant.tones.delta': 'Delta 2 Hz',
+  'variant.tones.beta': 'Beta 16 Hz',
+  'variant.tones.432': '432 Hz',
+  'variant.tones.528': '528 Hz',
+  'variant.spatial.orbita': 'Orbit',
+  'variant.spatial.campanas': 'Chimes',
+  'variant.spatial.vaiven': 'Sway',
 
   // lofi
   'lofi.play': 'Play lofi',
@@ -357,4 +374,10 @@ export const en: Record<Key, string> = {
   'key.c.desc': 'Calm mode',
   'key.f.desc': 'Focus mode (Esc to exit)',
   'key.help.desc': 'Open / close settings',
+
+  // about
+  'settings.about': 'About',
+  'settings.aboutNote': 'Source-available under FSL-1.1-MIT: free to use, modify and self-host, not to resell as a competing product. Each version becomes MIT after two years. The name and logo are not licensed.',
+  'settings.aboutLicenses': 'Licenses →',
+  'settings.aboutSource': 'Source code →',
 }

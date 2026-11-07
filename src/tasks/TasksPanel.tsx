@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { useT } from '../i18n'
 import Icon from '../lib/Icon'
 import { isTypingTarget } from '../lib/useShortcuts'
@@ -6,6 +6,7 @@ import { useTaskDraft } from './draft'
 import TasksFocus from './TasksFocus'
 import { downloadTasks, parseImport } from './transfer'
 import type { Task } from './types'
+import { useDragSort } from './useDragSort'
 import './tasks.css'
 
 // Matches the CHECK on tasks.text in supabase/schema.sql.
@@ -25,14 +26,17 @@ type Props = {
   describe?: (id: string, description: string) => Promise<void>
   remove: (id: string) => Promise<void>
   setActive: (id: string | null) => Promise<void>
+  /** Puts a pending task at another index among the pending ones (drag or arrow keys). */
+  move?: (id: string, to: number) => Promise<void>
   restore?: (task: Task) => Promise<void>
   clearDone?: () => Promise<void>
   addMany?: (tasks: Task[]) => Promise<void>
 }
 
-type RowProps = { task: Task; index: number; onDelete: (task: Task) => void } & Pick<Props, 'toggle' | 'edit' | 'setActive'>
+type Sort = { grip: ReturnType<ReturnType<typeof useDragSort>['handle']>; style?: CSSProperties; dragging: boolean; total: number }
+type RowProps = { task: Task; index: number; onDelete: (task: Task) => void; sort?: Sort } & Pick<Props, 'toggle' | 'edit' | 'setActive'>
 
-function Row({ task, index, onDelete, ...a }: RowProps) {
+function Row({ task, index, onDelete, sort, ...a }: RowProps) {
   const t = useT()
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(task.text)
@@ -43,7 +47,9 @@ function Row({ task, index, onDelete, ...a }: RowProps) {
 
   return (
     <li
-      className={`tk${task.done ? ' dn' : ''}${task.active ? ' on' : ''}`}
+      className={`tk${task.done ? ' dn' : ''}${task.active ? ' on' : ''}${sort?.dragging ? ' drag' : ''}`}
+      data-sortable={sort ? '' : undefined}
+      style={sort?.style}
       onKeyDown={(e) => {
         // Supr/Retroceso on any of the row's buttons deletes it; never while editing its text.
         if ((e.key !== 'Delete' && e.key !== 'Backspace') || editing) return
@@ -87,6 +93,16 @@ function Row({ task, index, onDelete, ...a }: RowProps) {
         </span>
       )}
       <span className="tk-act">
+        {sort && !editing && (
+          <button
+            {...sort.grip}
+            className="tk-grip"
+            aria-label={t('tasks.moveLabel', { text: task.text, n: index + 1, total: sort.total })}
+            title={t('tasks.move')}
+          >
+            <Icon name="grip" />
+          </button>
+        )}
         {!task.done && (
           <button
             aria-label={task.active ? t('tasks.removeActive') : t('tasks.setActive')}
@@ -116,8 +132,10 @@ function Row({ task, index, onDelete, ...a }: RowProps) {
   )
 }
 
-export default function TasksPanel({ tasks, synced, saveError, localError, add, restore, clearDone, addMany, describe, ...actions }: Props) {
+export default function TasksPanel({ tasks, synced, saveError, localError, add, restore, clearDone, addMany, describe, move, ...actions }: Props) {
   const t = useT()
+  const listRef = useRef<HTMLUListElement>(null)
+  const sorter = useDragSort(() => listRef.current, (id, to) => move?.(id, to))
   const [full, setFull] = useState(false)
   // A half-typed task survives a reload or a closed tab.
   const [draft, setDraft] = useTaskDraft()
@@ -176,9 +194,19 @@ export default function TasksPanel({ tasks, synced, saveError, localError, add, 
           </button>
         )}
       </div>
-      <ul className="tk-list">
+      <ul className={`tk-list${sorter.dragging ? ' sorting' : ''}`} ref={listRef}>
         {tasks.map((t, i) => (
-          <Row key={t.id} task={t} index={i} onDelete={del} toggle={actions.toggle} edit={actions.edit} setActive={actions.setActive} />
+          <Row
+            key={t.id}
+            task={t}
+            index={i}
+            onDelete={del}
+            toggle={actions.toggle}
+            edit={actions.edit}
+            setActive={actions.setActive}
+            // Pending tasks come first, so a pending task's index is also its place among the pending ones.
+            sort={move && !t.done && pending > 1 ? { grip: sorter.handle(t.id, i, pending), style: sorter.style(i), dragging: sorter.dragging === t.id, total: pending } : undefined}
+          />
         ))}
         <li className="tk tk-new">
           {/* the placeholder already starts with "+" */}

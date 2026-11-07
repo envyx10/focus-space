@@ -1,4 +1,5 @@
 import { channel, CHANNEL_IDS, type ChannelId } from './channels'
+import { SYNTH_PREFIX, synthesize } from './synth'
 
 const FADE_S = 0.4
 // setTargetAtTime reaches ~95% after 3 time constants
@@ -25,6 +26,13 @@ export type LoadBuffer = (src: string) => Promise<AudioBuffer>
 
 export function createEngine(ctx: AudioContext, initialVariants: Record<ChannelId, string>, load?: LoadBuffer): Engine {
   const fetchAndDecode: LoadBuffer = async (src) => {
+    if (src.startsWith(SYNTH_PREFIX)) {
+      const [l, r] = synthesize(src, ctx.sampleRate)
+      const buf = ctx.createBuffer(2, l.length, ctx.sampleRate)
+      buf.copyToChannel(l, 0)
+      buf.copyToChannel(r, 1)
+      return buf
+    }
     const res = await fetch(src)
     if (!res.ok) throw new Error(`${src}: ${res.status}`)
     return ctx.decodeAudioData(await res.arrayBuffer())

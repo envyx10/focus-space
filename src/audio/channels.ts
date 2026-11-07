@@ -1,4 +1,6 @@
-export type ChannelId = 'rain' | 'fire' | 'cafe' | 'wind' | 'keys' | 'water' | 'night' | 'birds' | 'thunder' | 'noise' | 'travel' | 'drone' | 'paper' | 'asmr'
+import { SYNTH_PREFIX } from './synth'
+
+export type ChannelId = 'rain' | 'fire' | 'cafe' | 'wind' | 'keys' | 'water' | 'night' | 'birds' | 'thunder' | 'noise' | 'travel' | 'drone' | 'paper' | 'asmr' | 'migraine' | 'tones' | 'spatial'
 /** Display names live in the i18n dictionaries: `channel.<id>` and `variant.<channel>.<id>`. */
 export type Variant = { id: string; src: string }
 export type Channel = { id: ChannelId; variants: Variant[] }
@@ -6,6 +8,12 @@ export type Channel = { id: ChannelId; variants: Variant[] }
 const channelOf = (id: ChannelId, variantIds: string[]): Channel => ({
   id,
   variants: variantIds.map((v) => ({ id: v, src: `/sounds/${id}-${v}.mp3` })),
+})
+
+/** A channel whose loops are generated in the browser (see synth.ts) instead of downloaded. */
+const synthOf = (id: ChannelId, variantIds: string[]): Channel => ({
+  id,
+  variants: variantIds.map((v) => ({ id: v, src: `${SYNTH_PREFIX}${id}-${v}` })),
 })
 
 export const CHANNELS: Channel[] = [
@@ -23,6 +31,9 @@ export const CHANNELS: Channel[] = [
   channelOf('drone', ['cuenco', 'espacio']),
   channelOf('paper', ['lapiz', 'paginas']),
   channelOf('asmr', ['tapping', 'cepillo', 'plastico', 'ronroneo']),
+  synthOf('migraine', ['oscuro', 'oleaje', 'zumbido']),
+  synthOf('tones', ['alfa', 'theta', 'delta', 'beta', '432', '528']),
+  synthOf('spatial', ['orbita', 'campanas', 'vaiven']),
 ]
 
 export const CHANNEL_IDS = CHANNELS.map((c) => c.id)
