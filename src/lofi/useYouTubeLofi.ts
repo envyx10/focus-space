@@ -169,26 +169,37 @@ export function useYouTubeLofi(volume: number, initialStation = 0, muted = false
     player.current?.setVolume(Math.round((muted ? 0 : volume) * 100))
   }, [volume, muted])
 
-  // iOS ignores setVolume, so muting must pause the stream; unmuting resumes only what muting paused.
+  // iOS ignores setVolume, so silence (muting everything, or the radio's own volume down to 0) must pause the
+  // stream; bringing the sound back resumes only what the silence paused.
+  const silent = muted || Math.round(volume * 100) === 0
+  const silentRef = useRef(silent)
+  silentRef.current = silent
   const pausedByMute = useRef(false)
   useEffect(() => {
     const p = player.current
     if (!p) return
-    if (muted && playingRef.current) {
+    if (silent && playingRef.current) {
       pausedByMute.current = true
       p.pauseVideo()
-    } else if (!muted && pausedByMute.current) {
+    } else if (!silent && pausedByMute.current) {
       pausedByMute.current = false
       p.playVideo()
     }
-  }, [muted])
+  }, [silent])
 
   const toggle = useCallback(() => {
     const p = player.current
     if (!p) return
-    pausedByMute.current = false
-    if (playing) p.pauseVideo()
-    else p.playVideo()
+    if (playing) {
+      pausedByMute.current = false
+      p.pauseVideo()
+    } else if (silentRef.current) {
+      // Play pressed with no sound to hear: it would play out loud on iOS. It starts as soon as the sound comes back.
+      pausedByMute.current = !pausedByMute.current
+    } else {
+      pausedByMute.current = false
+      p.playVideo()
+    }
   }, [playing])
 
   const select = useCallback((i: number) => {
