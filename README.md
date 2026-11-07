@@ -321,7 +321,9 @@ It's a small project and contributions are welcome: ambient sounds, typefaces, t
 2. Make your change and keep `bun run test` and `bun run lint` green.
 3. Open a pull request explaining what it changes and why.
 
-Adding a language means copying `src/i18n/en.ts`, translating it and registering it in `src/i18n/index.tsx`. New sounds must be **CC0** (or otherwise free to redistribute) and listed in [public/sounds/CREDITS.md](public/sounds/CREDITS.md). By contributing you agree your code is released under the project's license (FSL-1.1-MIT) and that the author may relicense it.
+Adding a language means copying `src/i18n/en.ts`, translating it and registering it in `src/i18n/index.tsx`. New sounds must be **CC0** (or otherwise free to redistribute) and listed in [public/sounds/CREDITS.md](public/sounds/CREDITS.md).
+
+By opening a pull request you agree to the terms in [CONTRIBUTING.md](CONTRIBUTING.md): your code is released under FSL-1.1-MIT, the author may relicense it, and your commits are signed off (`git commit -s`).
 
 Ideas or bugs? [Open an issue](https://github.com/envyx10/focus-space/issues).
 
