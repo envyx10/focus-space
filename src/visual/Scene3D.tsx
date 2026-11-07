@@ -26,6 +26,8 @@ type Props = {
   accent: string
   /** Light page: CSS inverts the canvas into ink, which reads paler than light on black, so the dots get denser. */
   light?: boolean
+  /** Stop simulating and drawing (the phone shell's Focus tab is not on screen). The particles resume where they were. */
+  paused?: boolean
 }
 
 // 256² = 65 536 particles, simulated entirely on the GPU (position + velocity textures).
@@ -170,9 +172,11 @@ function sphereTexture(): DataTexture {
   return t
 }
 
-export default function Scene3D({ getLevels, accent, light = false }: Props) {
+export default function Scene3D({ getLevels, accent, light = false, paused = false }: Props) {
   const lightRef = useRef(light)
   lightRef.current = light
+  const pausedRef = useRef(paused)
+  pausedRef.current = paused
   // Reduced motion draws one still frame; this redraws it when the theme or accent changes.
   const redraw = useRef<(() => void) | null>(null)
   useEffect(() => redraw.current?.(), [light, accent])
@@ -312,6 +316,8 @@ export default function Scene3D({ getLevels, accent, light = false }: Props) {
     const frame = (ms: number) => {
       raf = requestAnimationFrame(frame)
       if (document.hidden) return
+      // Paused: skip the work, and restart the clock so the first frame back doesn't jump by the time away.
+      if (pausedRef.current) return void (last = ms)
       const elapsed = Math.min(0.25, (ms - last) / 1000)
       last = ms
       const t = ms / 1000

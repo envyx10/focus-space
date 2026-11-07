@@ -28,19 +28,24 @@ import Cycler from './visual/Cycler'
 import { TYPEFACES } from './visual/typefaces'
 import { useTypeface } from './visual/useTypeface'
 import { useTheme } from './prefs/useTheme'
+import { MOBILE_QUERY, MOBILE_TABS, useMediaQuery, type MobileTab } from './mobile/platform'
 
 // three.js is ~150 kB gzip: load it after the first paint so the clock and tasks appear instantly.
 const Scene3D = lazy(() => import('./visual/Scene3D'))
+// The phone shell is its own chunk: desktop never downloads it, phones fetch it right after the first paint.
+const MobileApp = lazy(() => import('./mobile/MobileApp'))
 
 const ZOOM = { m: 1, l: 1.15, xl: 1.3 }
+
+const initialTab = (): MobileTab => {
+  const tab = new URLSearchParams(location.search).get('tab')
+  return MOBILE_TABS.find((x) => x === tab) ?? 'focus'
+}
 
 const clock = (ms: number) => {
   const s = Math.ceil(ms / 1000)
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`
 }
-
-const MOBILE_TABS = ['tasks', 'mixer', 'lofi'] as const
-type MobileTab = (typeof MOBILE_TABS)[number]
 
 export default function App() {
   const { t } = useI18n()
@@ -72,8 +77,10 @@ export default function App() {
 
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [immersive, setImmersive] = useState(false)
-  // Phones show one of the lower panels at a time, picked from the bottom tab bar (CSS hides the bar on desktop).
-  const [mobileTab, setMobileTab] = useState<MobileTab>('tasks')
+  // Below 1024 px the phone shell (src/mobile) takes over: its own screens, the same hooks and state.
+  const mobile = useMediaQuery(MOBILE_QUERY)
+  // A home-screen shortcut (manifest.webmanifest) opens straight on a tab: /?tab=tasks
+  const [mobileTab, setMobileTab] = useState<MobileTab>(initialTab)
   const [toggleSignal, setToggleSignal] = useState(0)
 
   useTabTitle(timer.running, timer.remainingMs, phaseLabel(t, timer.state.mode, timer.state.phase), timer.status === 'waiting')
@@ -100,13 +107,15 @@ export default function App() {
     return () => removeEventListener('pagehide', onHide)
   }, [])
 
+  // On the phone shell, single-key shortcuts wait while a sheet (a modal) is open: Space must not start the timer behind it.
+  const free = (fn: () => void) => () => (mobile && document.querySelector('.m-sheet-root') ? undefined : fn())
   useShortcuts({
-    toggleTimer: () => setToggleSignal((n) => n + 1),
-    newTask: () => document.querySelector<HTMLInputElement>('[data-new-task]')?.focus(),
-    mute: () => ambient.setMuted(!prefs.muted),
-    calm: () => ambient.setCalm(!prefs.calm),
-    immersive: () => (immersive ? exitImmersive() : enterImmersive()),
-    settings: () => setSettingsOpen((o) => !o),
+    toggleTimer: free(() => setToggleSignal((n) => n + 1)),
+    newTask: free(() => document.querySelector<HTMLInputElement>('[data-new-task]')?.focus()),
+    mute: free(() => ambient.setMuted(!prefs.muted)),
+    calm: free(() => ambient.setCalm(!prefs.calm)),
+    immersive: free(() => (immersive ? exitImmersive() : enterImmersive())),
+    settings: () => (mobile ? setMobileTab((tab) => (tab === 'settings' ? 'focus' : 'settings')) : setSettingsOpen((o) => !o)),
     escape: () => (immersive ? exitImmersive() : setSettingsOpen(false)),
   })
 
@@ -118,9 +127,47 @@ export default function App() {
   }, [ambient.getLevels])
 
   const zoom = ZOOM[prefs.textScale]
+  const onStation = (i: number) => {
+    lofi.select(i)
+    ambient.setLofiStation(((i % STATIONS.length) + STATIONS.length) % STATIONS.length)
+  }
+
+  if (mobile) {
+    return (
+      <Suspense fallback={null}>
+      <MobileApp
+        tab={mobileTab}
+        onTab={setMobileTab}
+        style={{ ...displayFont, '--accent': prefs.accent, '--on-accent': onAccent(prefs.accent) } as CSSProperties}
+        timer={timer}
+        tasks={tasks}
+        synced={synced}
+        ambient={ambient}
+        lofi={lofi}
+        onStation={onStation}
+        session={session}
+        stats={stats}
+        today={todayKey(now)}
+        now={now}
+        scene={
+          !prefs.calm && (
+            <Suspense fallback={null}>
+              {/* paused off the Focus tab: no 60 fps simulation nobody sees */}
+              <Scene3D getLevels={getLevels} accent={prefs.accent} paused={mobileTab !== 'focus'} />
+            </Suspense>
+          )
+        }
+        immersive={immersive}
+        onImmersive={enterImmersive}
+        onExitImmersive={exitImmersive}
+        toggleSignal={toggleSignal}
+      />
+      </Suspense>
+    )
+  }
 
   return (
-    <div className="app" style={{ ...displayFont, '--zoom': zoom, '--accent': prefs.accent, '--on-accent': onAccent(prefs.accent) } as CSSProperties} data-immersive={immersive || undefined} data-muted={prefs.muted || undefined} data-tab={mobileTab}>
+    <div className="app" style={{ ...displayFont, '--zoom': zoom, '--accent': prefs.accent, '--on-accent': onAccent(prefs.accent) } as CSSProperties} data-immersive={immersive || undefined} data-muted={prefs.muted || undefined}>
       <header className="region-header" data-region="header">
         <Header
           sessionNumber={timer.sessionNumber}
@@ -238,26 +285,9 @@ export default function App() {
           onToggle={lofi.toggle}
           onVolume={ambient.setLofiVolume}
           station={lofi.station}
-          onStation={(i) => {
-            lofi.select(i)
-            ambient.setLofiStation(((i % STATIONS.length) + STATIONS.length) % STATIONS.length)
-          }}
+          onStation={onStation}
         />
       </section>
-      <nav className="m-tabs" aria-label={t('tabs.label')}>
-        {MOBILE_TABS.map((id) => (
-          <button
-            key={id}
-            aria-pressed={mobileTab === id}
-            onClick={() => {
-              setMobileTab(id)
-              requestAnimationFrame(() => document.querySelector(`[data-region="${id}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }))
-            }}
-          >
-            {t(`tabs.${id}`)}
-          </button>
-        ))}
-      </nav>
       {!prefs.calm && <Grain />}
     </div>
   )

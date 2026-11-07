@@ -9,6 +9,12 @@
   "background_color": "#0b0b0b",
   "theme_color": "#0b0b0b",
   "lang": "es",
+  "orientation": "any",
+  "categories": ["productivity"],
+  "shortcuts": [
+    { "name": "Tareas", "short_name": "Tareas", "url": "/?tab=tasks", "icons": [{ "src": "/icon-512.png", "sizes": "512x512" }] },
+    { "name": "Sonido", "short_name": "Sonido", "url": "/?tab=sound", "icons": [{ "src": "/icon-512.png", "sizes": "512x512" }] }
+  ],
   "icons": [
     { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
     { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }

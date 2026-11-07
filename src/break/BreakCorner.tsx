@@ -46,7 +46,7 @@ export default function BreakCorner({ inBreak, breakId, remaining, fallback = nu
   if (!inBreak || dismissed === breakId) return fallback
   return (
     <div className="br-invite" role="status">
-      <button className="br-invite-go" onClick={(e) => setPanel(e.currentTarget.closest('.focus') ?? 'inline')}>
+      <button className="br-invite-go" onClick={(e) => setPanel(e.currentTarget.closest('.focus, .m-focus') ?? 'inline')}>
         <span className="br-dot" aria-hidden />
         {t('break.invite')}
       </button>
