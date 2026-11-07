@@ -123,6 +123,7 @@ Cinco canales ambientales que puedes superponer, cada uno con grabaciones reales
       <b>Mezclador de ambientes</b>
       <ul>
         <li><b>Lluvia</b> (suave, ventana, tormenta, tienda), <b>fuego</b> (hoguera, chimenea), <b>café</b> (cafetería, biblioteca), <b>viento</b> (suave, bosque) y <b>teclado</b> grabado con interruptores Cherry MX Blue, Brown y Red.</li>
+        <li><b>Generados en el navegador</b>: sonidos suaves y oscuros para la migraña (ruido profundo, oleaje lento, zumbido cálido), <b>frecuencias</b> (binaurales alfa, theta, delta y beta, 432 y 528 Hz) y sonidos <b>espaciales</b> que se mueven a tu alrededor (órbita, campanas, vaivén). Los binaurales y los espaciales necesitan auriculares. Son para estar más cómodo, no un tratamiento médico.</li>
         <li>Mezcla con un clic, arrastrando, con la rueda del ratón o con las flechas.</li>
         <li><b>Guarda mezclas</b> con nombre y cambia entre ellas.</li>
         <li><b>Silencia todo</b> con <kbd>M</kbd>. La cabecera indica cuándo el sonido está apagado.</li>
