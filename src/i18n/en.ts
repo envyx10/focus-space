@@ -304,4 +304,10 @@ export const en: Record<Key, string> = {
   'key.c.desc': 'Calm mode',
   'key.f.desc': 'Focus mode (Esc to exit)',
   'key.help.desc': 'Open / close settings',
+
+  // about
+  'settings.about': 'About',
+  'settings.aboutNote': 'Source-available under FSL-1.1-MIT: free to use, modify and self-host, not to resell as a competing product. Each version becomes MIT after two years. The name and logo are not licensed.',
+  'settings.aboutLicenses': 'Licenses →',
+  'settings.aboutSource': 'Source code →',
 }

@@ -318,6 +318,11 @@
   }
 }
 
+a.set-act {
+  color: inherit;
+  text-decoration: none;
+}
+
 .set-act:disabled {
   opacity: 0.25;
   cursor: default;

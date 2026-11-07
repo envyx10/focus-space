@@ -23,6 +23,9 @@ These 13 packages (the runtime dependencies and everything they depend on) are c
 | [three](https://github.com/mrdoob/three.js) | 0.186.1 | MIT |
 | [tslib](https://github.com/microsoft/tslib) | 2.8.1 | 0BSD |
 
+The built app serves the full text of every one of these licenses, plus ours, at `/licenses.txt` (linked from Settings → About). It is generated at build time from `node_modules`; `licenses-plugin.ts` holds the list and a test checks it matches this table.
+*La app publicada sirve el texto completo de todas estas licencias, más la nuestra, en `/licenses.txt` (enlazado desde Ajustes → Acerca de). Se genera al compilar desde `node_modules`; `licenses-plugin.ts` guarda la lista y un test comprueba que coincide con esta tabla.*
+
 Versions are the ones in `bun.lock` when this file was written; check it for the current ones.
 *Las versiones son las de `bun.lock` al escribir este archivo; consúltalo para las actuales.*
 

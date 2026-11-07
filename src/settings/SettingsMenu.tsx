@@ -337,6 +337,16 @@ export default function SettingsMenu(p: Props) {
               ))}
             </dl>
           </Group>
+
+          <Group title={t('settings.about')}>
+            <p className="set-note">{t('settings.aboutNote')}</p>
+            <a className="set-act" href="/licenses.txt" target="_blank" rel="noopener">
+              {t('settings.aboutLicenses')}
+            </a>
+            <a className="set-act" href="https://github.com/envyx10/focus-space" target="_blank" rel="noopener noreferrer">
+              {t('settings.aboutSource')}
+            </a>
+          </Group>
         </div>
       )}
     </div>
