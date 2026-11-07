@@ -542,13 +542,13 @@ html[data-shell='mobile'] body {
   font-size: var(--fs-m);
 }
 
-/* Touch slider: wide hit area (44 px), visible track, accent thumb. */
+/* Touch slider: a hairline track like the desktop mixer, a slim square-cut thumb, a 44 px hit area. */
 .m-slider {
   position: relative;
   display: flex;
   align-items: center;
   height: 44px;
-  padding-inline: 7px;
+  padding-inline: 3px;
   touch-action: pan-y;
   cursor: pointer;
 }
@@ -556,7 +556,7 @@ html[data-shell='mobile'] body {
 .m-slider-track {
   position: relative;
   flex: 1;
-  height: 4px;
+  height: 2px;
   background: var(--line-strong);
 }
 
@@ -571,15 +571,15 @@ html[data-shell='mobile'] body {
   position: absolute;
   top: 50%;
   left: var(--v);
-  width: 14px;
-  height: 24px;
-  background: var(--accent);
+  width: 6px;
+  height: 20px;
+  background: var(--fg);
   transform: translate(-50%, -50%);
-  transition: transform 120ms var(--m-ease);
+  transition: transform 120ms var(--m-ease), background-color 150ms;
 }
 
 .m-slider.is-active .m-slider-thumb {
-  transform: translate(-50%, -50%) scale(1.25, 1.15);
+  transform: translate(-50%, -50%) scale(1.5, 1.2);
 }
 
 .m-slider.on-accent .m-slider-track {
@@ -1623,7 +1623,7 @@ html[data-shell='mobile'] body {
 }
 
 .m-ch {
-  padding-top: 8px;
+  padding: 6px 0 2px;
   border-top: 1px solid var(--line);
 }
 
@@ -1634,52 +1634,85 @@ html[data-shell='mobile'] body {
 .m-ch-head {
   display: flex;
   align-items: center;
-  gap: 10px;
-  min-height: 40px;
+  justify-content: space-between;
+  gap: 12px;
+  /* the two 44 px hit areas overlap a little: one row reads as one block */
+  margin-bottom: -10px;
 }
 
+/* Off: the name sits back; playing: full strength, and the accent goes to the level. */
 .m-ch-name {
   flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 10px;
   min-width: 0;
   min-height: 44px;
+  overflow: hidden;
+  color: var(--muted);
   font-size: var(--fs-l);
   font-weight: 600;
   text-align: left;
-}
-
-.m-ch-dot {
-  flex: none;
-  width: 10px;
-  height: 10px;
-  border: 1px solid var(--line-strong);
-}
-
-.m-ch.is-live .m-ch-dot {
-  background: var(--accent);
-  border-color: var(--accent);
-}
-
-.m-chip span,
-.m-chip {
-  overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.m-ch.is-live .m-ch-name {
+  color: var(--fg);
 }
 
 .m-ch-pct {
-  min-width: 2.2ch;
-  font-size: calc(22px * var(--m-ts));
-  font-weight: 300;
-  letter-spacing: -0.03em;
-  text-align: right;
+  flex: none;
+  color: var(--muted);
+  font-size: var(--fs-s);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
   font-variant-numeric: tabular-nums;
-  opacity: 0.4;
 }
 
 .m-ch.is-live .m-ch-pct {
-  opacity: 1;
+  color: var(--accent);
+}
+
+/* The recording in a fixed column: every slider starts and ends at the same x. */
+.m-ch-body {
+  display: grid;
+  grid-template-columns: calc(118px * var(--m-ts)) 1fr;
+  align-items: center;
+  gap: 12px;
+}
+
+.m-ch-variant {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  min-height: 44px;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.m-ch-variant .ico {
+  flex: none;
+  width: 11px;
+  height: 11px;
+  opacity: 0.7;
+}
+
+.m-ch.is-live .m-ch-variant {
+  color: var(--fg);
+}
+
+.m-ch:not(.is-live) .m-slider-thumb {
+  background: var(--muted);
+}
+
+.m-ch.is-live .m-slider-fill {
+  background: var(--accent);
 }
 
 .m-screen.is-muted .m-ch-list,
@@ -2021,21 +2054,64 @@ html[data-shell='mobile'] body {
   }
 }
 
-/* Landscape phones: the clock beside the controls, the bars slimmer. */
+/* Landscape phones. Height is what runs out, so the tab bar becomes a navigation rail on the left (Material 3's
+   landscape pattern, also common on iOS) and every screen gets the full height. */
 @media (orientation: landscape) and (max-height: 500px) {
-  .m-tab {
-    min-height: 44px;
-    flex-direction: row;
-    gap: 8px;
+  .m-app {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
   }
 
+  .m-views {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .m-mini {
+    grid-column: 2;
+    grid-row: 2;
+    min-height: calc(48px + var(--m-safe-b));
+    padding-bottom: var(--m-safe-b);
+  }
+
+  .m-tabbar {
+    grid-column: 1;
+    grid-row: 1 / -1;
+    grid-template-columns: none;
+    grid-auto-rows: 1fr;
+    width: 76px;
+    padding: var(--m-safe-t) 0 var(--m-safe-b);
+    border-top: 0;
+    border-right: 1px solid var(--line);
+  }
+
+  .m-tab {
+    min-height: 0;
+    gap: 4px;
+    font-size: calc(9px * var(--m-ts));
+  }
+
+  /* the marker turns with the bar: a 2 px accent line on the content side */
+  .m-tab::before {
+    inset: 26% -1px 26% auto;
+    width: 2px;
+    height: auto;
+    transform: scaleY(0);
+  }
+
+  .m-tab[aria-current='page']::before {
+    transform: scaleY(1);
+  }
+
+  /* Focus: the clock on the left, every control in a column on the right, all of it on screen. */
   .m-focus {
     display: grid;
-    grid-template-columns: 1fr minmax(260px, 40%);
-    grid-template-rows: auto 1fr;
-    column-gap: 20px;
-    padding-top: calc(var(--m-safe-t) + 6px);
-    padding-bottom: 10px;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 40%);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    column-gap: 24px;
+    row-gap: 8px;
+    padding: calc(var(--m-safe-t) + 8px) 16px calc(var(--m-safe-b) + 10px) 20px;
   }
 
   .m-focus-top {
@@ -2044,22 +2120,55 @@ html[data-shell='mobile'] body {
 
   .m-clock {
     grid-column: 1;
-    grid-row: 2 / span 2;
-    font-size: calc(min(17vw, 48dvh) * var(--display-scale, 1));
+    grid-row: 2 / -1;
+    min-width: 0;
+    /* "25:00 MIN" is ~3.3 em wide: sized from the clock's own column (about 45 % of the width), not the screen */
+    font-size: calc(min(11.5vw, 46dvh) * var(--display-scale, 1));
   }
 
   .m-modes {
     grid-column: 2;
-    margin-top: 6px;
+    grid-row: 2;
+    align-self: start;
+    margin-top: 0;
+  }
+
+  .m-hint {
+    font-size: var(--fs-s);
   }
 
   .m-focus-foot {
     grid-column: 2;
-    align-self: end;
+    grid-row: 3;
+    gap: 8px;
+  }
+
+  .m-task-line,
+  .m-task-chip {
+    min-height: 52px;
+  }
+
+  .m-task-chip {
+    padding-block: 6px;
+  }
+
+  /* one row: three squares and the main button beside them */
+  .m-actions {
+    flex-wrap: nowrap;
+  }
+
+  .m-sq-btn {
+    width: 48px;
+    height: 52px;
+  }
+
+  .m-primary {
+    flex: 1 1 auto;
+    min-height: 52px;
   }
 
   .m-breath-host {
-    top: calc(var(--m-safe-t) + 70px);
+    top: calc(var(--m-safe-t) + 60px);
   }
 
   /* immersive: the clock alone, centred on the whole screen */
@@ -2067,8 +2176,90 @@ html[data-shell='mobile'] body {
     grid-column: 1 / -1;
   }
 
+  /* List screens: a smaller large title, and the home indicator's inset now sits under the content. */
+  .m-bar {
+    height: calc(44px + var(--m-safe-t));
+  }
+
+  .m-scroll {
+    padding-top: calc(44px + var(--m-safe-t));
+    padding-bottom: calc(24px + var(--m-safe-b));
+  }
+
+  /* the large title folds into one line: number, title, status */
   .m-large {
-    padding-bottom: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 12px;
+    padding: 0 0 12px;
+  }
+
+  .m-large h1 {
+    margin: 0;
+    font-size: calc(24px * var(--m-ts));
+  }
+
+  /* the radio card: what is playing on the left, its controls on the right */
+  .m-radio {
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 46%);
+    grid-template-areas:
+      'top top'
+      'title controls'
+      'station vol';
+    column-gap: 20px;
+    align-items: center;
+  }
+
+  .m-radio-top {
+    grid-area: top;
+  }
+
+  .m-radio-title {
+    grid-area: title;
+    margin: 0;
+    font-size: calc(22px * var(--m-ts));
+  }
+
+  .m-radio-station {
+    grid-area: station;
+  }
+
+  .m-radio-controls {
+    grid-area: controls;
+    margin: 0;
+  }
+
+  .m-radio-vol {
+    grid-area: vol;
+  }
+
+  .m-mini {
+    min-height: calc(44px + var(--m-safe-b));
+  }
+
+  .m-scroll > * {
+    max-width: 720px;
+    margin-inline: auto;
+  }
+
+  .m-composer {
+    padding-bottom: var(--m-safe-b);
+  }
+
+  .m-app[data-kb] .m-composer {
+    padding-bottom: 0;
+  }
+
+  .m-toast {
+    bottom: calc(68px + var(--m-safe-b));
+  }
+
+  /* sheets: a centred column, not a 800 px wide strip */
+  .m-sheet {
+    max-width: 600px;
+    margin-inline: auto;
+    border-inline: 1px solid var(--line-strong);
   }
 }
 

@@ -152,6 +152,7 @@ export const en: Record<Key, string> = {
   'm.breatheDone': 'Done',
   'm.focusMin': 'Focus (min)',
   'm.oneSession': '1 session',
+  'm.off': 'Off',
   'm.fullscreen': 'Full screen',
   'mixer.swap': 'Sound in the {channel} square',
   'mixer.nextVariant': 'Next recording',

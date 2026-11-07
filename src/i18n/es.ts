@@ -154,6 +154,7 @@ export const es = {
   'm.breatheDone': 'Terminar',
   'm.focusMin': 'Foco (min)',
   'm.oneSession': '1 sesión',
+  'm.off': 'Apagado',
   'm.fullscreen': 'Pantalla completa',
   'mixer.swap': 'Sonido del cuadrado {channel}',
   'mixer.nextVariant': 'Siguiente grabación',

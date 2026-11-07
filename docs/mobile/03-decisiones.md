@@ -88,6 +88,18 @@ autoguardado, Deshacer de varios niveles, arranque en el temporizador con una l�
 "Terminar" y Escape, regiones vivas, foco, contraste y objetivos de 44 px. Además el shell mobile pasó a un
 fragmento cargado bajo demanda (el bundle de desktop vuelve a 100,8 kB gzip).
 
+## Iteración tras la revisión del producto
+
+- **Fila de sonido**: sin chips enmarcados de anchos distintos. Nombre (apagado en gris, sonando en blanco) y nivel
+  a la derecha ("70" en acento o "Apagado"); debajo, la grabación en una columna de ancho fijo y el deslizador, así
+  todos empiezan y acaban a la misma x. El acento solo marca lo que suena (relleno de la pista); el thumb es fino y
+  neutro en reposo.
+- **Horizontal (alto ≤ 500 px)**: la barra de pestañas pasa a **rail lateral** (patrón de Material 3) para dar todo el
+  alto al contenido; Foco en dos columnas (reloj dimensionado a su columna, controles en una sola columna con los
+  botones en una fila); título grande plegado en una línea; tarjeta de radio en dos columnas; hojas centradas a
+  600 px; safe area inferior bajo el contenido. Verificado en iPhone 14, iPhone SE (WebKit) y Pixel 7 (Chromium):
+  ningún control fuera de la pantalla.
+
 ## Limitaciones conocidas
 
 - Emulación ≠ hardware: el comportamiento real del teclado, el rebote de iOS, las safe areas reales y la PWA

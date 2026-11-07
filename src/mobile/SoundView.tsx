@@ -25,27 +25,30 @@ function ChannelRow({ id, ambient }: { id: ChannelId; ambient: Props['ambient'] 
   const variantLabel = t(`variant.${id}.${variant}`)
   const pct = Math.round(volume * 100)
 
+  // One quiet row per sound: name and recording on the left, the level on the right, the slider under them.
+  // Nothing framed, so rows of different text lengths still line up; the accent only appears on what is playing.
   return (
     <li className={`m-ch${volume > 0 ? ' is-live' : ''}`}>
       <div className="m-ch-head">
         {/* the name switches the sound on (at half) or off: one tap, no dragging needed */}
         <button className="m-ch-name" aria-pressed={volume > 0} onClick={() => (haptic(6), ambient.setVolume(id, volume > 0 ? 0 : 0.5))}>
-          <span className="m-ch-dot" aria-hidden />
           {name}
         </button>
+        <span className="m-ch-pct" aria-hidden>
+          {volume > 0 ? pct : t('m.off')}
+        </span>
+      </div>
+      <div className="m-ch-body">
         {ch.variants.length > 1 ? (
-          <button className="m-chip" onClick={() => ambient.setVariant(id, nextVariant(id, variant))} aria-label={t('mixer.changeVariant', { channel: name, variant: variantLabel })}>
+          <button className="m-ch-variant" onClick={() => ambient.setVariant(id, nextVariant(id, variant))} aria-label={t('mixer.changeVariant', { channel: name, variant: variantLabel })}>
             {variantLabel}
             <Icon name="next" />
           </button>
         ) : (
-          <span className="m-chip is-static">{variantLabel}</span>
+          <span className="m-ch-variant is-static">{variantLabel}</span>
         )}
-        <span className="m-ch-pct" aria-hidden>
-          {String(pct).padStart(2, '0')}
-        </span>
+        <Slider value={volume} onChange={(v) => ambient.setVolume(id, v)} label={t('mixer.volume', { channel: name })} valueText={t('mixer.valueText', { pct, variant: variantLabel })} />
       </div>
-      <Slider value={volume} onChange={(v) => ambient.setVolume(id, v)} label={t('mixer.volume', { channel: name })} valueText={t('mixer.valueText', { pct, variant: variantLabel })} />
     </li>
   )
 }
