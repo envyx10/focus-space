@@ -101,6 +101,8 @@ export function useYouTubeLofi(volume: number, initialStation = 0, muted = false
     const host = document.createElement('div')
     // Offscreen player: only the audio matters. YouTube won't initialise players smaller than 200×200.
     host.setAttribute('aria-hidden', 'true')
+    // ...and out of the Tab order: a hidden iframe must not take the keyboard focus (or pull it out of a dialog).
+    host.inert = true
     host.style.cssText = 'position:fixed;left:-400px;top:0;width:200px;height:200px;opacity:0;pointer-events:none'
     const mount = document.createElement('div')
     host.appendChild(mount)

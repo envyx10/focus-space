@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import App from './App'
 import { PREFS_KEY } from './prefs/prefs'
 
@@ -12,13 +11,11 @@ describe('App', () => {
     }
   })
 
-  it('the phone tab bar picks which lower panel shows', async () => {
+  it('the desktop grid has no phone tab bar (phones get their own shell, src/mobile)', () => {
     const { container } = render(<App />)
-    const app = container.querySelector('.app')!
-    expect(app).toHaveAttribute('data-tab', 'tasks')
-    await userEvent.click(screen.getByRole('button', { name: 'Sonidos' }))
-    expect(app).toHaveAttribute('data-tab', 'mixer')
-    expect(screen.getByRole('button', { name: 'Sonidos' })).toHaveAttribute('aria-pressed', 'true')
+    expect(container.querySelector('.app')).toBeInTheDocument()
+    expect(container.querySelector('.m-app')).not.toBeInTheDocument()
+    expect(screen.queryByRole('navigation', { name: 'Paneles' })).not.toBeInTheDocument()
   })
 
   it('stays dark even when a light theme was saved (light mode is switched off)', () => {

@@ -17,9 +17,9 @@ type Props = {
 
 const WHY = ['diaphragm', 'pace', 'exhale', 'nose', 'time'] as const
 
-// Phones: the explanation is a bottom sheet, drawn at the app's root so the panels stacked below can't cover it.
+// Phones: the explanation is a bottom sheet, drawn at the phone shell's root so nothing stacked over the clock covers it.
 const sheet = (node: ReactNode) => {
-  const app = globalThis.matchMedia?.('(max-width: 1023px)').matches ? document.querySelector('.app') : null
+  const app = document.querySelector('.m-app')
   return app ? createPortal(node, app) : node
 }
 

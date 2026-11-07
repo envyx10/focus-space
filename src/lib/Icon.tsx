@@ -35,6 +35,30 @@ const PATHS = {
     </>
   ),
   moon: <path d="M13 9.6A5.4 5.4 0 1 1 6.4 3a4.2 4.2 0 0 0 6.6 6.6z" />,
+  // Mobile tab bar and touch actions: same square-cap stroke as the rest.
+  timer: (
+    <>
+      <circle cx="8" cy="9" r="5.2" />
+      <path d="M8 9V6.2M6.2 1.8h3.6" />
+    </>
+  ),
+  list: <path d="M2 4h1.5M2 8h1.5M2 12h1.5M6 4h8M6 8h8M6 12h8" />,
+  wave: <path d="M3 6.5v3M5.5 4.5v7M8 2.5v11M10.5 4.5v7M13 6.5v3" />,
+  check: <path d="M3 8.5l3 3 7-7" />,
+  trash: <path d="M2.5 4h11M6 4V2.5h4V4M4 4l.7 9.5h6.6L12 4M6.8 6.5v4.5M9.2 6.5v4.5" />,
+  plus: <path d="M8 2.5v11M2.5 8h11" />,
+  more: (
+    <>
+      <path d="M3.2 8h.1M8 8h.1M12.7 8h.1" strokeWidth="2.4" />
+    </>
+  ),
+  fullscreen: <path d="M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10" />,
+  breathe: (
+    <>
+      <circle cx="8" cy="8" r="2" />
+      <circle cx="8" cy="8" r="5.5" strokeDasharray="1.6 1.8" />
+    </>
+  ),
 }
 
 export type IconName = keyof typeof PATHS
