@@ -6,6 +6,8 @@ export type Task = {
   createdAt: string
   /** Longer notes for the task; written in the full-screen view. */
   description?: string
+  /** Where the user dragged it in the list. Unset until it is moved: then createdAt decides. */
+  position?: number
 }
 
 export interface TaskRepo {

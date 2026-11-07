@@ -1,9 +1,9 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { Task, TaskRepo } from './types'
 
-type Row = { id: string; text: string; done: boolean; active: boolean; created_at: string; description?: string | null }
+type Row = { id: string; text: string; done: boolean; active: boolean; created_at: string; description?: string | null; position?: number | null }
 
-const toTask = (r: Row): Task => ({ id: r.id, text: r.text, done: r.done, active: r.active, createdAt: r.created_at, ...(r.description ? { description: r.description } : {}) })
+const toTask = (r: Row): Task => ({ id: r.id, text: r.text, done: r.done, active: r.active, createdAt: r.created_at, ...(r.description ? { description: r.description } : {}), ...(typeof r.position === 'number' ? { position: r.position } : {}) })
 
 export function supabaseRepo(client: SupabaseClient, userId: string): TaskRepo {
   const table = () => client.from('tasks')
@@ -23,6 +23,8 @@ export function supabaseRepo(client: SupabaseClient, userId: string): TaskRepo {
         created_at: t.createdAt,
         // Only sent once a task has had a description, so accounts that haven't run the description migration keep syncing.
         ...(t.description !== undefined ? { description: t.description } : {}),
+        // Same for the order: only sent once a task has been dragged, so accounts without the position column keep working.
+        ...(t.position !== undefined ? { position: t.position } : {}),
       })
       if (error) throw error
     },

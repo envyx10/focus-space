@@ -71,6 +71,8 @@ export const es = {
   'tasks.edit': 'Editar',
   'tasks.deleteLabel': 'Borrar {text}',
   'tasks.delete': 'Borrar',
+  'tasks.move': 'Arrastra para cambiar el orden',
+  'tasks.moveLabel': 'Mover {text}, {n} de {total}. Las flechas arriba y abajo la mueven',
   'tasks.deleted': 'Tarea borrada',
   'tasks.deletedMany': '{n} tareas borradas',
   'tasks.undo': 'Deshacer',

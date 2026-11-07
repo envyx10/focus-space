@@ -69,6 +69,8 @@ export const en: Record<Key, string> = {
   'tasks.edit': 'Edit',
   'tasks.deleteLabel': 'Delete {text}',
   'tasks.delete': 'Delete',
+  'tasks.move': 'Drag to change the order',
+  'tasks.moveLabel': 'Move {text}, {n} of {total}. Up and down arrows move it',
   'tasks.deleted': 'Task deleted',
   'tasks.deletedMany': '{n} tasks deleted',
   'tasks.undo': 'Undo',
