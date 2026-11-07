@@ -5,6 +5,16 @@ import { bandLevels } from './levels'
 import { loadPrefs, MAX_SCENES, savePrefs, type Prefs, type Scene, type TextScale, type Theme } from '../prefs/prefs'
 import type { Chime } from '../timer/alerts'
 
+/**
+ * iOS plays Web Audio as 'ambient' sound by default: silenced by the ring/silent switch, and only audible once a
+ * video (the radio) has switched the page to media playback. Once the user turns a sound on it is media they chose
+ * to hear. Not before: a playback session stops other apps' music, which nobody wants from just opening the page.
+ */
+function playback() {
+  const session = (navigator as Navigator & { audioSession?: { type: string } }).audioSession
+  if (session && session.type !== 'playback') session.type = 'playback'
+}
+
 export function useAmbient() {
   const [prefs, setPrefs] = useState<Prefs>(loadPrefs)
   const engineRef = useRef<Engine | null>(null)
@@ -17,6 +27,7 @@ export function useAmbient() {
 
   useEffect(() => {
     if (typeof AudioContext === 'undefined') return
+    if (CHANNEL_IDS.some((id) => prefs.volumes[id] > 0)) playback()
     const ctx = new AudioContext()
     const engine = createEngine(ctx, prefs.variants)
     for (const id of CHANNEL_IDS) engine.setVolume(id, prefs.volumes[id])
@@ -32,12 +43,13 @@ export function useAmbient() {
       engine.resume().catch(() => {})
     }
     const onVisible = () => document.visibilityState === 'visible' && wake()
-    addEventListener('pointerdown', wake)
-    addEventListener('keydown', wake)
+    // A touch only counts as a gesture when the finger lifts (pointerup / touchend), not on pointerdown: listening
+    // to pointerdown alone left phones silent until something else (the radio's play button) unlocked audio.
+    const GESTURES = ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown'] as const
+    for (const g of GESTURES) addEventListener(g, wake)
     document.addEventListener('visibilitychange', onVisible)
     return () => {
-      removeEventListener('pointerdown', wake)
-      removeEventListener('keydown', wake)
+      for (const g of GESTURES) removeEventListener(g, wake)
       document.removeEventListener('visibilitychange', onVisible)
       ctx.close().catch(() => {})
     }
@@ -45,6 +57,7 @@ export function useAmbient() {
   }, [])
 
   const setVolume = useCallback((ch: ChannelId, v: number) => {
+    if (v > 0) playback()
     engineRef.current?.setVolume(ch, v)
     setPrefs((p) => ({ ...p, volumes: { ...p.volumes, [ch]: v } }))
   }, [])
@@ -79,6 +92,7 @@ export function useAmbient() {
   const applyScene = useCallback((name: string) => {
     const scene = prefsRef.current.scenes.find((s) => s.name === name)
     if (!scene) return
+    if (CHANNEL_IDS.some((id) => scene.volumes[id] > 0)) playback()
     for (const id of CHANNEL_IDS) {
       engineRef.current?.setVariant(id, scene.variants[id])
       engineRef.current?.setVolume(id, scene.volumes[id])
