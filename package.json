@@ -2,6 +2,13 @@
   "name": "focus-space",
   "private": true,
   "license": "FSL-1.1-MIT",
+  "author": "Pablo Gil Diaz (https://github.com/envyx10)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/envyx10/focus-space.git"
+  },
+  "homepage": "https://github.com/envyx10/focus-space#readme",
+  "bugs": "https://github.com/envyx10/focus-space/issues",
   "version": "0.0.0",
   "type": "module",
   "scripts": {

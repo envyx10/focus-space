@@ -331,14 +331,33 @@ Todo lo que hay en este repositorio es libre de leer y usar, pero no todo tiene 
 
 | Qué | Licencia | Detalles |
 |---|---|---|
-| **Código fuente** | [FSL-1.1-MIT](LICENSE), © 2026 envyx10 | Úsalo, modifícalo y alójalo tú mismo para cualquier fin salvo un **producto o servicio comercial que compita**. Cada versión pasa a MIT dos años después de publicarse. Las versiones anteriores a este cambio siguen bajo MIT. |
+| **Código fuente** | [FSL-1.1-MIT](LICENSE), © 2026 Pablo Gil Diaz (envyx10) | Úsalo, modifícalo y alójalo tú mismo para cualquier fin salvo un **producto o servicio comercial que compita**. Cada versión pasa a MIT dos años después de la fecha en que se publicó. Las versiones publicadas antes del commit `f79c394` (3 de noviembre de 2026) siguen bajo MIT. |
+| **Logo e iconos** | **Todos los derechos reservados**, fuera de FSL | `docs/media/logo.svg`, `public/favicon.svg` y `public/icon-512.png`. Ver [TRADEMARK.md](TRADEMARK.md). Sustitúyelos en tu fork. |
 | **Sonidos ambientales y de teclado**, campanilla | **CC0 1.0** (dominio público) | Grabaciones reales de autores de [Freesound](https://freesound.org). No exigen atribución, pero cada archivo y autor figura en [public/sounds/CREDITS.md](public/sounds/CREDITS.md). Los clips de teclado están recortados, en bucle y con el volumen igualado. |
 | **Capturas** (`docs/media`) | FSL-1.1-MIT, como el código | Capturas de esta app, hechas para este README. |
 | **Tipografías del reloj** | [SIL Open Font License 1.1](https://openfontlicense.org) | Inter Tight, Space Grotesk, Syne, JetBrains Mono y Unbounded, cargadas desde [Google Fonts](https://fonts.google.com) en tiempo de ejecución. No se incluyen en este repositorio. |
 | **Dependencias** | MIT (12) y 0BSD (1) en el paquete que se publica | React, Three.js y el cliente de Supabase, entre otras. Lista completa con versiones en [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md). |
 | **Radio lofi** | No forma parte de este repositorio | Un embed oficial de YouTube. Los directos pertenecen a sus dueños y se aplican las condiciones de YouTube. Focus/Space no los descarga, graba ni redistribuye. |
 
-**Nombre e imagen.** El nombre *Focus/Space*, su logotipo y su identidad visual no están licenciados. Puedes hacer un fork del código con la licencia de arriba, pero no presentarlo como el original ni reutilizar el nombre o el logo.
+**Nombre e imagen.** El nombre *Focus/Space*, su logotipo y su identidad visual no están licenciados. Puedes hacer un fork del código con la licencia de arriba, pero no presentarlo como el original ni reutilizar el nombre o el logo. Las reglas, con ejemplos, están en [TRADEMARK.md](TRADEMARK.md).
+
+### Preguntas sobre la licencia
+
+**¿Qué es una «versión»?** Cada commit cuenta como una versión y sus dos años empiezan en la fecha del commit. El código de cualquier commit con más de dos años es MIT sin más. El repositorio no tiene tags, así que consulta la fecha con `git log`.
+
+**¿Puedo usarla, alojarla yo mismo o modificarla?** Sí, para ti, tu equipo o tu empresa, también en un entorno comercial siempre que no sea un producto construido sobre ella.
+
+**¿Puedo hacer un fork y publicarlo gratis?** Sí, si no es comercial y cumples las reglas: mantén la licencia y los avisos de copyright, y usa tu propio nombre y logo.
+
+**¿Puedo venderla, ponerle anuncios u ofrecerla como servicio de pago o alojado?** No mientras esté bajo FSL. Un producto o servicio comercial que haga lo mismo que Focus/Space es un «Competing Use». Escríbeme antes si quieres una licencia para eso.
+
+**¿Puedo aprender de ella o usar partes en algo distinto?** Sí. Usar partes en un producto que hace otra cosa está permitido.
+
+**¿Y si alguien la rehace sin usar este código?** La licencia cubre el código, no la idea ni el aspecto. Por eso el nombre, el logo y la identidad visual se protegen aparte.
+
+**¿Qué tengo bajo MIT de antes?** Las versiones publicadas antes del commit `f79c394` (3 de noviembre de 2026) siguen bajo MIT. Esa concesión no se puede retirar.
+
+Esta sección es un resumen para entender la licencia. Si difiere, prevalece el texto de [LICENSE](LICENSE). No es asesoramiento legal.
 
 **Marcas.** *Cherry MX* es una marca de Cherry GmbH y aquí solo describe los interruptores de teclado que se grabaron. *Pomodoro Technique* es una marca registrada de Francesco Cirillo. React, Three.js, Supabase, Vite, TypeScript, YouTube y el resto de nombres y logotipos de las insignias pertenecen a sus propietarios. Focus/Space es un proyecto independiente, sin afiliación ni respaldo de ninguno de ellos.
 
