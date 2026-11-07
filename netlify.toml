@@ -11,11 +11,11 @@
   status = 200
 
 # Security headers. The CSP allows only what the app loads: its own bundle, the YouTube player,
-# Google Fonts and the Supabase project. Images may come from any https site: task descriptions are Markdown and can embed them. 'unsafe-inline' is for styles only (React style attributes).
+# Google Fonts and the Supabase project. Images may come from any https site: task descriptions are Markdown and can embed them. Media may be a blob: the Settings preview of a generated sound is a WAV made in memory. 'unsafe-inline' is for styles only (React style attributes).
 [[headers]]
   for = "/*"
   [headers.values]
-    Content-Security-Policy = "default-src 'self'; script-src 'self' https://www.youtube.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; media-src 'self'; frame-src https://www.youtube.com https://www.youtube-nocookie.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.open-meteo.com https://api-bdc.io; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://www.youtube.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; media-src 'self' blob:; frame-src https://www.youtube.com https://www.youtube-nocookie.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.open-meteo.com https://api-bdc.io; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=(self)"
