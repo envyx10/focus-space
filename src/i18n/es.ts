@@ -306,4 +306,10 @@ export const es = {
   'key.c.desc': 'Modo calma',
   'key.f.desc': 'Modo focus (Esc para salir)',
   'key.help.desc': 'Abrir / cerrar ajustes',
+
+  // acerca de
+  'settings.about': 'Acerca de',
+  'settings.aboutNote': 'Código visible bajo FSL-1.1-MIT: libre para usar, modificar y alojar tú mismo, no para revenderlo como producto que compita. Cada versión pasa a MIT a los dos años. El nombre y el logo no están licenciados.',
+  'settings.aboutLicenses': 'Licencias →',
+  'settings.aboutSource': 'Código fuente →',
 } as const
