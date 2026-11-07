@@ -321,7 +321,9 @@ Es un proyecto pequeño y las contribuciones son bienvenidas: sonidos ambientale
 2. Haz tu cambio y mantén `bun run test` y `bun run lint` en verde.
 3. Abre una pull request explicando qué cambia y por qué.
 
-Añadir un idioma consiste en copiar `src/i18n/en.ts`, traducirlo y registrarlo en `src/i18n/index.tsx`. Los sonidos nuevos deben ser **CC0** (o libres de redistribuir) y constar en [public/sounds/CREDITS.md](public/sounds/CREDITS.md). Al contribuir aceptas que tu código se publique bajo la licencia del proyecto (FSL-1.1-MIT) y que el autor pueda relicenciarlo.
+Añadir un idioma consiste en copiar `src/i18n/en.ts`, traducirlo y registrarlo en `src/i18n/index.tsx`. Los sonidos nuevos deben ser **CC0** (o libres de redistribuir) y constar en [public/sounds/CREDITS.md](public/sounds/CREDITS.md).
+
+Al abrir una pull request aceptas las condiciones de [CONTRIBUTING.md](CONTRIBUTING.md): tu código se publica bajo FSL-1.1-MIT, el autor puede relicenciarlo y tus commits van firmados (`git commit -s`).
 
 ¿Ideas o errores? [Abre una issue](https://github.com/envyx10/focus-space/issues).
 
