@@ -50,7 +50,30 @@ export default function FocusView({ timer, now, tasks, setActive, scene, breakGa
   const [big, small] = clock ? [pad(now.getHours()), pad(now.getMinutes())] : [pad(Math.floor(total / 60)), pad(total % 60)]
   const phaseName = nameOf(t, mode, state.phase)
   const cfg = timer.config
-  const hint = clock ? t('m.hint.clock') : mode === 'free' ? t('m.hint.free') : t('m.hint.pomodoro', { work: cfg.work / 60000, short: cfg.short / 60000, every: cfg.longEvery })
+  // The rhythm in one line, figures first: "25 min foco · 5 descanso · largo cada 4".
+  const n = (v: number) => <b>{v}</b>
+  const hint = clock ? (
+    <span>{t('m.hint.clock')}</span>
+  ) : mode === 'free' ? (
+    <>
+      <span>
+        {n(timer.freeMinutes)} {t('m.rhythm.min')}
+      </span>
+      <span>{t('m.rhythm.noBreaks')}</span>
+    </>
+  ) : (
+    <>
+      <span>
+        {n(cfg.work / 60000)} {t('m.rhythm.focus')}
+      </span>
+      <span>
+        {n(cfg.short / 60000)} {t('m.rhythm.break')}
+      </span>
+      <span>
+        {t('m.rhythm.long')} {n(cfg.longEvery)}
+      </span>
+    </>
+  )
   const active = tasks.find((k) => k.active && !k.done)
   const pending = tasks.filter((k) => !k.done)
   const inProgress = running || status === 'paused'
@@ -134,14 +157,14 @@ export default function FocusView({ timer, now, tasks, setActive, scene, breakGa
           {!clock ? <span className="m-dim" aria-label={t('focus.localTime')}>{hhmm}</span> : running && <span className="acc">{pad(Math.floor(total / 60))}:{pad(total % 60)}</span>}
         </div>
         <div className="m-focus-tools">
-          <button className={`m-icon-btn${muted ? ' is-on' : ''}`} onClick={onMute} aria-label={muted ? t('mute.on') : t('mute.off')} aria-pressed={muted}>
+          <button className={`m-tool${muted ? ' is-on' : ''}`} onClick={onMute} aria-label={muted ? t('mute.on') : t('mute.off')} aria-pressed={muted}>
             <Icon name={muted ? 'muted' : 'sound'} />
           </button>
-          <button className={`m-pill m-breathe-btn${breathe ? ' is-on' : ''}`} onClick={() => setBreathe((b) => !b)} aria-pressed={breathe}>
+          <button className={`m-tool has-label${breathe ? ' is-on' : ''}`} onClick={() => setBreathe((b) => !b)} aria-pressed={breathe}>
             <Icon name={breathe ? 'close' : 'breathe'} />
             {breathe ? t('m.breatheDone') : t('focus.modeBreathe')}
           </button>
-          <button className="m-icon-btn" onClick={onImmersive} aria-label={t('m.immersive')}>
+          <button className="m-tool" onClick={onImmersive} aria-label={t('m.immersive')}>
             <Icon name="fullscreen" />
           </button>
         </div>

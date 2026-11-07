@@ -655,27 +655,64 @@ html[data-shell='mobile'] body {
   grid-area: tools;
   display: flex;
   align-items: center;
-  gap: 2px;
   margin-right: -10px;
 }
 
-.m-breathe-btn {
-  margin: 0 4px;
+/* The three header tools share one weight: no frames, the same icon size, the accent only when one is on.
+   Breathe keeps its word (the one a newcomer looks for), the other two are universal icons. */
+.m-tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 44px;
+  height: 44px;
   padding: 0 10px;
-  border-color: var(--line-strong);
-  background: color-mix(in srgb, var(--bg) 60%, transparent);
+  color: var(--fg);
+  font-size: var(--fs-s);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
 }
 
-.m-breathe-btn .ico {
-  width: 16px;
-  height: 16px;
+.m-tool .ico {
+  width: 18px;
+  height: 18px;
 }
 
+.m-tool.is-on {
+  color: var(--accent);
+}
+
+/* The rhythm: figures in full ink, words quiet, a thin divider between the parts. */
 .m-hint {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
   margin: 2px 0 0;
   color: var(--muted);
-  font-size: var(--fs-m);
-  line-height: 1.4;
+  font-size: var(--fs-s);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  line-height: 1.6;
+}
+
+.m-hint > span + span::before {
+  content: '';
+  display: inline-block;
+  width: 1px;
+  height: 0.9em;
+  margin: 0 10px;
+  vertical-align: -0.1em;
+  background: var(--line-strong);
+}
+
+.m-hint b {
+  color: var(--fg);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
 
 .m-modes {
@@ -901,6 +938,80 @@ html[data-shell='mobile'] body {
 
 .m-breath-host .br.is-mode .br-pad {
   padding-top: 0;
+}
+
+/* The guide's foot: the count on one line on the left, the explanation as a full-size button on the right. */
+.m-app .br-foot {
+  gap: 14px;
+}
+
+.m-app .br-side {
+  align-self: stretch;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.m-app .br-score {
+  flex-direction: row;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.m-app .br-score span {
+  color: var(--muted);
+  font-size: var(--fs-m);
+  opacity: 1;
+}
+
+.m-app .br-why-btn {
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 12px 0 16px;
+  background: color-mix(in srgb, var(--bg) 60%, transparent);
+  font-size: var(--fs-s);
+  font-weight: 600;
+}
+
+.m-app .br-why-btn .ico {
+  width: 13px;
+  height: 13px;
+}
+
+/* "Why like this?" in its sheet */
+.br-why-sheet {
+  padding-top: 4px;
+  font-size: var(--fs-b);
+  line-height: 1.5;
+}
+
+.br-why-sheet dl {
+  margin: 0;
+}
+
+.br-why-sheet dl > div {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.br-why-sheet dt {
+  font-weight: 600;
+}
+
+.br-why-sheet dd {
+  margin: 4px 0 0;
+  color: var(--muted);
+}
+
+.br-why-sheet .br-why-note {
+  margin: 18px 0 0;
+  padding-left: 12px;
+  border-left: 2px solid var(--accent);
+}
+
+.br-why-sheet .br-why-src {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: var(--fs-s);
 }
 
 /* With the sphere the guide is see-through (the sphere is the guide), as on desktop. */
