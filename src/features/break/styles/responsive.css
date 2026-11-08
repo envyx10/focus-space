@@ -1,0 +1,59 @@
+/* Four views in the clock panel's switch: on the narrowest phones they share the width instead of overflowing. */
+@media (max-width: 400px) {
+  .app .seg {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .app .seg button {
+    padding-inline: 2px;
+    letter-spacing: 0.02em;
+  }
+}
+
+/* Breathe view: the panel's top bar stays visible, so the explanation stops below it. */
+.br.is-mode .br-why {
+  max-height: calc(100% - 214px);
+}
+
+/* Phones: the explanation is a bottom sheet over the tab bar, full width. */
+@media (max-width: 1023px) {
+  .br-why,
+  .br.is-mode .br-why,
+  .app > .br-why {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: calc(52px + env(safe-area-inset-bottom));
+    z-index: 7;
+    width: auto;
+    max-height: 70dvh;
+    border-width: 1px 0 0;
+  }
+
+  .br.is-mode .br-pad {
+    padding-top: 230px;
+  }
+}
+
+/* The sphere is the figure: no square stage to make room for, the cue sits just over the footer. */
+.br.has-sphere .br-stage {
+  display: none;
+}
+
+.br.has-sphere .br-pad,
+.br.has-sphere.is-mode .br-pad {
+  justify-content: flex-end;
+  padding-top: 0;
+}
+
+/* Phones: the Breathe view takes the whole screen between header and tab bar, so the sphere has room to grow. */
+@media (max-width: 1023px) {
+  .app .focus:has(> .br.is-mode) {
+    min-height: calc(100dvh - 44px - 52px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  }
+
+  .br.has-sphere.is-mode .br-pad {
+    padding-top: 0;
+  }
+}

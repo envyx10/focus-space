@@ -1,0 +1,212 @@
+/* the break invite in the task line: a full-width row, thumb-sized */
+.m-task-line .br-invite {
+  width: 100%;
+  min-height: 56px;
+  padding: 0 4px 0 12px;
+  border: 1px solid var(--accent);
+  justify-content: space-between;
+  font-size: var(--fs-b);
+}
+
+.m-task-line .br-invite-go {
+  flex: 1;
+  min-height: 54px;
+}
+
+.m-task-line .br-invite-x {
+  width: 44px;
+  height: 44px;
+}
+
+.m-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.m-sq-btn {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border: 1px solid var(--line-strong);
+  background: color-mix(in srgb, var(--bg) 60%, transparent);
+}
+
+.m-sq-btn .ico {
+  width: 18px;
+  height: 18px;
+}
+
+.m-sq-text {
+  /* fixed size: the square doesn't grow with A++, its label must still fit */
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.m-primary {
+  /* when the squares leave it too little room (narrow phones, A++, landscape) it takes a row of its own */
+  flex: 1 1 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: 0;
+  min-height: 56px;
+  padding: 0 12px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: calc(14px * var(--m-ts));
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+/* Breathing guide: under the top bar, over the rest of the screen. */
+.m-breath-host {
+  position: absolute !important;
+  inset: calc(var(--m-safe-t) + 104px) 0 0;
+}
+
+/* small screens: the guide scrolls instead of hiding its foot under the tab bar */
+.m-breath-host .br {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.m-breath-host .br.is-mode .br-pad {
+  padding-top: 0;
+}
+
+/* The guide's foot: the count on one line on the left, the explanation as a full-size button on the right. */
+.m-app .br-foot {
+  gap: 14px;
+}
+
+.m-app .br-side {
+  align-self: stretch;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.m-app .br-score {
+  flex-direction: row;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.m-app .br-score span {
+  color: var(--muted);
+  font-size: var(--fs-m);
+  opacity: 1;
+}
+
+.m-app .br-why-btn {
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 12px 0 16px;
+  background: color-mix(in srgb, var(--bg) 60%, transparent);
+  font-size: var(--fs-s);
+  font-weight: 600;
+}
+
+.m-app .br-why-btn .ico {
+  width: 13px;
+  height: 13px;
+}
+
+/* "Why like this?" in its sheet */
+.br-why-sheet {
+  padding-top: 4px;
+  font-size: var(--fs-b);
+  line-height: 1.5;
+}
+
+.br-why-sheet dl {
+  margin: 0;
+}
+
+.br-why-sheet dl > div {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.br-why-sheet dt {
+  font-weight: 600;
+}
+
+.br-why-sheet dd {
+  margin: 4px 0 0;
+  color: var(--muted);
+}
+
+.br-why-sheet .br-why-note {
+  margin: 18px 0 0;
+  padding-left: 12px;
+  border-left: 2px solid var(--accent);
+}
+
+.br-why-sheet .br-why-src {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: var(--fs-s);
+}
+
+/* With the sphere the guide is see-through (the sphere is the guide), as on desktop. */
+.m-focus .br.has-sphere {
+  background: transparent;
+}
+
+/* The break game opened from the invite takes the whole screen: the clock's own content steps aside. */
+.m-focus:has(> .br:not(.is-mode)) > :not(.m-stage-bg):not(.br) {
+  visibility: hidden;
+}
+
+.m-focus > .br:not(.is-mode) {
+  padding-top: calc(var(--m-safe-t) + 14px);
+  padding-bottom: 16px;
+}
+
+.m-breath-host .br-why,
+.m-app > .br-why {
+  bottom: 0;
+  padding-bottom: calc(16px + var(--m-safe-b));
+  z-index: 45;
+}
+
+/* Immersive: just the clock and the sphere; a tap brings back the way out. */
+.m-app[data-immersive] .m-focus-top,
+.m-app[data-immersive] .m-modes,
+.m-app[data-immersive] .m-focus-foot {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 300ms var(--m-ease);
+}
+
+.m-exit-immersive {
+  position: absolute !important;
+  left: 50%;
+  top: calc(var(--m-safe-t) + 12px);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid var(--line-strong);
+  background: color-mix(in srgb, var(--bg) 70%, transparent);
+  font-size: var(--fs-s);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  transform: translateX(-50%);
+}
+
+.m-exit-immersive.is-shown {
+  color: var(--accent);
+  border-color: var(--accent);
+}

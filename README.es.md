@@ -286,25 +286,34 @@ Sin estas variables la app funciona en *modo solo local*. La guía completa (ema
 
 ```
 src/
-├── timer/      Pomodoro y temporizador libre: máquina de estados pura, persistencia, avisos
-├── tasks/      Lista de tareas con repo local (localStorage) y repo de Supabase
-├── audio/      Motor Web Audio, mezclador, canales y análisis de niveles
-├── lofi/       Reproductor de lofi de YouTube con cambio de emisora
-├── visual/     Esfera de partículas Three.js, shaders GLSL, tipografías, grano
-├── settings/   Panel de ajustes
-├── stats/      Tiempo de foco por día y rachas
-├── i18n/       Diccionarios (es, en), proveedor y detección de idioma
-├── auth/       Sesión de Supabase y menú de cuenta
-├── prefs/      Volúmenes, mezclas, color de resalte y opciones de pantalla, guardados en el navegador
-├── lib/        Utilidades de almacenamiento y atajos de teclado
-└── layout/     Cabecera
+├── app/            Composición: elige el diseño y conecta el estado compartido
+│   ├── hooks/      useAppState (un estado para los dos diseños), reloj, modo inmersivo
+│   ├── desktop/    La rejilla de escritorio y su cabecera
+│   └── mobile/     La app de móvil: pestañas, vistas, hojas y componentes táctiles
+├── features/       Una carpeta por dominio, cada una con sus componentes, hooks y lógica
+│   ├── timer/      Pomodoro y temporizador libre: máquina de estados pura, persistencia, avisos
+│   ├── tasks/      Lista de tareas: repos local y de Supabase, orden, importar y exportar
+│   ├── audio/      Motor Web Audio, mezclador, canales y análisis de niveles
+│   ├── lofi/       Reproductor de lofi de YouTube con cambio de emisora
+│   ├── visual/     Esfera de partículas Three.js, shaders GLSL, tipografías, grano
+│   ├── break/      Invitación y juego de respiración para los descansos
+│   ├── settings/   Panel de ajustes, sus opciones y controles
+│   ├── stats/      Tiempo de foco por día y rachas
+│   ├── auth/       Sesión de Supabase, acciones de acceso y menú de cuenta
+│   ├── prefs/      Volúmenes, mezclas, color de resalte y opciones de pantalla, guardados en el navegador
+│   └── weather/    El tiempo local para la cabecera
+├── shared/         Código sin dominio: primitivas de UI, hooks y utilidades de formato
+├── i18n/           Diccionarios (es, en) divididos por áreas, proveedor y detección de idioma
+└── styles/         Tokens de diseño y la hoja de estilos global
 ```
+
+Los imports usan el alias `@/` (`@/features/tasks/...`); solo los archivos de la misma carpeta usan rutas relativas.
 
 - **El temporizador** guarda la hora de fin en lugar de contar ticks, así que es exacto en pestañas en segundo plano, y todo su estado se guarda para sobrevivir a una recarga.
 - **La esfera** lee niveles de un `AnalyserNode` de Web Audio en cada canal ambiental. El iframe de YouTube no se puede analizar directamente, así que mientras suena el lofi sigue un ritmo sintético.
 - **Three.js se carga en diferido** tras el primer pintado, para que el reloj y las tareas aparezcan al instante.
 - **Las tareas son primero locales.** En tu primer inicio de sesión las tareas del navegador se fusionan con tu cuenta (gana la copia remota en conflictos y se descartan duplicados).
-- **Las traducciones son objetos simples.** `src/i18n/es.ts` es la fuente; `en.ts` debe tener todas las claves (lo exigen el compilador y una prueba).
+- **Las traducciones son objetos simples.** `src/i18n/locales/es/` es la fuente; `locales/en/` debe tener todas las claves (lo exigen el compilador y una prueba).
 
 ## Tecnologías
 
@@ -322,7 +331,7 @@ Es un proyecto pequeño y las contribuciones son bienvenidas: sonidos ambientale
 2. Haz tu cambio y mantén `bun run test` y `bun run lint` en verde.
 3. Abre una pull request explicando qué cambia y por qué.
 
-Añadir un idioma consiste en copiar `src/i18n/en.ts`, traducirlo y registrarlo en `src/i18n/index.tsx`. Los sonidos nuevos deben ser **CC0** (o libres de redistribuir) y constar en [public/sounds/CREDITS.md](public/sounds/CREDITS.md).
+Añadir un idioma consiste en copiar `src/i18n/locales/en/`, traducirlo y registrarlo en `src/i18n/translate.ts`. Los sonidos nuevos deben ser **CC0** (o libres de redistribuir) y constar en [public/sounds/CREDITS.md](public/sounds/CREDITS.md).
 
 Al abrir una pull request aceptas las condiciones de [CONTRIBUTING.md](CONTRIBUTING.md): tu código se publica bajo FSL-1.1-MIT, el autor puede relicenciarlo y tus commits van firmados (`git commit -s`).
 

@@ -1,0 +1,12 @@
+/* Phone shell styles, in cascade order. */
+@import './platform.css';
+@import './screens.css';
+@import './tabbar.css';
+@import './controls.css';
+@import './focus.css';
+@import './breathing.css';
+@import './sheets.css';
+@import './tasks.css';
+@import './sound.css';
+@import './settings.css';
+@import './responsive.css';

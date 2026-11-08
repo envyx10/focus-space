@@ -1,0 +1,106 @@
+/* Accent picker: square swatches like the rest of the panel, then the native colour input for anything else. */
+.set-accent {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
+}
+
+.set-swatch,
+.set-color {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: 0;
+}
+
+.set-swatch[aria-pressed='true'] {
+  outline: 1px solid var(--fg);
+  outline-offset: 2px;
+}
+
+.set-color {
+  background: none;
+  cursor: pointer;
+}
+
+.set-color::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.set-color::-webkit-color-swatch {
+  border: 0;
+}
+
+.set-color::-moz-color-swatch {
+  border: 0;
+}
+
+.set-slots {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.set-slot {
+  gap: 10px;
+  min-height: 40px;
+  cursor: grab;
+}
+
+.set-slot.is-drag {
+  opacity: 0.4;
+}
+
+.set-slot-n {
+  flex: none !important;
+  font-size: 10px;
+  opacity: 0.45;
+  font-variant-numeric: tabular-nums;
+}
+
+.set-slot .set-slot-pick {
+  flex: 1;
+  justify-content: space-between;
+  min-height: 32px;
+}
+
+/* Square, framed icon buttons: they read as buttons, and a thumb can hit them. */
+.set-icon {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--line-strong, #3a3a3a);
+  color: var(--muted, #8a8984);
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.set-icon .ico {
+  width: 14px;
+  height: 14px;
+}
+
+.set-icon.is-on {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+@media (hover: hover) {
+  .set-icon:hover:not(:disabled) {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+}
+
+.set-icon:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+.set-slot {
+  gap: 6px;
+}

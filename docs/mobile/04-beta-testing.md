@@ -6,7 +6,7 @@
 > en perfiles de Android/iPad), miró sus capturas y midió el DOM. Los fallos marcados como *comprobado* tienen
 > evidencia reproducible (captura, log o test).
 
-Informes completos en [`beta/`](beta/): un informe y un debate por persona, más la auditoría de accesibilidad.
+Este documento resume los informes y debates por persona y la auditoría de accesibilidad.
 
 ## 1. Participantes y experiencia resumida
 
@@ -134,7 +134,7 @@ y el aviso de Deshacer se anuncia en una región `status` siempre montada.
 
 ### Qué es comprobado, qué es opinión
 
-- **Comprobado**: sección 2 (con evidencia en `beta/*` y verificación propia), y las filas "Comprobado" de la 7.
+- **Comprobado**: sección 2 (con verificación propia), y las filas "Comprobado" de la 7.
 - **Opiniones de los agentes**: notas, gustos y desacuerdos de las secciones 1, 3–5. Útiles para formular hipótesis,
   no para decidir.
 - **Hipótesis de mejora**: secciones 8 y 9.

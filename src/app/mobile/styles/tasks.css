@@ -1,0 +1,278 @@
+/* ---------- Tasks ---------- */
+
+.m-row {
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid var(--line);
+  touch-action: pan-y;
+}
+
+.m-list > .m-row:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.m-row-bg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  font-size: var(--fs-s);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.m-row-bg > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0.6;
+  transform: scale(0.92);
+  transition: opacity 150ms, transform 150ms var(--m-ease);
+}
+
+.m-row[data-dir='right'] .m-row-bg {
+  background: var(--fg);
+  color: var(--bg);
+}
+
+.m-row[data-dir='left'] .m-row-bg {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.m-row[data-dir='right'] .m-row-bg-del,
+.m-row[data-dir='left'] .m-row-bg-done {
+  visibility: hidden;
+}
+
+.m-row[data-armed='yes'] .m-row-bg > span {
+  opacity: 1;
+  transform: none;
+}
+
+.m-row-fg {
+  position: relative;
+  display: grid;
+  grid-template-columns: 48px 1fr 24px;
+  align-items: center;
+  min-height: 60px;
+  background: var(--bg);
+  transition: transform 280ms var(--m-ease);
+}
+
+.m-row.is-swiping .m-row-fg {
+  transition: none;
+}
+
+.m-row.is-leaving {
+  opacity: 0;
+  transition: opacity 160ms;
+}
+
+.m-check {
+  display: grid;
+  place-items: center start;
+  height: 60px;
+}
+
+/* The number sits in a square box: it reads as the checkbox it is, and fills with ✓ once done. */
+.m-check-box {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--line-strong);
+  color: var(--muted);
+  font-size: var(--fs-s);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  transition: background-color 150ms, border-color 150ms, color 150ms;
+}
+
+.m-check-box .ico {
+  width: 18px;
+  height: 18px;
+}
+
+.m-row.is-active .m-check-box {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.m-row.is-done .m-check-box {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+.m-row-main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+  min-height: 60px;
+  padding: 10px 0;
+  text-align: left;
+}
+
+.m-row-text {
+  font-size: var(--fs-l);
+  font-weight: 500;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.m-row.is-done .m-row-text {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.m-row-meta {
+  display: flex;
+  gap: 10px;
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.m-row-chev {
+  display: grid;
+  place-items: center end;
+  opacity: 0.3;
+}
+
+.m-all-done {
+  margin: 0;
+  padding: 18px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  font-size: var(--fs-b);
+}
+
+.m-done {
+  margin-top: 12px;
+}
+
+.m-gesture-hint {
+  margin: 20px 0 0;
+  color: var(--muted);
+  font-size: var(--fs-s);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+
+.m-empty {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  padding: 56px 12px;
+  text-align: center;
+}
+
+.m-empty.is-compact {
+  padding: 28px 0 12px;
+}
+
+.m-empty.is-compact p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.m-empty-mark {
+  width: 14px;
+  height: 14px;
+  margin-bottom: 8px;
+  background: var(--accent);
+  animation: br-breathe 10s ease-in-out infinite;
+}
+
+.m-empty-title {
+  margin: 0;
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.m-empty-hint {
+  max-width: 30ch;
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--fs-b);
+  line-height: 1.45;
+}
+
+.m-composer {
+  flex: none;
+  display: grid;
+  grid-template-columns: 44px 1fr 56px;
+  align-items: stretch;
+  min-height: 56px;
+  border-top: 1px solid var(--line);
+  background: var(--bg);
+}
+
+.m-composer-plus {
+  display: grid;
+  place-items: center;
+  color: var(--accent);
+}
+
+.m-composer input {
+  min-width: 0;
+  border: 0;
+  background: none;
+  outline: none;
+  padding: 0;
+  font-weight: 500;
+}
+
+.m-composer input::placeholder {
+  color: var(--fg);
+  opacity: 0.4;
+}
+
+.m-composer-add {
+  display: grid;
+  place-items: center;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.m-composer-add:disabled {
+  background: none;
+  color: var(--muted);
+  opacity: 0.4;
+}
+
+.m-toast {
+  position: absolute;
+  inset: auto 12px 68px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 48px;
+  padding-left: 16px;
+  border: 1px solid var(--line-strong);
+  background: color-mix(in srgb, var(--fg) 8%, var(--bg));
+  font-size: var(--fs-m);
+  animation: m-rise 240ms var(--m-ease);
+}
+
+.m-toast button {
+  align-self: stretch;
+  padding: 0 16px;
+  color: var(--accent);
+  font-size: var(--fs-s);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}

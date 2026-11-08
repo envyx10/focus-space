@@ -1,0 +1,285 @@
+/* ---------- Settings ---------- */
+
+.m-rows {
+  border-top: 1px solid var(--line);
+}
+
+.m-rowset {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  min-height: 52px;
+  margin: 0;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: var(--fs-b);
+  text-align: left;
+}
+
+.m-rowset-label {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.m-rowset-label small {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: calc(12px * var(--m-ts));
+  line-height: 1.4;
+}
+
+.m-stack {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.m-split {
+  display: flex;
+  justify-content: space-between;
+}
+
+.m-split output {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.m-note {
+  display: block;
+  color: var(--muted);
+  font-size: var(--fs-m);
+  line-height: 1.45;
+}
+
+.m-note.is-accent {
+  color: var(--accent);
+}
+
+.m-link:disabled {
+  opacity: 0.35;
+}
+
+.m-toggle {
+  cursor: pointer;
+}
+
+.m-toggle.is-disabled {
+  opacity: 0.4;
+}
+
+.m-switch {
+  appearance: none;
+  position: relative;
+  flex: none;
+  width: 52px;
+  height: 30px;
+  margin: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: 0;
+  background: none;
+  cursor: inherit;
+  transition: background-color 200ms, border-color 200ms;
+}
+
+.m-switch::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  background: var(--muted);
+  transition: transform 240ms var(--m-ease-sheet), background-color 200ms;
+}
+
+.m-switch:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.m-switch:checked::after {
+  transform: translateX(22px);
+  background: var(--on-accent);
+}
+
+.m-num {
+  display: inline-grid;
+  grid-template-columns: 44px 52px 44px;
+  height: 46px;
+  border: 1px solid var(--line-strong);
+}
+
+.m-num button {
+  font-size: 18px;
+}
+
+.m-num button:disabled {
+  opacity: 0.3;
+}
+
+.m-num input {
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-inline: 1px solid var(--line-strong);
+  border-radius: 0;
+  background: none;
+  outline: none;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.m-num input::-webkit-inner-spin-button,
+.m-num input::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.m-num input:focus {
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+
+.m-inline-form input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  border: 0;
+  background: none;
+  outline: none;
+}
+
+.m-inline-form button {
+  min-height: 44px;
+  color: var(--accent);
+  font-size: var(--fs-s);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.m-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.m-swatch {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line-strong);
+}
+
+.m-swatch[aria-pressed='true'] {
+  outline: 2px solid var(--fg);
+  outline-offset: 2px;
+}
+
+.m-swatch.is-custom {
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+}
+
+.m-swatch.is-custom input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.m-fonts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 6px;
+}
+
+.m-fonts button {
+  min-height: 44px;
+  padding: 0 8px;
+  border: 1px solid var(--line-strong);
+  font-size: var(--fs-m);
+  font-weight: 600;
+}
+
+.m-fonts button[aria-pressed='true'] {
+  background: var(--fg);
+  color: var(--bg);
+}
+
+.m-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.m-stats > div {
+  padding: 14px 0;
+}
+
+.m-stats > div + div {
+  padding-left: 12px;
+  border-left: 1px solid var(--line);
+}
+
+.m-stats dt {
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.55;
+}
+
+.m-stats dd {
+  margin: 6px 0 0;
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.m-stats dd.m-dim {
+  margin-top: 2px;
+  font-size: var(--fs-s);
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.m-keys {
+  margin: 0;
+}
+
+.m-keys > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  min-height: 44px;
+  border-bottom: 1px solid var(--line);
+  font-size: var(--fs-m);
+}
+
+.m-keys dd {
+  margin: 0;
+  color: var(--muted);
+}
+
+/* Keyboard shortcuts only make sense with a keyboard and a precise pointer (an iPad with a trackpad). */
+.m-only-keyboard {
+  display: none;
+}
+
+@media (pointer: fine) {
+  .m-only-keyboard {
+    display: block;
+  }
+}

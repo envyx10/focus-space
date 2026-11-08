@@ -1,0 +1,284 @@
+/* ---------- sizes and orientations ---------- */
+
+/* Tablets in portrait: lists keep a readable measure in the middle of the screen. */
+@media (min-width: 700px) {
+  .m-scroll > * {
+    max-width: 680px;
+    margin-inline: auto;
+  }
+
+  .m-modes,
+  .m-focus-foot {
+    width: 100%;
+    max-width: 560px;
+    margin-inline: auto;
+  }
+
+  .m-composer {
+    padding-inline: max(0px, calc((100% - 680px) / 2));
+  }
+}
+
+/* Landscape phones. Height is what runs out, so the tab bar becomes a navigation rail on the left (Material 3's
+   landscape pattern, also common on iOS) and every screen gets the full height. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .m-app {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+
+  .m-views {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .m-mini {
+    grid-column: 2;
+    grid-row: 2;
+    min-height: calc(48px + var(--m-safe-b));
+    padding-bottom: var(--m-safe-b);
+  }
+
+  .m-tabbar {
+    grid-column: 1;
+    grid-row: 1 / -1;
+    grid-template-columns: none;
+    grid-auto-rows: 1fr;
+    width: 76px;
+    padding: var(--m-safe-t) 0 var(--m-safe-b);
+    border-top: 0;
+    border-right: 1px solid var(--line);
+  }
+
+  .m-tab {
+    min-height: 0;
+    gap: 4px;
+    font-size: calc(9px * var(--m-ts));
+  }
+
+  /* the marker turns with the bar: a 2 px accent line on the content side */
+  .m-tab::before {
+    inset: 26% -1px 26% auto;
+    width: 2px;
+    height: auto;
+    transform: scaleY(0);
+  }
+
+  .m-tab[aria-current='page']::before {
+    transform: scaleY(1);
+  }
+
+  /* Focus: the clock on the left, every control in a column on the right, all of it on screen. */
+  .m-focus {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 40%);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    column-gap: 24px;
+    row-gap: 8px;
+    padding: calc(var(--m-safe-t) + 8px) 16px calc(var(--m-safe-b) + 10px) 20px;
+  }
+
+  .m-focus-top {
+    grid-column: 1 / -1;
+  }
+
+  .m-clock {
+    grid-column: 1;
+    grid-row: 2 / -1;
+    min-width: 0;
+    /* "25:00 MIN" is ~3.3 em wide: sized from the clock's own column (about 45 % of the width), not the screen */
+    font-size: calc(min(11.5vw, 46dvh) * var(--display-scale, 1));
+  }
+
+  .m-modes {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: start;
+    margin-top: 0;
+  }
+
+  .m-hint {
+    font-size: var(--fs-s);
+  }
+
+  .m-focus-foot {
+    grid-column: 2;
+    grid-row: 3;
+    gap: 8px;
+  }
+
+  .m-task-line,
+  .m-task-chip {
+    min-height: 52px;
+  }
+
+  .m-task-chip {
+    padding-block: 6px;
+  }
+
+  /* one row: three squares and the main button beside them */
+  .m-actions {
+    flex-wrap: nowrap;
+  }
+
+  .m-sq-btn {
+    width: 48px;
+    height: 52px;
+  }
+
+  .m-primary {
+    flex: 1 1 auto;
+    min-height: 52px;
+  }
+
+  .m-breath-host {
+    top: calc(var(--m-safe-t) + 60px);
+  }
+
+  /* immersive: the clock alone, centred on the whole screen */
+  .m-app[data-immersive] .m-clock {
+    grid-column: 1 / -1;
+  }
+
+  /* List screens: a smaller large title, and the home indicator's inset now sits under the content. */
+  .m-bar {
+    height: calc(44px + var(--m-safe-t));
+  }
+
+  .m-scroll {
+    padding-top: calc(44px + var(--m-safe-t));
+    padding-bottom: calc(24px + var(--m-safe-b));
+  }
+
+  /* the large title folds into one line: number, title, status */
+  .m-large {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 12px;
+    padding: 0 0 12px;
+  }
+
+  .m-large h1 {
+    margin: 0;
+    font-size: calc(24px * var(--m-ts));
+  }
+
+  /* the radio card: what is playing on the left, its controls on the right */
+  .m-radio {
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 46%);
+    grid-template-areas:
+      'top top'
+      'title controls'
+      'station vol';
+    column-gap: 20px;
+    align-items: center;
+  }
+
+  .m-radio-top {
+    grid-area: top;
+  }
+
+  .m-radio-title {
+    grid-area: title;
+    margin: 0;
+    font-size: calc(22px * var(--m-ts));
+  }
+
+  .m-radio-station {
+    grid-area: station;
+  }
+
+  .m-radio-controls {
+    grid-area: controls;
+    margin: 0;
+  }
+
+  .m-radio-vol {
+    grid-area: vol;
+  }
+
+  .m-mini {
+    min-height: calc(44px + var(--m-safe-b));
+  }
+
+  .m-scroll > * {
+    max-width: 720px;
+    margin-inline: auto;
+  }
+
+  .m-composer {
+    padding-bottom: var(--m-safe-b);
+  }
+
+  .m-app[data-kb] .m-composer {
+    padding-bottom: 0;
+  }
+
+  .m-toast {
+    bottom: calc(68px + var(--m-safe-b));
+  }
+
+  /* sheets: a centred column, not a 800 px wide strip */
+  .m-sheet {
+    max-width: 600px;
+    margin-inline: auto;
+    border-inline: 1px solid var(--line-strong);
+  }
+}
+
+/* Short screens (iPhone SE): the clock gives way first. */
+@media (max-height: 640px) and (orientation: portrait) {
+  .m-clock {
+    font-size: calc(min(24vw, 22dvh) * var(--display-scale, 1));
+  }
+
+  .m-task-line,
+  .m-task-chip {
+    min-height: 48px;
+  }
+
+  .m-sq-btn,
+  .m-primary {
+    height: 52px;
+    min-height: 52px;
+  }
+}
+
+/* Hover only where a real pointer hovers. */
+@media (hover: hover) and (pointer: fine) {
+  .m-tab:hover,
+  .m-icon-btn:hover,
+  .m-menu button:hover:not(:disabled),
+  .m-pick-list button:hover {
+    color: var(--accent);
+  }
+
+  .m-seg button:hover:not([aria-pressed='true']) {
+    color: var(--fg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .m-app *,
+  .m-app *::before,
+  .m-app *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .m-view {
+    transform: none;
+  }
+}
+
+/* Day and weather under the status line (Focus tab). */
+.m-focus-day {
+  grid-column: 1 / -1;
+  margin: 2px 0 0;
+  font-size: var(--fs-xs, 11px);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}

@@ -286,25 +286,34 @@ Without these variables the app runs in *local-only mode*. The full guide (email
 
 ```
 src/
-├── timer/      Pomodoro and free timer: pure state machine, persistence, alerts
-├── tasks/      Task list with a local repo (localStorage) and a Supabase repo
-├── audio/      Web Audio engine, mixer, channels and level analysis
-├── lofi/       YouTube lofi player with station fallback
-├── visual/     Three.js particle sphere, GLSL shaders, typefaces, film grain
-├── settings/   Settings panel
-├── stats/      Focus time per day and streaks
-├── i18n/       Dictionaries (es, en), provider and language detection
-├── auth/       Supabase session and account menu
-├── prefs/      Volumes, mixes, accent colour and display options, persisted in the browser
-├── lib/        Storage helpers and keyboard shortcuts
-└── layout/     Header
+├── app/            Composition: picks the layout and wires the shared state
+│   ├── hooks/      useAppState (one state for both layouts), clock, immersive mode
+│   ├── desktop/    The desktop grid and its header
+│   └── mobile/     The phone shell: tabs, views, sheets and touch components
+├── features/       One folder per domain, each with its components, hooks and logic
+│   ├── timer/      Pomodoro and free timer: pure state machine, persistence, alerts
+│   ├── tasks/      Task list: local and Supabase repos, ordering, import and export
+│   ├── audio/      Web Audio engine, mixer, channels and level analysis
+│   ├── lofi/       YouTube lofi player with station fallback
+│   ├── visual/     Three.js particle sphere, GLSL shaders, typefaces, film grain
+│   ├── break/      Breathing invite and game for the breaks
+│   ├── settings/   Settings panel, its options and controls
+│   ├── stats/      Focus time per day and streaks
+│   ├── auth/       Supabase session, sign-in actions and account menu
+│   ├── prefs/      Volumes, mixes, accent colour and display options, persisted in the browser
+│   └── weather/    Local weather for the header
+├── shared/         Code with no domain: UI primitives, hooks and formatting helpers
+├── i18n/           Dictionaries (es, en) split by area, provider and language detection
+└── styles/         Design tokens and the global stylesheet
 ```
+
+Imports go through the `@/` alias (`@/features/tasks/...`); only files in the same folder use relative paths.
 
 - **The timer** keeps the wall-clock end time instead of counting ticks, so it stays exact in background tabs, and the whole state is saved so it survives a reload.
 - **The sphere** reads levels from a Web Audio `AnalyserNode` on each ambient channel. YouTube's iframe can't be analysed directly, so while lofi plays it follows a synthetic groove.
 - **Three.js is lazy-loaded** after the first paint, so the clock and tasks show up instantly.
 - **Tasks are local-first.** On your first sign-in your browser tasks are merged into your account (the remote copy wins conflicts and duplicates are dropped).
-- **Translations are plain objects.** `src/i18n/es.ts` is the source; `en.ts` must have every key (the compiler and a test enforce it).
+- **Translations are plain objects.** `src/i18n/locales/es/` is the source; `locales/en/` must have every key (the compiler and a test enforce it).
 
 ## Tech stack
 
@@ -322,7 +331,7 @@ It's a small project and contributions are welcome: ambient sounds, typefaces, t
 2. Make your change and keep `bun run test` and `bun run lint` green.
 3. Open a pull request explaining what it changes and why.
 
-Adding a language means copying `src/i18n/en.ts`, translating it and registering it in `src/i18n/index.tsx`. New sounds must be **CC0** (or otherwise free to redistribute) and listed in [public/sounds/CREDITS.md](public/sounds/CREDITS.md).
+Adding a language means copying `src/i18n/locales/en/`, translating it and registering it in `src/i18n/translate.ts`. New sounds must be **CC0** (or otherwise free to redistribute) and listed in [public/sounds/CREDITS.md](public/sounds/CREDITS.md).
 
 By opening a pull request you agree to the terms in [CONTRIBUTING.md](CONTRIBUTING.md): your code is released under FSL-1.1-MIT, the author may relicense it, and your commits are signed off (`git commit -s`).
 

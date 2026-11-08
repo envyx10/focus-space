@@ -1,17 +1,17 @@
-import { afterEach, describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { CHANNELS } from '../audio/channels'
-import { CHIMES } from '../timer/alerts'
-import FocusPanel from '../timer/FocusPanel'
-import SettingsMenu from '../settings/SettingsMenu'
-import { DEFAULT_PREFS } from '../prefs/prefs'
-import { DEFAULT_CONFIG } from '../timer/timer'
-import { en } from './en'
-import { es } from './es'
-import { detectLang, I18nProvider, LANG_KEY, loadLang, translate, type Key } from './index'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { CHANNELS } from '@/features/audio/channels'
+import { DEFAULT_PREFS } from '@/features/prefs/prefs'
+import SettingsMenu from '@/features/settings/SettingsMenu'
+import { CHIMES } from '@/features/timer/alerts'
+import FocusPanel from '@/features/timer/FocusPanel'
+import { DEFAULT_CONFIG } from '@/features/timer/timer'
+import { detectLang, I18nProvider, LANG_KEY, loadLang, translate, type Key } from '.'
+import { en } from './locales/en'
+import { es } from './locales/es'
 
-const sources = import.meta.glob(['../**/*.ts', '../**/*.tsx', '!../**/*.test.*', '!./es.ts', '!./en.ts'], { query: '?raw', import: 'default', eager: true }) as Record<string, string>
+const sources = import.meta.glob(['../**/*.ts', '../**/*.tsx', '!../**/*.test.*', '!./locales/**'], { query: '?raw', import: 'default', eager: true }) as Record<string, string>
 const placeholders = (s: string) => [...s.matchAll(/\{(\w+)\}/g)].map((m) => m[1]).sort()
 
 afterEach(() => {

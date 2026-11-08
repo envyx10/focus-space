@@ -1,0 +1,101 @@
+/* Phone shell (src/mobile). Same tokens as desktop (tokens.css): black page, one accent, hairlines, square corners,
+   uppercase micro labels. Only mounted below 1024 px, so nothing here reaches the desktop grid. */
+
+/* ---------- platform layer: only while the phone shell is mounted ---------- */
+
+html[data-shell='mobile'],
+html[data-shell='mobile'] body {
+  height: 100%;
+  overflow: hidden;
+  /* no pull-to-refresh or page rubber band: every screen scrolls inside itself */
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+}
+
+.m-app {
+  --m-ts: 1;
+  --m-safe-t: env(safe-area-inset-top, 0px);
+  --m-safe-b: env(safe-area-inset-bottom, 0px);
+  --m-ease: cubic-bezier(0.23, 1, 0.32, 1);
+  --m-ease-sheet: cubic-bezier(0.32, 0.72, 0, 1);
+  --fs-xs: calc(10px * var(--m-ts));
+  --fs-s: calc(11px * var(--m-ts));
+  --fs-m: calc(13px * var(--m-ts));
+  --fs-b: calc(15px * var(--m-ts));
+  --fs-l: calc(16px * var(--m-ts));
+  --fs-xl: calc(20px * var(--m-ts));
+  --fs-title: calc(34px * var(--m-ts));
+
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding-inline: env(safe-area-inset-left, 0px) env(safe-area-inset-right, 0px);
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font);
+}
+
+/* Keyboard up: the shell is the visible box, so the composer and sheets sit right on the keyboard (iOS and Android). */
+.m-app[data-kb] {
+  inset: auto 0 auto 0;
+  top: var(--vvt, 0px);
+  height: var(--vvh, 100%);
+}
+
+.m-app button,
+.m-app [role='slider'],
+.m-app [role='checkbox'],
+.m-app label {
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* iOS zooms into any field under 16 px. */
+.m-app input,
+.m-app textarea,
+.m-app select,
+.m-app .tf-desc {
+  font-size: max(16px, var(--fs-l));
+}
+
+/* Press feedback on touch-down, not on release. */
+.m-app button {
+  transition: transform 100ms var(--m-ease), background-color 150ms, color 150ms, border-color 150ms, opacity 150ms;
+}
+
+.m-app button:not(:disabled):not(.m-exit-immersive):active {
+  transform: scale(0.97);
+}
+
+.m-app button:disabled {
+  cursor: default;
+}
+
+.m-dim {
+  opacity: 0.55;
+}
+
+/* Read by screen readers, not shown. */
+.m-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Calm mode stops everything that pulses, not just the sphere. */
+.m-app[data-calm] .m-live-dot,
+.m-app[data-calm] .m-mini-dot,
+.m-app[data-calm] .m-empty-mark,
+.m-app[data-calm] .br-dot {
+  animation: none;
+}

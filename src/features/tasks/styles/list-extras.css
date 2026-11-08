@@ -1,0 +1,137 @@
+/* Touch screens have no hover: keep the row actions reachable there. */
+@media (hover: none) {
+  .tk-arrow,
+  .tk-pen,
+  .tk-del {
+    opacity: 0.5;
+  }
+}
+
+.tasks-undo {
+  display: flex;
+  justify-content: space-between;
+  margin: 14px 0 0;
+  padding: 8px 0;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+}
+
+.tasks-undo button,
+.tasks-tools button {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 10px;
+  color: var(--accent);
+}
+
+.tasks-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: auto;
+  padding-top: 18px;
+}
+
+.tasks-tools button {
+  color: var(--fg);
+  opacity: 0.45;
+}
+
+@media (hover: hover) {
+  .tasks-tools button:hover {
+    color: var(--accent);
+    opacity: 1;
+  }
+}
+
+.tasks-tools + .tasks-note,
+.tasks-tools ~ .tasks-note {
+  margin-top: 0;
+}
+
+/* Focus mode: the list, read-only, on the right edge. Desktop only: a phone has no room beside the clock. */
+.focus-tasks {
+  position: absolute;
+  top: 50%;
+  right: 24px;
+  z-index: 3;
+  width: min(260px, 22vw);
+  max-height: 70%;
+  overflow: hidden;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.focus-tasks ul {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+}
+
+.focus-tasks li {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  padding: 9px 0;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+  opacity: 0.55;
+}
+
+.focus-tasks .num {
+  opacity: 0.7;
+}
+
+/* the task the timer is on: full strength */
+.focus-tasks li.on {
+  opacity: 1;
+}
+
+.focus-tasks li.dn {
+  opacity: 0.25;
+  text-decoration: line-through;
+}
+
+@media (max-width: 1023px) {
+  .focus-tasks {
+    display: none;
+  }
+}
+
+/* Priority: a small framed word before the title ("ALTA"), so it reads without relying on colour. */
+.pri {
+  display: inline-block;
+  margin-right: 8px;
+  padding: 1px 5px;
+  border: 1px solid currentColor;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  vertical-align: 2px;
+  text-decoration: none;
+}
+
+.pri-high {
+  color: var(--accent);
+}
+
+.pri-medium {
+  opacity: 0.75;
+}
+
+.pri-low {
+  opacity: 0.45;
+}
+
+/* Exportar opened: it stays lit and its formats (Word, Web, JSON) take the accent, so they read as its choices. */
+.tasks-tools button[aria-expanded='true'],
+.tasks-tools .export-format {
+  opacity: 1;
+}
+
+.export-format {
+  color: var(--accent);
+}
