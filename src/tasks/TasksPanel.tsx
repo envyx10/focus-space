@@ -2,23 +2,16 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { useT } from '../i18n'
 import Icon from '../lib/Icon'
 import { isTypingTarget } from '../lib/useShortcuts'
+import { useTaskDraft } from './draft'
 import TasksFocus from './TasksFocus'
-import { parseImport, serializeTasks } from './transfer'
+import { downloadTasks, parseImport } from './transfer'
 import type { Task } from './types'
 import { useDragSort } from './useDragSort'
 import './tasks.css'
 
 // Matches the CHECK on tasks.text in supabase/schema.sql.
-const MAX_TEXT = 500
-const UNDO_MS = 8000
-const DRAFT_KEY = 'focus-space:tasks:draft'
-const readDraft = () => {
-  try {
-    return localStorage.getItem(DRAFT_KEY) ?? ''
-  } catch {
-    return ''
-  }
-}
+export const MAX_TEXT = 500
+export const UNDO_MS = 8000
 const focusNewTask = () => document.querySelector<HTMLInputElement>('[data-new-task]')?.focus()
 
 type Props = {
@@ -145,15 +138,7 @@ export default function TasksPanel({ tasks, synced, saveError, localError, add, 
   const sorter = useDragSort(() => listRef.current, (id, to) => move?.(id, to))
   const [full, setFull] = useState(false)
   // A half-typed task survives a reload or a closed tab.
-  const [draft, setDraft] = useState(readDraft)
-  useEffect(() => {
-    try {
-      if (draft) localStorage.setItem(DRAFT_KEY, draft)
-      else localStorage.removeItem(DRAFT_KEY)
-    } catch {
-      // storage blocked: the draft just lives in memory
-    }
-  }, [draft])
+  const [draft, setDraft] = useTaskDraft()
   // What the last delete took away (one task, or every finished one), for Deshacer.
   const [undo, setUndo] = useState<Task[] | null>(null)
   const [note, setNote] = useState<string | null>(null)
@@ -186,14 +171,7 @@ export default function TasksPanel({ tasks, synced, saveError, localError, add, 
     if (restore) setUndo([task])
   }
 
-  const exportTasks = () => {
-    const url = URL.createObjectURL(new Blob([serializeTasks(tasks)], { type: 'application/json' }))
-    const a = document.createElement('a')
-    a.href = url
-    a.download = 'focus-space-tareas.json'
-    a.click()
-    setTimeout(() => URL.revokeObjectURL(url), 0)
-  }
+  const exportTasks = () => downloadTasks(tasks)
 
   const importFile = async (f: File | undefined) => {
     if (!f || !addMany) return

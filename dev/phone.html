@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Focus/Space · mockup móvil</title>
+    <!--
+      Dev-only preview: the live app (same dev server, so it hot-reloads) inside a phone frame, with the device's
+      safe areas applied to the app. Open http://localhost:5173/dev/phone.html while `bun run dev` is running.
+      Not part of the production build (only index.html is an entry).
+    -->
+    <style>
+      :root {
+        color-scheme: dark;
+        --page: #151515;
+        --ink: #ecebe6;
+        --muted: #8a8984;
+        --line: #2a2a2a;
+        --accent: #ff4b1f;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: radial-gradient(120% 80% at 50% 0%, #1f1f1f 0%, var(--page) 60%);
+        color: var(--ink);
+        font: 12px/1.4 'Inter Tight', 'Helvetica Neue', Arial, sans-serif;
+        overflow: hidden;
+      }
+      .bar {
+        position: fixed;
+        inset: 0 0 auto;
+        z-index: 2;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px 16px;
+        padding: 12px 16px;
+      }
+      .brand {
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin-right: auto;
+      }
+      .brand small {
+        display: block;
+        font-weight: 400;
+        color: var(--muted);
+        letter-spacing: 0.04em;
+      }
+      .live {
+        display: inline-block;
+        width: 7px;
+        height: 7px;
+        margin-right: 6px;
+        background: var(--accent);
+        animation: pulse 2s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        50% {
+          opacity: 0.3;
+        }
+      }
+      .seg {
+        display: inline-flex;
+        border: 1px solid #3a3a3a;
+      }
+      .seg button {
+        padding: 8px 12px;
+        border: 0;
+        background: none;
+        color: var(--muted);
+        font: inherit;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        cursor: pointer;
+      }
+      .seg button + button {
+        border-left: 1px solid #3a3a3a;
+      }
+      .seg button[aria-pressed='true'] {
+        background: var(--ink);
+        color: #0b0b0b;
+      }
+      .stage {
+        position: fixed;
+        inset: var(--top, 64px) 0 36px;
+      }
+      .scaler {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform-origin: center center;
+      }
+      /* the device */
+      .phone {
+        position: relative;
+        padding: var(--bezel);
+        border-radius: var(--outer);
+        background: linear-gradient(145deg, #2c2c2e, #0d0d0f 55%, #232325);
+        box-shadow: 0 0 0 1.5px #3b3b3e, 0 0 0 4px #0c0c0d, 0 40px 90px rgb(0 0 0 / 0.65);
+      }
+      .phone::before,
+      .phone::after {
+        /* side buttons */
+        content: '';
+        position: absolute;
+        width: 4px;
+        border-radius: 2px;
+        background: #2a2a2c;
+      }
+      .phone::before {
+        left: -5px;
+        top: 22%;
+        height: 9%;
+        box-shadow: 0 calc(var(--h) * 0.12) 0 #2a2a2c;
+      }
+      .phone::after {
+        right: -5px;
+        top: 27%;
+        height: 12%;
+      }
+      .phone.landscape::before,
+      .phone.landscape::after {
+        display: none;
+      }
+      .screen {
+        position: relative;
+        width: var(--w);
+        height: var(--h);
+        border-radius: var(--inner);
+        overflow: hidden;
+        background: #0b0b0b;
+      }
+      .screen iframe {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+        background: #0b0b0b;
+      }
+      /* system chrome painted over the app, like the real OS */
+      .status {
+        position: absolute;
+        inset: 0 0 auto;
+        z-index: 3;
+        height: var(--status);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 var(--status-pad);
+        color: #fff;
+        font: 600 15px/1 -apple-system, 'SF Pro Text', 'Inter Tight', sans-serif;
+        letter-spacing: -0.01em;
+        pointer-events: none;
+      }
+      .android .status {
+        font: 500 13px/1 Roboto, 'Inter Tight', sans-serif;
+      }
+      .status svg {
+        height: 12px;
+        fill: #fff;
+      }
+      .icons {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+      }
+      .island {
+        position: absolute;
+        z-index: 4;
+        top: 11px;
+        left: 50%;
+        width: 124px;
+        height: 36px;
+        border-radius: 20px;
+        background: #000;
+        transform: translateX(-50%);
+        pointer-events: none;
+      }
+      .punch {
+        position: absolute;
+        z-index: 4;
+        top: 12px;
+        left: 50%;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: #000;
+        box-shadow: 0 0 0 2px #111;
+        transform: translateX(-50%);
+        pointer-events: none;
+      }
+      .home {
+        position: absolute;
+        z-index: 4;
+        left: 50%;
+        bottom: 8px;
+        width: 134px;
+        height: 5px;
+        border-radius: 3px;
+        background: rgb(255 255 255 / 0.85);
+        transform: translateX(-50%);
+        pointer-events: none;
+      }
+      .android .home {
+        width: 108px;
+        height: 4px;
+        bottom: 9px;
+      }
+      /* iPhone SE: bezels top and bottom, round home button */
+      .se .screen {
+        border-radius: 0;
+      }
+      .se .speaker {
+        position: absolute;
+        top: calc(var(--bezel) / 2 - 3px);
+        left: 50%;
+        width: 52px;
+        height: 6px;
+        border-radius: 3px;
+        background: #000;
+        transform: translateX(-50%);
+      }
+      .se .button {
+        position: absolute;
+        bottom: calc(var(--bezel) / 2 - 24px);
+        left: 50%;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        border: 2px solid #3a3a3c;
+        transform: translateX(-50%);
+      }
+      .landscape .island {
+        top: 50%;
+        left: 11px;
+        width: 36px;
+        height: 124px;
+        transform: translateY(-50%);
+      }
+      .landscape .home {
+        bottom: 6px;
+      }
+      .note {
+        position: fixed;
+        inset: auto 16px 12px;
+        color: var(--muted);
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bar">
+      <div class="brand">
+        <span class="live"></span>Focus/Space · móvil
+        <small>En vivo desde el servidor de desarrollo: se recarga con cada cambio</small>
+      </div>
+      <span class="seg" role="group" aria-label="Dispositivo" id="devices"></span>
+      <span class="seg" role="group" aria-label="Acciones">
+        <button id="rotate">Girar</button>
+        <button id="reload">Recargar</button>
+      </span>
+    </div>
+
+    <div class="stage">
+      <div class="scaler" id="scaler">
+        <div class="phone" id="phone">
+          <div class="screen" id="screen">
+            <iframe id="app" title="Focus/Space en el móvil" allow="autoplay; fullscreen"></iframe>
+            <div class="status" id="status">
+              <span id="clock">9:41</span>
+              <span class="icons">
+                <svg viewBox="0 0 18 12" aria-hidden="true"><rect x="0" y="8" width="3" height="4" rx="1" /><rect x="5" y="5.5" width="3" height="6.5" rx="1" /><rect x="10" y="3" width="3" height="9" rx="1" /><rect x="15" y="0" width="3" height="12" rx="1" /></svg>
+                <svg viewBox="0 0 16 12" aria-hidden="true"><path d="M8 2.2c2.3 0 4.4.9 6 2.4l1.3-1.4A10.6 10.6 0 0 0 8 .3 10.6 10.6 0 0 0 .7 3.2L2 4.6a8.6 8.6 0 0 1 6-2.4zm0 3.7c1.3 0 2.5.5 3.4 1.3l1.3-1.4A6.8 6.8 0 0 0 8 4a6.8 6.8 0 0 0-4.7 1.8l1.3 1.4C5.5 6.4 6.7 5.9 8 5.9zm0 3.6c-.6 0-1.1.2-1.5.6L8 11.7l1.5-1.6c-.4-.4-.9-.6-1.5-.6z" /></svg>
+                <svg viewBox="0 0 27 12" aria-hidden="true"><rect x=".5" y=".5" width="23" height="11" rx="3" fill="none" stroke="#fff" opacity=".45" /><rect x="2" y="2" width="17" height="8" rx="1.6" /><rect x="24.6" y="4" width="1.6" height="4" rx=".8" opacity=".45" /></svg>
+              </span>
+            </div>
+            <div id="cutout"></div>
+            <div class="home" id="home"></div>
+          </div>
+          <div id="hardware"></div>
+        </div>
+      </div>
+    </div>
+    <p class="note">Ratón = dedo: arrastra las filas para completar/borrar, arrastra los deslizadores y las hojas.</p>
+
+    <script>
+      // w×h are the device's CSS viewport; safe = [top, right, bottom, left] insets the OS reserves.
+      const DEVICES = {
+        iphone: { label: 'iPhone 15', w: 393, h: 852, bezel: 14, outer: 62, inner: 50, safe: [59, 0, 34, 0], status: 54, statusPad: 34, cut: 'island', os: 'ios' },
+        se: { label: 'iPhone SE', w: 375, h: 667, bezel: 0, outer: 54, inner: 0, safe: [20, 0, 0, 0], status: 20, statusPad: 8, cut: 'none', os: 'ios', se: true },
+        pixel: { label: 'Pixel 7', w: 412, h: 915, bezel: 12, outer: 44, inner: 34, safe: [32, 0, 24, 0], status: 32, statusPad: 22, cut: 'punch', os: 'android' },
+      }
+      let device = new URLSearchParams(location.search).get('device') || 'iphone'
+      let landscape = new URLSearchParams(location.search).get('landscape') === '1'
+      const $ = (id) => document.getElementById(id)
+      const frame = $('app')
+
+      function inject() {
+        const d = DEVICES[device]
+        const [t, r, b, l] = landscape ? [0, d.safe[0], d.os === 'ios' ? 21 : d.safe[2], d.safe[0]] : d.safe
+        try {
+          const doc = frame.contentDocument
+          if (!doc?.head) return
+          let tag = doc.getElementById('phone-mockup-safe')
+          if (!tag) {
+            tag = doc.createElement('style')
+            tag.id = 'phone-mockup-safe'
+            doc.head.appendChild(tag)
+          }
+          // env(safe-area-inset-*) is 0 inside an iframe: hand the app the device's insets instead.
+          // Doubled class: the shell's own CSS loads later (lazy chunk) and must not win the cascade.
+          tag.textContent = `.m-app.m-app{--m-safe-t:${t}px;--m-safe-b:${b}px;padding-left:${l}px !important;padding-right:${r}px !important}`
+        } catch {
+          // cross-origin (should not happen: same dev server)
+        }
+      }
+
+      function layout() {
+        const d = DEVICES[device]
+        const w = landscape ? d.h : d.w
+        const h = landscape ? d.w : d.h
+        const se = !!d.se
+        const phone = $('phone')
+        phone.className = `phone ${d.os === 'android' ? 'android' : 'ios'}${landscape ? ' landscape' : ''}${se ? ' se' : ''}`
+        const bezelV = se ? 64 : d.bezel
+        phone.style.setProperty('--bezel', se ? `${bezelV}px 14px` : `${d.bezel}px`)
+        phone.style.setProperty('--outer', `${d.outer}px`)
+        phone.style.setProperty('--inner', `${d.inner}px`)
+        phone.style.setProperty('--w', `${w}px`)
+        phone.style.setProperty('--h', `${h}px`)
+        phone.style.setProperty('--status', landscape && d.os === 'ios' && !se ? '0px' : `${d.status}px`)
+        phone.style.setProperty('--status-pad', `${d.statusPad}px`)
+        $('status').style.display = landscape && d.os === 'ios' && !se ? 'none' : 'flex'
+        $('cutout').className = d.cut === 'island' ? 'island' : d.cut === 'punch' && !landscape ? 'punch' : ''
+        $('home').style.display = se ? 'none' : 'block'
+        $('hardware').innerHTML = se ? '<span class="speaker"></span><span class="button"></span>' : ''
+        // fit the device in the window
+        const totalW = w + 2 * (se ? 14 : d.bezel)
+        const totalH = h + 2 * (se ? bezelV : d.bezel)
+        const top = document.querySelector('.bar').offsetHeight + 8
+        document.documentElement.style.setProperty('--top', `${top}px`)
+        const k = Math.min(1, (innerWidth - 24) / totalW, (innerHeight - top - 44) / totalH)
+        $('scaler').style.transform = `translate(-50%, -50%) scale(${k})`
+        for (const b of document.querySelectorAll('#devices button')) b.setAttribute('aria-pressed', String(b.dataset.id === device))
+        $('rotate').setAttribute('aria-pressed', String(landscape))
+        const url = new URL(location.href)
+        url.searchParams.set('device', device)
+        url.searchParams.set('landscape', landscape ? '1' : '0')
+        history.replaceState(null, '', url)
+        inject()
+      }
+
+      for (const [id, d] of Object.entries(DEVICES)) {
+        const b = document.createElement('button')
+        b.textContent = d.label
+        b.dataset.id = id
+        b.onclick = () => {
+          device = id
+          layout()
+        }
+        $('devices').appendChild(b)
+      }
+      $('rotate').onclick = () => {
+        landscape = !landscape
+        layout()
+      }
+      $('reload').onclick = () => frame.contentWindow.location.reload()
+      addEventListener('resize', layout)
+
+      // The app, from the same server. Every load (first one, HMR full reloads) gets the insets again.
+      frame.addEventListener('load', () => {
+        inject()
+        // React mounts after load; keep the style tag present across its first renders.
+        let n = 0
+        const id = setInterval(() => (inject(), ++n > 10 && clearInterval(id)), 200)
+      })
+      frame.src = '/'
+      const tick = () => {
+        const now = new Date()
+        $('clock').textContent = `${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`
+      }
+      tick()
+      setInterval(tick, 10_000)
+      layout()
+    </script>
+  </body>
+</html>

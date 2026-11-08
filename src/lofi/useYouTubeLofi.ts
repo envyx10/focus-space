@@ -103,6 +103,8 @@ export function useYouTubeLofi(volume: number, initialStation = 0, muted = false
     const host = document.createElement('div')
     // Offscreen player: only the audio matters. YouTube won't initialise players smaller than 200×200.
     host.setAttribute('aria-hidden', 'true')
+    // ...and out of the Tab order: a hidden iframe must not take the keyboard focus (or pull it out of a dialog).
+    host.inert = true
     host.style.cssText = 'position:fixed;left:-400px;top:0;width:200px;height:200px;opacity:0;pointer-events:none'
     const mount = document.createElement('div')
     host.appendChild(mount)
@@ -170,27 +172,40 @@ export function useYouTubeLofi(volume: number, initialStation = 0, muted = false
     player.current?.setVolume(Math.round((muted ? 0 : volume) * 100))
   }, [volume, muted])
 
-  // iOS ignores setVolume, so muting must pause the stream; unmuting resumes only what muting paused.
+  // iOS ignores setVolume, so silence (muting everything, or the radio's own volume down to 0) must pause the
+  // stream; bringing the sound back resumes only what the silence paused.
+  const silent = muted || Math.round(volume * 100) === 0
+  const silentRef = useRef(silent)
+  silentRef.current = silent
   const pausedByMute = useRef(false)
   useEffect(() => {
     const p = player.current
     if (!p) return
-    if (muted && playingRef.current) {
+    if (silent && playingRef.current) {
       pausedByMute.current = true
       p.pauseVideo()
-    } else if (!muted && pausedByMute.current) {
+    } else if (!silent && pausedByMute.current) {
       pausedByMute.current = false
       p.playVideo()
     }
-  }, [muted])
+  }, [silent])
 
   const toggle = useCallback(() => {
     const p = player.current
     if (!p) return
-    pausedByMute.current = false
-    wanted.current = !playing
-    if (playing) p.pauseVideo()
-    else p.playVideo()
+    if (playing) {
+      pausedByMute.current = false
+      wanted.current = false
+      p.pauseVideo()
+    } else if (silentRef.current) {
+      // Play pressed with no sound to hear: it would play out loud on iOS. It starts as soon as the sound comes back.
+      pausedByMute.current = !pausedByMute.current
+      wanted.current = pausedByMute.current
+    } else {
+      pausedByMute.current = false
+      wanted.current = true
+      p.playVideo()
+    }
   }, [playing])
 
   const select = useCallback((i: number) => {
