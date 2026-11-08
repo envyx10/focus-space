@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import TasksPanel from './TasksPanel'
 import type { Task } from './types'
@@ -39,13 +39,30 @@ describe('tasks full screen', () => {
     const describe = vi.fn(noop)
     render(<TasksPanel tasks={[task('1', 'Uno', { description: 'antes' })]} synced describe={describe} {...base} />)
     await userEvent.click(screen.getByRole('button', { name: /Pantalla completa/ }))
-    const picker = screen.getByRole('dialog').querySelector<HTMLInputElement>('input[type=file]')!
+    const picker = screen.getByRole('article').querySelector<HTMLInputElement>('input[type=file]')!
     await userEvent.upload(picker, new File(['## Nuevo\r\ntexto'], 'notas.md', { type: 'text/markdown' }))
     expect((await screen.findByRole('heading', { name: 'Nuevo' })).tagName).toBe('H2')
     await userEvent.click(screen.getByRole('button', { name: 'Editar' }))
     expect(screen.getByLabelText('Descripción de la tarea')).toHaveValue('antes\n\n## Nuevo\ntexto')
     fireEvent.drop(screen.getByRole('article'), { dataTransfer: { files: [new File(['x'], 'foto.png')], types: ['Files'] } })
     expect(await screen.findByText('Solo archivos .md, .markdown o .txt')).toBeInTheDocument()
+  })
+
+  it('sets a priority, shows it in both lists and sorts by it', async () => {
+    const prioritize = vi.fn(noop)
+    const sortByPriority = vi.fn(noop)
+    const tasks = [task('1', 'Uno'), task('2', 'Dos', { priority: 'high' })]
+    render(<TasksPanel tasks={tasks} synced describe={noop} prioritize={prioritize} sortByPriority={sortByPriority} {...base} />)
+    // the panel row carries the tag, and the sort button shows up once a pending task has a priority
+    expect(screen.getByTitle('Prioridad Alta')).toHaveTextContent('Alta')
+    await userEvent.click(screen.getByRole('button', { name: 'Ordenar por prioridad' }))
+    expect(sortByPriority).toHaveBeenCalledTimes(1)
+    await userEvent.click(screen.getByRole('button', { name: /Pantalla completa/ }))
+    const group = screen.getByRole('group', { name: 'Prioridad' })
+    await userEvent.click(within(group).getByRole('button', { name: 'Media' }))
+    expect(prioritize).toHaveBeenCalledWith('1', 'medium')
+    await userEvent.click(within(group).getByRole('button', { name: 'Sin prioridad' }))
+    expect(prioritize).toHaveBeenLastCalledWith('1', null)
   })
 
   it('has no full-screen button without a describe handler', () => {

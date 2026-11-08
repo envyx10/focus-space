@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 import TasksPanel from './TasksPanel'
 import { localRepo } from './localRepo'
 import { dropIndex } from './useDragSort'
-import { rank, reorder, sortTasks, useTasks } from './useTasks'
+import { byPriority, rank, reorder, sortTasks, useTasks } from './useTasks'
 import type { Task } from './types'
 
 const at = (min: number) => new Date(Date.UTC(2026, 9, 30, 9, min)).toISOString()
@@ -134,5 +134,22 @@ describe('TasksPanel reordering', () => {
     unmount()
     render(<TasksPanel tasks={[task('a', 0)]} synced {...actions} move={noop} />)
     expect(screen.queryByRole('button', { name: /^Mover/ })).not.toBeInTheDocument()
+  })
+})
+
+describe('byPriority', () => {
+  const apply = (tasks: Task[]) => {
+    const changed = new Map(byPriority(tasks).map((t) => [t.id, t]))
+    return sortTasks(tasks.map((t) => changed.get(t.id) ?? t))
+  }
+
+  it('puts high, medium, low, then none first, keeping the order within each and leaving finished tasks at the end', () => {
+    const tasks = [task('a', 0), task('b', 1, { priority: 'low' }), task('c', 2, { priority: 'high' }), task('d', 3, { done: true, priority: 'high' }), task('e', 4, { priority: 'medium' }), task('f', 5, { priority: 'high' }), task('g', 6, { priority: null })]
+    expect(ids(apply(tasks))).toEqual(['c', 'f', 'e', 'b', 'a', 'g', 'd'])
+  })
+
+  it('saves nothing when the list is already in that order', () => {
+    const sorted = apply([task('a', 0, { priority: 'high' }), task('b', 1)])
+    expect(byPriority(sorted)).toEqual([])
   })
 })

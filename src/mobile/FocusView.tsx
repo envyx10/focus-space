@@ -1,5 +1,7 @@
 import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from 'react'
-import { useT } from '../i18n'
+import { useI18n } from '../i18n'
+import { formatDay } from '../layout/Header'
+import { sky, type Now } from '../layout/Weather'
 import Icon from '../lib/Icon'
 import type { Task } from '../tasks/types'
 import type { TimerMode } from '../timer/timer'
@@ -14,6 +16,8 @@ const BreathGame = lazy(() => import('../break/BreathGame'))
 type Props = {
   timer: ReturnType<typeof useTimer>
   now: Date
+  /** The weather where the phone is (App reads it once for both layouts); null until known or without permission. */
+  weather?: Now | null
   tasks: Task[]
   setActive: (id: string | null) => Promise<void>
   /** The particle sphere (or nothing in calm mode). */
@@ -34,8 +38,8 @@ type Props = {
 const pad = (n: number) => String(n).padStart(2, '0')
 type Confirm = { ask: string; run: () => void }
 
-export default function FocusView({ timer, now, tasks, setActive, scene, breakGame, muted, onMute, immersive, onImmersive, onExitImmersive, toggleSignal, onOpenTasks }: Props) {
-  const t = useT()
+export default function FocusView({ timer, now, weather = null, tasks, setActive, scene, breakGame, muted, onMute, immersive, onImmersive, onExitImmersive, toggleSignal, onOpenTasks }: Props) {
+  const { t, lang } = useI18n()
   const { state, running, status, remainingMs } = timer
   const mode = state.mode
   // Opens on the timer: on a phone the app is opened to start a session (the local time is one tap away, "Hora").
@@ -156,6 +160,11 @@ export default function FocusView({ timer, now, tasks, setActive, scene, breakGa
           {/* the other clock: local time over a timer, or the running timer over the local time */}
           {!clock ? <span className="m-dim" aria-label={t('focus.localTime')}>{hhmm}</span> : running && <span className="acc">{pad(Math.floor(total / 60))}:{pad(total % 60)}</span>}
         </div>
+        {/* the day and the weather where the phone is, which the desktop shows in its header */}
+        <p className="m-focus-day m-dim">
+          {formatDay(now, lang)}
+          {weather && ` · ${weather.temp}° ${t(`weather.${sky(weather.code)}`)}`}
+        </p>
         <div className="m-focus-tools">
           <button className={`m-tool${muted ? ' is-on' : ''}`} onClick={onMute} aria-label={muted ? t('mute.on') : t('mute.off')} aria-pressed={muted}>
             <Icon name={muted ? 'muted' : 'sound'} />

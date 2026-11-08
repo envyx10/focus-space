@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
-import { useT } from '../i18n'
+import { useI18n, useT } from '../i18n'
 import Icon from '../lib/Icon'
 import { useTaskDraft } from '../tasks/draft'
 import { Detail } from '../tasks/TasksFocus'
 import { MAX_TEXT, UNDO_MS } from '../tasks/TasksPanel'
-import { downloadTasks, parseImport } from '../tasks/transfer'
+import { exportHtml, exportJson, exportWord, IMPORT_ACCEPT, readTasksFile } from '../tasks/files'
+import PriorityTag from '../tasks/PriorityTag'
 import type { Task } from '../tasks/types'
 import type { useTasks } from '../tasks/useTasks'
 import { haptic } from './platform'
@@ -139,7 +140,10 @@ function Row({ task, n, onOpen, onToggle, onDelete }: RowProps) {
           <span className="m-check-box">{task.done ? <Icon name="check" /> : num(n)}</span>
         </button>
         <button className="m-row-main" onClick={() => !swiped.current && onOpen()} aria-label={t('m.openTask', { text: task.text })}>
-          <span className="m-row-text">{task.text}</span>
+          <span className="m-row-text">
+            <PriorityTag priority={task.priority} />
+            {task.text}
+          </span>
           {((task.active && !task.done) || task.description?.trim()) && (
             <span className="m-row-meta">
               {task.active && !task.done && <span className="acc">{t('tasks.focus.statusNow')}</span>}
@@ -156,7 +160,7 @@ function Row({ task, n, onOpen, onToggle, onDelete }: RowProps) {
 }
 
 export default function TasksView({ tasks: api, synced, onFocus }: Props) {
-  const t = useT()
+  const { t, lang } = useI18n()
   const { tasks } = api
   const [draft, setDraft] = useTaskDraft()
   const [openId, setOpenId] = useState<string | null>(null)
@@ -174,6 +178,9 @@ export default function TasksView({ tasks: api, synced, onFocus }: Props) {
   const done = tasks.filter((k) => k.done)
   const openIndex = tasks.findIndex((k) => k.id === openId)
   const open = openIndex >= 0 ? tasks[openIndex] : null
+  // Where the open task sits among the pending ones, for Move up / Move down (dragging would fight the row swipes).
+  const openPlace = open && !open.done ? pending.indexOf(open) : -1
+  const canSort = pending.length > 1 && pending.some((k) => k.priority)
 
   // Each delete restarts the clock; it waits while the notice has focus or a finger on it.
   useEffect(() => {
@@ -220,7 +227,7 @@ export default function TasksView({ tasks: api, synced, onFocus }: Props) {
 
   const importFile = async (f: File | undefined) => {
     if (!f) return
-    const found = parseImport(await f.text())
+    const found = await readTasksFile(f)
     await api.addMany(found)
     setUndo(null)
     setNote(found.length ? t('tasks.imported', { n: found.length }) : t('tasks.importedNone'))
@@ -329,6 +336,17 @@ export default function TasksView({ tasks: api, synced, onFocus }: Props) {
         title={t('m.taskTitle')}
         actions={
           open && (
+            <>
+            {openPlace >= 0 && pending.length > 1 && (
+              <>
+                <button className="m-icon-btn" disabled={openPlace === 0} aria-label={t('m.moveUp')} onClick={() => api.move(open.id, openPlace - 1)}>
+                  <Icon name="up" />
+                </button>
+                <button className="m-icon-btn" disabled={openPlace === pending.length - 1} aria-label={t('m.moveDown')} onClick={() => api.move(open.id, openPlace + 1)}>
+                  <Icon name="down" />
+                </button>
+              </>
+            )}
             <button
               className="m-icon-btn is-danger"
               aria-label={t('tasks.deleteLabel', { text: open.text })}
@@ -339,6 +357,7 @@ export default function TasksView({ tasks: api, synced, onFocus }: Props) {
             >
               <Icon name="trash" />
             </button>
+            </>
           )
         }
       >
@@ -358,6 +377,7 @@ export default function TasksView({ tasks: api, synced, onFocus }: Props) {
             }}
             edit={api.edit}
             describe={api.describe}
+            prioritize={api.prioritize}
             setActive={async (id) => {
               await api.setActive(id)
               if (id) {
@@ -383,19 +403,35 @@ export default function TasksView({ tasks: api, synced, onFocus }: Props) {
             {t('tasks.clearDone', { n: done.length })}
           </button>
           <button
-            disabled={tasks.length === 0}
+            disabled={!canSort}
             onClick={() => {
-              downloadTasks(tasks)
+              api.sortByPriority()
               setMenu(false)
             }}
           >
-            {t('tasks.export')}
+            {t('tasks.sortPriority')}
           </button>
+          {[
+            { label: t('m.exportWord'), run: () => exportWord(tasks, t, lang) },
+            { label: t('m.exportHtml'), run: () => exportHtml(tasks, t, lang) },
+            { label: t('m.exportJson'), run: () => exportJson(tasks) },
+          ].map((x) => (
+            <button
+              key={x.label}
+              disabled={tasks.length === 0}
+              onClick={() => {
+                x.run()
+                setMenu(false)
+              }}
+            >
+              {x.label}
+            </button>
+          ))}
           <button onClick={() => file.current?.click()}>{t('tasks.import')}</button>
           <input
             ref={file}
             type="file"
-            accept=".json,.txt,.md,text/plain,application/json"
+            accept={IMPORT_ACCEPT}
             hidden
             aria-label={t('tasks.importLabel')}
             onChange={(e) => {

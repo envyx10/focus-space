@@ -152,6 +152,7 @@ export default function App() {
         stats={stats}
         today={todayKey(now)}
         now={now}
+        weather={weather}
         scene={
           !prefs.calm && (
             <Suspense fallback={null}>
@@ -227,6 +228,8 @@ export default function App() {
           restore={tasks.restore}
           clearDone={tasks.clearDone}
           addMany={tasks.addMany}
+          prioritize={tasks.prioritize}
+          sortByPriority={tasks.sortByPriority}
         />
       </section>
       <main className="region-focus" data-region="focus">

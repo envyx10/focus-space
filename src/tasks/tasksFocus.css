@@ -260,7 +260,8 @@
 /* Phones: list on top (a third of the screen), the page below. */
 @media (max-width: 1023px) {
   .tf {
-    grid-template-columns: 1fr;
+    /* minmax(0, …): a one-line header must not widen the column past the screen */
+    grid-template-columns: minmax(0, 1fr);
     grid-template-rows: 44px minmax(0, 32%) minmax(0, 1fr);
   }
   .tf-side,
@@ -475,4 +476,184 @@
 .md .hljs-title,
 .md .hljs-type {
   font-weight: 700;
+}
+
+/* Word export, task import and Exit, at the end of the header. */
+.tf-head-tools {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+/* Sort by priority (and the import result) under the list's label. */
+.tf-side-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+  margin: -6px 0 12px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.tf-side-tools button {
+  opacity: 0.55;
+  text-transform: inherit;
+  letter-spacing: inherit;
+}
+
+.tf-side-tools span {
+  opacity: 0.55;
+}
+
+/* Each row: the task (selects it) and, for pending ones, a handle to drag it elsewhere. */
+.tf-list > li {
+  display: flex;
+  align-items: center;
+}
+
+.tf-list > li > .tf-item {
+  flex: 1;
+  min-width: 0;
+}
+
+.tf-list > li.drag {
+  position: relative;
+  z-index: 1;
+  background: var(--bg);
+}
+
+.tf-list.sorting > li {
+  transition: transform 0.15s ease;
+}
+
+.tf-list.sorting > li.drag {
+  transition: none;
+}
+
+.tf-grip {
+  flex: none;
+  padding: 6px 4px 6px 10px;
+  opacity: 0.35;
+  cursor: grab;
+  touch-action: none;
+}
+
+.tf-grip:focus-visible {
+  opacity: 1;
+  color: var(--accent);
+}
+
+/* Priority for the open task: none, high, medium, low. */
+.tf-pri {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.tf-pri .lbl {
+  margin-right: 6px;
+}
+
+.tf-pri button {
+  min-width: 34px;
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.6;
+}
+
+.tf-pri button[aria-pressed='true'] {
+  opacity: 1;
+  border-color: currentColor;
+}
+
+.tf-pri button.pri-high[aria-pressed='true'] {
+  color: var(--accent);
+}
+
+@media (hover: hover) {
+  .tf-grip:hover,
+  .tf-side-tools button:hover,
+  .tf-pri button:hover {
+    opacity: 1;
+    color: var(--accent);
+  }
+}
+
+@media (max-width: 1023px) {
+  .tf-head-tools {
+    gap: 4px;
+  }
+
+  .tf-head-tools button,
+  .tf-pri button,
+  .tf-grip {
+    min-height: 44px;
+  }
+
+  .tf-head-tools button {
+    padding: 0 8px;
+  }
+
+  .tf-side-tools button {
+    padding-block: 14px;
+    margin-block: -14px;
+  }
+}
+
+/* Narrow screens: the buttons keep one line each; the title gives way with an ellipsis. */
+.tf-head-tools button {
+  white-space: nowrap;
+}
+
+.tf-brand {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tf-head-tools button[aria-expanded='true'],
+.tf-head-tools .export-format {
+  opacity: 1;
+}
+
+/* Phones: with Exportar open the header's buttons don't fit one line, so the header may grow a second one. The title
+   takes no room of its own (basis 0): closed, everything stays on one line and only the title shortens. */
+@media (max-width: 560px) {
+  .tf {
+    grid-template-rows: auto minmax(0, 32%) minmax(0, 1fr);
+  }
+
+  .tf-head {
+    min-height: 44px;
+    flex-wrap: wrap;
+  }
+
+  .tf-brand {
+    flex: 1 1 0;
+  }
+
+  .tf-head-tools {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    margin-left: auto;
+    gap: 0;
+  }
+
+  .tf-head-tools button {
+    padding: 0 4px;
+  }
+
+  /* With the formats out, the shortened title would only show an ellipsis: let the buttons have the row. */
+  .tf-head:has(.export-format) .tf-brand {
+    display: none;
+  }
 }

@@ -2,6 +2,7 @@ import { useEffect, useRef, type CSSProperties, type ReactNode } from 'react'
 import { useT } from '../i18n'
 import Icon, { type IconName } from '../lib/Icon'
 import type { useAmbient } from '../audio/useAmbient'
+import type { Now } from '../layout/Weather'
 import type { useSession } from '../auth/useSession'
 import type { useYouTubeLofi } from '../lofi/useYouTubeLofi'
 import type { Stats } from '../stats/stats'
@@ -35,6 +36,7 @@ type Props = {
   stats: Stats
   today: string
   now: Date
+  weather?: Now | null
   scene: ReactNode
   immersive: boolean
   onImmersive: () => void
@@ -98,6 +100,7 @@ export default function MobileApp(p: Props) {
               <FocusView
                 timer={timer}
                 now={p.now}
+                weather={p.weather}
                 tasks={p.tasks.tasks}
                 setActive={p.tasks.setActive}
                 scene={p.scene}

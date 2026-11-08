@@ -1,5 +1,5 @@
 import { isRecord } from '../lib/storage'
-import type { Task, TaskRepo } from './types'
+import { PRIORITIES, type Priority, type Task, type TaskRepo } from './types'
 
 export const TASKS_KEY = 'focus-space:tasks:v1'
 /** Copies of a stored list this version could not read, kept before anything is written over it. */
@@ -22,7 +22,8 @@ export function isTask(v: unknown): v is Task {
     typeof v.active === 'boolean' &&
     typeof v.createdAt === 'string' &&
     (v.description === undefined || typeof v.description === 'string') &&
-    (v.position === undefined || (typeof v.position === 'number' && Number.isFinite(v.position)))
+    (v.position === undefined || (typeof v.position === 'number' && Number.isFinite(v.position))) &&
+    (v.priority === undefined || v.priority === null || PRIORITIES.includes(v.priority as Priority))
   )
 }
 

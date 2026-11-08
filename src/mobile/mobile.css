@@ -2419,3 +2419,12 @@ html[data-shell='mobile'] body {
     transform: none;
   }
 }
+
+/* Day and weather under the status line (Focus tab). */
+.m-focus-day {
+  grid-column: 1 / -1;
+  margin: 2px 0 0;
+  font-size: var(--fs-xs, 11px);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
