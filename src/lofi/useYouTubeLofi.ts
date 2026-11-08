@@ -95,6 +95,8 @@ export function useYouTubeLofi(volume: number, initialStation = 0, muted = false
   // Streams that already failed in a row; when every station has failed the radio is unavailable.
   const failed = useRef(0)
   const retry = useRef<ReturnType<typeof setTimeout>>(undefined)
+  // The user asked for sound: a stream that dies while playing hands over to the next one playing, not paused.
+  const wanted = useRef(false)
 
   useEffect(() => {
     let cancelled = false
@@ -134,7 +136,8 @@ export function useYouTubeLofi(volume: number, initialStation = 0, muted = false
               if (failed.current < STATIONS.length) {
                 const next = (stationRef.current + 1) % STATIONS.length
                 setStation(next)
-                player.current?.cueVideoById(STATIONS[next].id)
+                if (wanted.current) player.current?.loadVideoById(STATIONS[next].id)
+                else player.current?.cueVideoById(STATIONS[next].id)
               } else {
                 setStatus('unavailable')
                 // A network blip fails every station in a row: try again later instead of giving up until a reload.
@@ -192,12 +195,15 @@ export function useYouTubeLofi(volume: number, initialStation = 0, muted = false
     if (!p) return
     if (playing) {
       pausedByMute.current = false
+      wanted.current = false
       p.pauseVideo()
     } else if (silentRef.current) {
       // Play pressed with no sound to hear: it would play out loud on iOS. It starts as soon as the sound comes back.
       pausedByMute.current = !pausedByMute.current
+      wanted.current = pausedByMute.current
     } else {
       pausedByMute.current = false
+      wanted.current = true
       p.playVideo()
     }
   }, [playing])

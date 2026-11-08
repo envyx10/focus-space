@@ -28,6 +28,8 @@ type Props = {
   /** Bumped by the Space shortcut: does what the main button does. */
   toggleSignal?: number
   sceneControl?: ReactNode
+  /** Day and weather, shown under the label on phones only (their header has no room for it). */
+  dateSlot?: ReactNode
   children?: ReactNode
 }
 
@@ -79,6 +81,7 @@ export default function FocusPanel(p: Props) {
         <div>
           <div className="num">02</div>
           <div className="lbl">{label}</div>
+          {p.dateSlot && <div className="focus-date">{p.dateSlot}</div>}
           {/* the other clock, small: local time over a timer, or a running timer over the time */}
           {!clock ? (
             <div className="mini-clock" aria-label={t('focus.localTime')}>

@@ -176,11 +176,12 @@ export function useTasks(repo: TaskRepo) {
     [repo, persist],
   )
 
-  // Puts a deleted task back exactly as it was (undo).
+  // Puts a deleted task back as it was (undo), except "active" if another task took that over meanwhile.
   const restore = useCallback(
     async (task: Task) => {
       if (tasksRef.current.some((t) => t.id === task.id)) return
-      await commit([...tasksRef.current, task])
+      const back = task.active && tasksRef.current.some((t) => t.active) ? { ...task, active: false } : task
+      await commit([...tasksRef.current, back])
     },
     [commit],
   )

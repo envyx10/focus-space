@@ -30,7 +30,8 @@
   justify-content: flex-end;
   gap: 8px;
   cursor: ew-resize;
-  touch-action: none;
+  /* Sideways drags are the slider's, up and down still scrolls the page (the strips fill a phone's screen). */
+  touch-action: pan-y;
 }
 
 .mx-slider:focus-visible {

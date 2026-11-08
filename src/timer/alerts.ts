@@ -13,13 +13,38 @@ const NOTES: Record<Exclude<Chime, 'campana'>, { wave: OscillatorType; notes: [n
 }
 
 let ctx: AudioContext | null = null
+let bell: HTMLAudioElement | null = null
+const bellAudio = () => (bell ??= new Audio('/sounds/chime.mp3'))
+
+/**
+ * iOS only lets sound start inside a tap, and the chime plays later, from the timer. Called from Start: the context
+ * and the bell element get unlocked there (a silent play), so they may sound when the phase ends.
+ */
+export function primeChime(): void {
+  try {
+    ctx ??= new AudioContext()
+    void ctx.resume()
+    const a = bellAudio()
+    a.muted = true
+    Promise.resolve(a.play())
+      .then(() => a.pause())
+      .catch(() => {})
+      .finally(() => {
+        a.muted = false
+        a.currentTime = 0
+      })
+  } catch {
+    // no audio here: the chime just stays silent
+  }
+}
 
 export function chime(volume: number, sound: Chime = 'campana'): void {
   if (volume <= 0) return
   if (sound === 'campana') {
-    const a = new Audio('/sounds/chime.mp3')
+    const a = bellAudio()
+    a.currentTime = 0
     a.volume = volume
-    a.play().catch(() => {})
+    Promise.resolve(a.play()).catch(() => {})
     return
   }
   try {

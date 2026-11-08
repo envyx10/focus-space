@@ -35,4 +35,12 @@ describe('mergeTasks', () => {
     const out = mergeTasks([t('l', 'local', { active: true })], [t('r', 'remote')])
     expect(out.filter((x) => x.active).map((x) => x.id)).toEqual(['l'])
   })
+
+  it("a local duplicate (same text) hands its notes to the account's copy instead of losing them", () => {
+    const out = mergeTasks([t('l', 'Leer', { description: 'mis notas' })], [t('r', 'leer'), t('s', 'Otra', { description: 'ya' })])
+    expect(out.map((x) => [x.id, x.description])).toEqual([
+      ['r', 'mis notas'],
+      ['s', 'ya'],
+    ])
+  })
 })

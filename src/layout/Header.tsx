@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react'
 import { useI18n } from '../i18n'
 import type { TimerStatus } from '../timer/useTimer'
-import Weather from './Weather'
+import Weather, { type Now } from './Weather'
 import './header.css'
 
-type Props = { sessionNumber: number; now: Date; status?: TimerStatus; muteSlot?: ReactNode; themeSlot?: ReactNode; settingsSlot?: ReactNode; accountSlot: ReactNode }
+type Props = { sessionNumber: number; now: Date; weather?: Now | null; status?: TimerStatus; muteSlot?: ReactNode; themeSlot?: ReactNode; settingsSlot?: ReactNode; accountSlot: ReactNode }
 
 const weekdayFormat: Record<string, Intl.DateTimeFormat> = {}
 
@@ -16,7 +16,7 @@ export function formatDay(d: Date, lang: 'es' | 'en' = 'es'): string {
   return `${wd[0].toUpperCase()}${wd.slice(1)} ${dd}.${mm}`
 }
 
-export default function Header({ sessionNumber, now, status = 'idle', muteSlot, themeSlot, settingsSlot, accountSlot }: Props) {
+export default function Header({ sessionNumber, now, weather = null, status = 'idle', muteSlot, themeSlot, settingsSlot, accountSlot }: Props) {
   const { t, lang } = useI18n()
   return (
     <div className="hd">
@@ -25,7 +25,7 @@ export default function Header({ sessionNumber, now, status = 'idle', muteSlot, 
         {t('header.session', { n: String(sessionNumber).padStart(2, '0') })} — <span className={status === 'running' ? 'acc' : 'hd-idle'}>{t(`status.${status}`)}</span>
       </span>
       <span className="hd-date">
-        {formatDay(now, lang)} <Weather />
+        {formatDay(now, lang)} <Weather now={weather} />
       </span>
       <span className="hd-account">
         {muteSlot}

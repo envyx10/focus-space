@@ -2,7 +2,8 @@ import { lazy, Suspense, useCallback, useEffect, useRef, useState, type CSSPrope
 import MixerBar from './audio/MixerBar'
 import { beatPulse, mergeLevels } from './audio/pulse'
 import { useAmbient } from './audio/useAmbient'
-import Header from './layout/Header'
+import Header, { formatDay } from './layout/Header'
+import Weather, { useWeather } from './layout/Weather'
 import LofiBlock from './lofi/LofiBlock'
 import { STATIONS, useYouTubeLofi } from './lofi/useYouTubeLofi'
 import AccountMenu from './auth/AccountMenu'
@@ -48,7 +49,8 @@ const clock = (ms: number) => {
 }
 
 export default function App() {
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
+  const weather = useWeather()
   const ambient = useAmbient()
   const { prefs } = ambient
   // Light mode is switched off for now: whatever was saved, the app stays dark.
@@ -56,7 +58,8 @@ export default function App() {
   const [stats, setStats] = useState(loadStats)
   useEffect(() => saveStats(stats), [stats])
   const timer = useTimer({
-    chimeVolume: prefs.chimeVolume,
+    // "Mute all" covers the end-of-phase chime too.
+    chimeVolume: prefs.muted ? 0 : prefs.chimeVolume,
     chimeSound: prefs.chimeSound,
     notify: prefs.notify,
     onFocus: (ms, sessions) => setStats((s) => addFocus(s, todayKey(), ms, sessions)),
@@ -172,6 +175,7 @@ export default function App() {
         <Header
           sessionNumber={timer.sessionNumber}
           now={now}
+          weather={weather}
           status={timer.status}
           muteSlot={
             // The label flips with the state, so no aria-pressed; aria-label keeps a name on phones, where the label is hidden.
@@ -254,6 +258,11 @@ export default function App() {
           onFreeMinutes={timer.setFreeMinutes}
           now={now}
           toggleSignal={toggleSignal}
+          dateSlot={
+            <>
+              {formatDay(now, lang)} <Weather now={weather} />
+            </>
+          }
           sceneControl={<Cycler
               label={t('type.label')}
               options={TYPEFACES.map((f) => ({ id: f.id, label: f.id === 'suiza' ? t('typeface.suiza') : f.label }))}

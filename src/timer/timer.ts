@@ -33,8 +33,10 @@ export function initialState(mode: TimerMode, freeMs = 25 * MIN, cfg: TimerConfi
 }
 
 export function start(s: TimerState, now: number): TimerState {
-  if (s.endsAt !== null || s.pausedRemainingMs <= 0) return s
-  return { ...s, endsAt: now + s.pausedRemainingMs }
+  if (s.endsAt !== null) return s
+  // A finished free session sits at zero: starting again runs a fresh one instead of doing nothing.
+  const ms = s.pausedRemainingMs > 0 ? s.pausedRemainingMs : s.durationMs
+  return { ...s, pausedRemainingMs: ms, endsAt: now + ms }
 }
 
 export function pause(s: TimerState, now: number): TimerState {

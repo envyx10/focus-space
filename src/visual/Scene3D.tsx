@@ -271,11 +271,12 @@ export default function Scene3D({ getLevels, accent, light = false, paused = fal
     const camera = new PerspectiveCamera(FOV, 1, 0.1, 50)
     camera.position.set(0, 0, CAMERA_Z)
 
-    // Reduced motion: no gathering flight, no beat bursts, no following the pointer and no breathing swell, but it
-    // still turns slowly with a faint current, so it reads as alive instead of a frozen picture.
+    // Reduced motion: no gathering flight, no beat bursts and no following the pointer, but it still turns slowly
+    // with a faint current, so it reads as alive instead of a frozen picture.
     const gentle = matchMedia('(prefers-reduced-motion: reduce)').matches
-    // the breathing guide's breath; with reduced motion the guide draws its own square and the sphere stays put
-    const breath = () => (gentle ? null : breathing.size)
+    // The breathing guide's breath. Reduced motion included: opened on purpose, it swells and shrinks the sphere as
+    // much as the flat square it replaces would have moved.
+    const breath = () => breathing.size
     const view = { w: 1, h: 1, x: 0, baseX: 0, y: 0, baseY: 0 }
     const aim = () => camera.setViewOffset(view.w, view.h, view.x * view.w, view.y * view.h, view.w, view.h)
     const resize = () => {
@@ -378,7 +379,12 @@ export default function Scene3D({ getLevels, accent, light = false, paused = fal
       draw()
     }
 
-    breathing.sphere = !gentle
+    // The sphere is the breathing guide, reduced motion included: there it only swells and shrinks with the breath,
+    // like the flat square it replaces, without drifting.
+    breathing.sphere = true
+    // iOS drops WebGL contexts when the phone sleeps or runs short of memory: the square beats a blank panel.
+    const onLost = () => (breathing.sphere = false)
+    canvas.addEventListener('webglcontextlost', onLost)
     if (gentle) {
       // start already settled on the shape instead of gathering into it
       sim.uStir.value = 0
@@ -391,6 +397,7 @@ export default function Scene3D({ getLevels, accent, light = false, paused = fal
     raf = requestAnimationFrame(frame)
 
     return () => {
+      canvas.removeEventListener('webglcontextlost', onLost)
       breathing.sphere = false
       redraw.current = null
       cancelAnimationFrame(raf)

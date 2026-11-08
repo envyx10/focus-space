@@ -80,13 +80,16 @@ function Strip({ ch, volume, variant, onSwap, onVolume, onVariant }: StripProps)
         }}
         onPointerMove={(e) => {
           if (!drag.current) return
-          if (Math.abs(e.clientX - drag.current.x) > 3) drag.current.moved = true
+          // A finger never lands perfectly still: nothing changes until it has really slid sideways.
+          if (!drag.current.moved && Math.abs(e.clientX - drag.current.x) <= 6) return
+          drag.current.moved = true
           const w = e.currentTarget.getBoundingClientRect().width || 1
           onVolume(ch.id, round(drag.current.v + (e.clientX - drag.current.x) / w))
         }}
         onPointerUp={(e) => {
-          // A plain click (no drag) jumps to where it landed on the line.
-          if (drag.current && !drag.current.moved) {
+          // A plain click (no drag) jumps to where it landed on the line. Not a tap: on a phone the strips fill the
+          // screen, and a finger that touches one to scroll or stop a scroll would switch a sound on.
+          if (drag.current && !drag.current.moved && e.pointerType !== 'touch') {
             const r = e.currentTarget.getBoundingClientRect()
             onVolume(ch.id, round((e.clientX - r.left) / (r.width || 1)))
           }
