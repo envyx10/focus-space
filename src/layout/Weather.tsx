@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useI18n } from '../i18n'
 
-type Now = { temp: number; code: number }
+export type Now = { temp: number; code: number }
 
 /** WMO weather code → our label key. */
 export function sky(code: number): 'clear' | 'cloudy' | 'fog' | 'rain' | 'snow' | 'storm' {
@@ -35,8 +35,8 @@ async function current(): Promise<Now | null> {
   return typeof temp === 'number' && typeof code === 'number' ? { temp: Math.round(temp), code } : null
 }
 
-export default function Weather() {
-  const { t } = useI18n()
+/** The weather where the device is, or null. Called once in App: the header and the phone's clock panel share it. */
+export function useWeather(): Now | null {
   const [now, setNow] = useState<Now | null>(null)
 
   // Locates again on every refresh, so a laptop that moved shows the weather where it is now.
@@ -60,6 +60,11 @@ export default function Weather() {
     }
   }, [])
 
+  return now
+}
+
+export default function Weather({ now }: { now: Now | null }) {
+  const { t } = useI18n()
   if (!now) return null
   const label = t(`weather.${sky(now.code)}`)
   return (

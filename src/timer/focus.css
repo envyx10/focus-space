@@ -24,6 +24,11 @@
   align-items: flex-start;
 }
 
+/* Desktop has the day and weather in the header; phones show them here (see app.css). */
+.focus-date {
+  display: none;
+}
+
 .mini-clock {
   margin-top: 10px;
   font-family: var(--display, var(--font));

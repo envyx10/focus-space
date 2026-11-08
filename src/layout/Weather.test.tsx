@@ -1,6 +1,9 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import Weather, { sky } from './Weather'
+import Weather, { sky, useWeather } from './Weather'
+
+// As App wires it: the hook once, the label wherever it is shown.
+const Live = () => <Weather now={useWeather()} />
 
 describe('sky', () => {
   it('buckets WMO codes', () => {
@@ -24,7 +27,7 @@ describe('Weather', () => {
     geolocation({ latitude: 36.735412, longitude: -4.553871 })
     const fetch = vi.fn().mockResolvedValue({ json: async () => ({ current: { temperature_2m: 21.6, weather_code: 0 } }) })
     vi.stubGlobal('fetch', fetch)
-    render(<Weather />)
+    render(<Live />)
     expect(await screen.findByText('22° · Despejado')).toBeInTheDocument()
     expect(fetch).toHaveBeenCalledTimes(1)
     expect(fetch.mock.calls[0][0]).toBe('https://api.open-meteo.com/v1/forecast?latitude=36.74&longitude=-4.55&current=temperature_2m,weather_code')
@@ -34,7 +37,7 @@ describe('Weather', () => {
     geolocation(null)
     const fetch = vi.fn()
     vi.stubGlobal('fetch', fetch)
-    const { container } = render(<Weather />)
+    const { container } = render(<Live />)
     await new Promise((r) => setTimeout(r, 0))
     expect(container).toBeEmptyDOMElement()
     expect(fetch).not.toHaveBeenCalled()
