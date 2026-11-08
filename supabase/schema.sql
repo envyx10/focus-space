@@ -14,6 +14,9 @@ alter table public.tasks add column if not exists description text not null defa
 -- Added later: the order the user dragged the tasks into. Safe to run again.
 alter table public.tasks add column if not exists position double precision;
 
+-- Added later: high, medium or low; null for none. Safe to run again.
+alter table public.tasks add column if not exists priority text check (priority in ('high', 'medium', 'low'));
+
 create index if not exists tasks_user_id_idx on public.tasks (user_id);
 
 alter table public.tasks enable row level security;

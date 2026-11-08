@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { LocalSaveError } from './localRepo'
-import type { Task, TaskRepo } from './types'
+import type { Priority, Task, TaskRepo } from './types'
 
 const RETRY_MS = 10_000
 
@@ -32,6 +32,20 @@ export function reorder(tasks: Task[], id: string, to: number): Task[] {
   if ((!before || position > rank(before)) && (!after || position < rank(after))) return [{ ...pending[from], position }]
   rest.splice(at, 0, pending[from])
   return rest.map((t, i) => ({ ...t, position: (i + 1) * STEP }))
+}
+
+const PRIORITY_RANK: Record<Priority, number> = { high: 0, medium: 1, low: 2 }
+const priorityRank = (t: Task) => (t.priority ? PRIORITY_RANK[t.priority] : 3)
+
+/**
+ * The tasks to save so the pending ones read high, medium, low, then none; within each, the current order stays.
+ * A one-off sort: dragging afterwards still works, and new tasks still land at the end.
+ */
+export function byPriority(tasks: Task[]): Task[] {
+  const pending = sortTasks(tasks).filter((t) => !t.done)
+  const sorted = [...pending].sort((a, b) => priorityRank(a) - priorityRank(b))
+  if (sorted.every((t, i) => t === pending[i])) return []
+  return sorted.flatMap((t, i) => (t.position === (i + 1) * STEP ? [] : [{ ...t, position: (i + 1) * STEP }]))
 }
 
 export function useTasks(repo: TaskRepo) {
@@ -168,6 +182,17 @@ export function useTasks(repo: TaskRepo) {
     [commit],
   )
 
+  const prioritize = useCallback(
+    (id: string, priority: Priority | null) =>
+      commit(tasksRef.current.map((t) => (t.id === id && (t.priority ?? null) !== priority ? { ...t, priority } : t))),
+    [commit],
+  )
+
+  const sortByPriority = useCallback(async () => {
+    const changed = new Map(byPriority(tasksRef.current).map((t) => [t.id, t]))
+    if (changed.size) await commit(tasksRef.current.map((t) => changed.get(t.id) ?? t))
+  }, [commit])
+
   const remove = useCallback(
     async (id: string) => {
       show(tasksRef.current.filter((t) => t.id !== id))
@@ -202,5 +227,5 @@ export function useTasks(repo: TaskRepo) {
     [commit],
   )
 
-  return { tasks, loaded, error, localError, reload, add, toggle, edit, describe, move, remove, setActive, restore, clearDone, addMany }
+  return { tasks, loaded, error, localError, reload, add, toggle, edit, describe, move, prioritize, sortByPriority, remove, setActive, restore, clearDone, addMany }
 }

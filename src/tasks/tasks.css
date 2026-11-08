@@ -322,3 +322,30 @@
     display: none;
   }
 }
+
+/* Priority: a small framed word before the title ("ALTA"), so it reads without relying on colour. */
+.pri {
+  display: inline-block;
+  margin-right: 8px;
+  padding: 1px 5px;
+  border: 1px solid currentColor;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  vertical-align: 2px;
+  text-decoration: none;
+}
+
+.pri-high {
+  color: var(--accent);
+}
+
+.pri-medium {
+  opacity: 0.75;
+}
+
+.pri-low {
+  opacity: 0.45;
+}

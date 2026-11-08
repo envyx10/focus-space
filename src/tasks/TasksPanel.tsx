@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react'
-import { useT } from '../i18n'
+import { useI18n, useT } from '../i18n'
 import Icon from '../lib/Icon'
 import { isTypingTarget } from '../lib/useShortcuts'
+import { exportJson, exportWord, IMPORT_ACCEPT, readTasksFile } from './files'
+import PriorityTag from './PriorityTag'
 import TasksFocus from './TasksFocus'
-import { parseImport, serializeTasks } from './transfer'
-import type { Task } from './types'
+import type { Priority, Task } from './types'
 import { useDragSort } from './useDragSort'
 import './tasks.css'
 
@@ -38,6 +39,10 @@ type Props = {
   restore?: (task: Task) => Promise<void>
   clearDone?: () => Promise<void>
   addMany?: (tasks: Task[]) => Promise<void>
+  /** Sets (or with null, takes away) a task's priority. */
+  prioritize?: (id: string, priority: Priority | null) => Promise<void>
+  /** Reorders the pending tasks high, medium, low, then none. */
+  sortByPriority?: () => Promise<void>
 }
 
 type Sort = { grip: ReturnType<ReturnType<typeof useDragSort>['handle']>; style?: CSSProperties; dragging: boolean; total: number }
@@ -96,6 +101,7 @@ function Row({ task, index, onDelete, sort, ...a }: RowProps) {
         />
       ) : (
         <span className="tk-text" onDoubleClick={startEdit}>
+          <PriorityTag priority={task.priority} />
           {task.text}
         </span>
       )}
@@ -139,8 +145,8 @@ function Row({ task, index, onDelete, sort, ...a }: RowProps) {
   )
 }
 
-export default function TasksPanel({ tasks, synced, saveError, localError, add, restore, clearDone, addMany, describe, move, ...actions }: Props) {
-  const t = useT()
+export default function TasksPanel({ tasks, synced, saveError, localError, add, restore, clearDone, addMany, describe, move, prioritize, sortByPriority, ...actions }: Props) {
+  const { t, lang } = useI18n()
   const listRef = useRef<HTMLUListElement>(null)
   const sorter = useDragSort(() => listRef.current, (id, to) => move?.(id, to))
   const [full, setFull] = useState(false)
@@ -186,18 +192,12 @@ export default function TasksPanel({ tasks, synced, saveError, localError, add, 
     if (restore) setUndo([task])
   }
 
-  const exportTasks = () => {
-    const url = URL.createObjectURL(new Blob([serializeTasks(tasks)], { type: 'application/json' }))
-    const a = document.createElement('a')
-    a.href = url
-    a.download = 'focus-space-tareas.json'
-    a.click()
-    setTimeout(() => URL.revokeObjectURL(url), 0)
-  }
+  // Sorting only makes sense with two or more pending tasks and at least one priority among them.
+  const canSort = sortByPriority && pending > 1 && tasks.some((k) => !k.done && k.priority)
 
   const importFile = async (f: File | undefined) => {
     if (!f || !addMany) return
-    const found = parseImport(await f.text())
+    const found = await readTasksFile(f)
     await addMany(found)
     setNote(found.length ? t('tasks.imported', { n: found.length }) : t('tasks.importedNone'))
     if (file.current) file.current.value = ''
@@ -271,16 +271,22 @@ export default function TasksPanel({ tasks, synced, saveError, localError, add, 
           {localError ? t('tasks.saveErrorLocal') : t('tasks.saveError')}
         </p>
       )}
-      {(clearDone || addMany) && (
+      {(clearDone || addMany || canSort) && (
         <div className="tasks-tools">
           {clearDone && done > 0 && <button onClick={() => {
             const gone = tasks.filter((k) => k.done)
             clearDone()
             if (restore) setUndo(gone)
           }}>{t('tasks.clearDone', { n: done })}</button>}
-          {tasks.length > 0 && <button onClick={exportTasks}>{t('tasks.export')}</button>}
+          {canSort && <button onClick={() => sortByPriority?.()}>{t('tasks.sortPriority')}</button>}
+          {tasks.length > 0 && <button onClick={() => exportJson(tasks)}>{t('tasks.export')}</button>}
+          {tasks.length > 0 && (
+            <button onClick={() => exportWord(tasks, t, lang)} title={t('tasks.exportWordLabel')} aria-label={t('tasks.exportWordLabel')}>
+              {t('tasks.exportWord')}
+            </button>
+          )}
           {addMany && <button onClick={() => file.current?.click()}>{t('tasks.import')}</button>}
-          <input ref={file} type="file" accept=".json,.txt,.md,text/plain,application/json" hidden aria-label={t('tasks.importLabel')} onChange={(e) => importFile(e.target.files?.[0])} />
+          <input ref={file} type="file" accept={IMPORT_ACCEPT} hidden aria-label={t('tasks.importLabel')} onChange={(e) => importFile(e.target.files?.[0])} />
         </div>
       )}
       {note && (
@@ -290,7 +296,19 @@ export default function TasksPanel({ tasks, synced, saveError, localError, add, 
       )}
       {!synced && <p className="tasks-note">{t('tasks.localOnly')}</p>}
       {full && describe && (
-        <TasksFocus tasks={tasks} add={add} describe={describe} toggle={actions.toggle} edit={actions.edit} setActive={actions.setActive} onClose={() => setFull(false)} />
+        <TasksFocus
+          tasks={tasks}
+          add={add}
+          describe={describe}
+          toggle={actions.toggle}
+          edit={actions.edit}
+          setActive={actions.setActive}
+          move={move}
+          prioritize={prioritize}
+          sortByPriority={canSort ? sortByPriority : undefined}
+          addMany={addMany}
+          onClose={() => setFull(false)}
+        />
       )}
     </div>
   )

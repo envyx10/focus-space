@@ -1,3 +1,6 @@
+export const PRIORITIES = ['high', 'medium', 'low'] as const
+export type Priority = (typeof PRIORITIES)[number]
+
 export type Task = {
   id: string
   text: string
@@ -8,6 +11,8 @@ export type Task = {
   description?: string
   /** Where the user dragged it in the list. Unset until it is moved: then createdAt decides. */
   position?: number
+  /** Unset: never given one. null: taken away again (kept, so the account clears it too). */
+  priority?: Priority | null
 }
 
 export interface TaskRepo {

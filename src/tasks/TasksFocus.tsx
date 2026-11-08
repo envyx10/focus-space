@@ -1,8 +1,11 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { createPortal, flushSync } from 'react-dom'
-import { useT } from '../i18n'
+import { useI18n, useT } from '../i18n'
 import Icon from '../lib/Icon'
-import type { Task } from './types'
+import { exportWord, IMPORT_ACCEPT, readTasksFile } from './files'
+import PriorityTag from './PriorityTag'
+import { PRIORITIES, type Priority, type Task } from './types'
+import { useDragSort } from './useDragSort'
 import './tasksFocus.css'
 
 // The Markdown renderer only loads once a formatted description is shown.
@@ -18,6 +21,7 @@ type Actions = {
   edit: (id: string, text: string) => Promise<void>
   describe: (id: string, description: string) => Promise<void>
   setActive: (id: string | null) => Promise<void>
+  prioritize?: (id: string, priority: Priority | null) => Promise<void>
 }
 
 const num = (i: number) => String(i + 1).padStart(2, '0')
@@ -125,6 +129,23 @@ function Detail({ task, index, ...a }: { task: Task; index: number } & Omit<Acti
           )}
         </span>
       </div>
+      {a.prioritize && (
+        <div className="tf-pri" role="group" aria-label={t('tasks.priority')}>
+          <span className="lbl">{t('tasks.priority')}</span>
+          {([null, ...PRIORITIES] as const).map((p) => (
+            <button
+              key={p ?? 'none'}
+              className={p ? `pri-${p}` : undefined}
+              aria-pressed={(task.priority ?? null) === p}
+              aria-label={p ? undefined : t('tasks.priority.none')}
+              title={p ? undefined : t('tasks.priority.none')}
+              onClick={() => a.prioritize?.(task.id, p)}
+            >
+              {p ? t(`tasks.priority.${p}`) : '—'}
+            </button>
+          ))}
+        </div>
+      )}
       <textarea
         className="tf-title"
         rows={1}
@@ -184,14 +205,25 @@ function Detail({ task, index, ...a }: { task: Task; index: number } & Omit<Acti
   )
 }
 
-type Props = { tasks: Task[]; onClose: () => void } & Actions
+type Props = {
+  tasks: Task[]
+  onClose: () => void
+  /** Puts a pending task at another index among the pending ones (drag or arrow keys on its handle). */
+  move?: (id: string, to: number) => Promise<void>
+  sortByPriority?: () => Promise<void>
+  addMany?: (tasks: Task[]) => Promise<void>
+} & Actions
 
 /**
  * Full-screen tasks: same grid as the app (list in the first four columns, the selected task as a page in the other eight),
  * drawn over everything and in the browser's fullscreen, like focus mode.
  */
-export default function TasksFocus({ tasks, onClose, add, ...actions }: Props) {
-  const t = useT()
+export default function TasksFocus({ tasks, onClose, add, move: moveTask, sortByPriority, addMany, ...actions }: Props) {
+  const { t, lang } = useI18n()
+  const listRef = useRef<HTMLUListElement>(null)
+  const sorter = useDragSort(() => listRef.current, (id, to) => moveTask?.(id, to))
+  const file = useRef<HTMLInputElement>(null)
+  const [note, setNote] = useState('')
   const [selected, setSelected] = useState(() => tasks.find((k) => k.active)?.id ?? tasks.find((k) => !k.done)?.id ?? tasks[0]?.id)
   const [draft, setDraft] = useState('')
   const pickNewest = useRef(false)
@@ -258,17 +290,53 @@ export default function TasksFocus({ tasks, onClose, add, ...actions }: Props) {
     >
       <header className="tf-head">
         <span className="tf-brand">{t('tasks.focus.title')}</span>
-        <button className="tf-close" onClick={onClose}>
-          {t('immersive.exit')}
-        </button>
+        <span className="tf-head-tools">
+          {tasks.length > 0 && (
+            <button className="tf-close" onClick={() => exportWord(tasks, t, lang)} title={t('tasks.exportWordLabel')} aria-label={t('tasks.exportWordLabel')}>
+              {t('tasks.exportWord')}
+            </button>
+          )}
+          {addMany && (
+            <button className="tf-close" onClick={() => file.current?.click()} title={t('tasks.focus.importTasksLabel')}>
+              {t('tasks.focus.importTasks')}
+            </button>
+          )}
+          {addMany && <input
+            ref={file}
+            type="file"
+            accept={IMPORT_ACCEPT}
+            hidden
+            aria-label={t('tasks.focus.importTasksLabel')}
+            onChange={async (e) => {
+              const f = e.target.files?.[0]
+              e.target.value = ''
+              if (!f || !addMany) return
+              const found = await readTasksFile(f)
+              await addMany(found)
+              setNote(found.length ? t('tasks.imported', { n: found.length }) : t('tasks.importedNone'))
+            }}
+          />}
+          <button className="tf-close" onClick={onClose}>
+            {t('immersive.exit')}
+          </button>
+        </span>
       </header>
 
       <aside className="tf-side">
         <div className="num">01</div>
         <div className="lbl">{t('tasks.pending', { n: pending })}</div>
-        <ul className="tf-list" aria-label={t('tasks.focus.listLabel')}>
-          {tasks.map((k, i) => (
-            <li key={k.id}>
+        {(sortByPriority || note) && (
+          <div className="tf-side-tools">
+            {sortByPriority && <button onClick={() => sortByPriority()}>{t('tasks.sortPriority')}</button>}
+            {note && <span role="status">{note}</span>}
+          </div>
+        )}
+        <ul className={`tf-list${sorter.dragging ? ' sorting' : ''}`} ref={listRef} aria-label={t('tasks.focus.listLabel')}>
+          {tasks.map((k, i) => {
+            // Pending tasks come first, so a pending task's index is also its place among the pending ones.
+            const sortable = moveTask && !k.done && pending > 1
+            return (
+            <li key={k.id} data-sortable={sortable ? '' : undefined} style={sortable ? sorter.style(i) : undefined} className={sorter.dragging === k.id ? 'drag' : undefined}>
               <button
                 data-task={k.id}
                 className={`tf-item${k.id === current?.id ? ' sel' : ''}${k.done ? ' dn' : ''}${k.active ? ' on' : ''}`}
@@ -282,11 +350,25 @@ export default function TasksFocus({ tasks, onClose, add, ...actions }: Props) {
                 }}
               >
                 <span className="tf-n">{num(i)}</span>
-                <span className="tf-item-text">{k.text}</span>
+                <span className="tf-item-text">
+                  <PriorityTag priority={k.priority} />
+                  {k.text}
+                </span>
                 {k.description?.trim() && <span className="tf-dot" title={t('tasks.focus.hasNotes')} aria-label={t('tasks.focus.hasNotes')} />}
               </button>
+              {sortable && (
+                <button
+                  {...sorter.handle(k.id, i, pending)}
+                  className="tf-grip"
+                  aria-label={t('tasks.moveLabel', { text: k.text, n: i + 1, total: pending })}
+                  title={t('tasks.move')}
+                >
+                  <Icon name="grip" />
+                </button>
+              )}
             </li>
-          ))}
+            )
+          })}
           <li className="tf-new">
             <span className="tf-n" aria-hidden />
             <input

@@ -180,6 +180,8 @@ export default function App() {
           restore={tasks.restore}
           clearDone={tasks.clearDone}
           addMany={tasks.addMany}
+          prioritize={tasks.prioritize}
+          sortByPriority={tasks.sortByPriority}
         />
       </section>
       <main className="region-focus" data-region="focus">
