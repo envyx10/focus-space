@@ -1,9 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useI18n } from '../i18n'
-import { isRecord, readJSON, writeJSON } from '../lib/storage'
 
-export const PLACE_KEY = 'focus-space:place'
-type Place = { lat: number; lon: number; city: string }
 type Now = { temp: number; code: number }
 
 /** WMO weather code → our label key. */
@@ -16,62 +13,44 @@ export function sky(code: number): 'clear' | 'cloudy' | 'fog' | 'rain' | 'snow' 
   return 'rain'
 }
 
-function loadPlace(): Place | null {
-  const v = readJSON(PLACE_KEY)
-  return isRecord(v) && typeof v.lat === 'number' && typeof v.lon === 'number' && typeof v.city === 'string' ? (v as Place) : null
-}
-
-// The device's real position (GPS/Wi-Fi); IP lookup often lands on the ISP's city instead. Null if denied/unavailable.
-function devicePosition(): Promise<GeolocationCoordinates | null> {
+// The device's own position (GPS/Wi-Fi), rounded to ~1 km before it leaves the device. Null if denied/unavailable.
+// No IP fallback: an IP lands on the ISP's town, which can be 20 km off. No weather beats the wrong weather.
+function devicePosition(): Promise<{ lat: string; lon: string } | null> {
   return new Promise((resolve) => {
     if (!navigator.geolocation) return resolve(null)
     navigator.geolocation.getCurrentPosition(
-      (p) => resolve(p.coords),
+      (p) => resolve({ lat: p.coords.latitude.toFixed(2), lon: p.coords.longitude.toFixed(2) }),
       () => resolve(null),
-      { timeout: 10_000, maximumAge: 10 * 60_000 },
+      { enableHighAccuracy: true, timeout: 15_000, maximumAge: 10 * 60_000 },
     )
   })
 }
 
-// BigDataCloud moved this API to api-bdc.io; the old host only redirects there, which the CSP would block.
-// With coordinates it reverse-geocodes them; without, it falls back to the IP. No API keys.
-async function locate(lang: string): Promise<Place> {
-  const c = await devicePosition()
-  const at = c ? `&latitude=${c.latitude}&longitude=${c.longitude}` : ''
-  const r = await fetch(`https://api-bdc.io/data/reverse-geocode-client?localityLanguage=${lang}${at}`).then((r) => r.json())
-  if (typeof r.latitude !== 'number' || typeof r.longitude !== 'number') throw new Error('no location')
-  const lat = Math.round(r.latitude * 100) / 100
-  const lon = Math.round(r.longitude * 100) / 100
-  return { lat, lon, city: String(r.city || r.locality || r.principalSubdivision || '') }
+async function current(): Promise<Now | null> {
+  const at = await devicePosition()
+  if (!at) return null
+  const d = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${at.lat}&longitude=${at.lon}&current=temperature_2m,weather_code`).then((r) => r.json())
+  const temp = d?.current?.temperature_2m
+  const code = d?.current?.weather_code
+  return typeof temp === 'number' && typeof code === 'number' ? { temp: Math.round(temp), code } : null
 }
 
 export default function Weather() {
-  const { t, lang } = useI18n()
-  const [place, setPlace] = useState(loadPlace)
+  const { t } = useI18n()
   const [now, setNow] = useState<Now | null>(null)
 
-  // Re-locate on every load (the stored place only paints instantly); a moved laptop picks up its new city.
+  // Locates again on every refresh, so a laptop that moved shows the weather where it is now.
   useEffect(() => {
-    let alive = true
-    locate(lang)
-      .then((p) => {
-        if (!alive) return
-        writeJSON(PLACE_KEY, p)
-        setPlace((old) => (old && old.lat === p.lat && old.lon === p.lon && old.city === p.city ? old : p))
-      })
-      .catch(() => {}) // offline or blocked: keep the stored place, or show nothing
-    return () => {
-      alive = false
+    // Older versions stored a town looked up from the IP; nothing reads it any more.
+    try {
+      localStorage.removeItem('focus-space:place')
+    } catch {
+      // storage unavailable: nothing to clean
     }
-  }, [lang])
-
-  useEffect(() => {
-    if (!place) return
     let alive = true
     const load = () =>
-      fetch(`https://api.open-meteo.com/v1/forecast?latitude=${place.lat}&longitude=${place.lon}&current=temperature_2m,weather_code`)
-        .then((r) => r.json())
-        .then((d) => alive && setNow({ temp: Math.round(d.current.temperature_2m), code: d.current.weather_code }))
+      current()
+        .then((n) => alive && n && setNow(n))
         .catch(() => {}) // offline: keep the last reading
     load()
     const id = setInterval(load, 30 * 60_000)
@@ -79,13 +58,13 @@ export default function Weather() {
       alive = false
       clearInterval(id)
     }
-  }, [place])
+  }, [])
 
-  if (!place || !now) return null
+  if (!now) return null
+  const label = t(`weather.${sky(now.code)}`)
   return (
-    <span className="hd-weather" title={t(`weather.${sky(now.code)}`)}>
-      {place.city && `${place.city} `}
-      {now.temp}° · {t(`weather.${sky(now.code)}`)}
+    <span className="hd-weather" title={label}>
+      {now.temp}° · {label}
     </span>
   )
 }
