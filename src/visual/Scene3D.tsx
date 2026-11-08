@@ -5,6 +5,7 @@ import {
   BufferGeometry,
   DataTexture,
   FloatType,
+  HalfFloatType,
   PerspectiveCamera,
   Points,
   RGBAFormat,
@@ -199,6 +200,15 @@ export default function Scene3D({ getLevels, accent, light = false }: Props) {
     el.appendChild(canvas)
 
     const gpu = new GPUComputationRenderer(SIDE, SIDE, renderer)
+    // Many phone GPUs can't render into 32-bit float textures and would silently draw nothing; 16-bit is plenty here.
+    if (!renderer.extensions.has('EXT_color_buffer_float')) {
+      if (!renderer.extensions.has('EXT_color_buffer_half_float')) {
+        renderer.dispose()
+        canvas.remove()
+        return
+      }
+      gpu.setDataType(HalfFloatType)
+    }
     const pos0 = gpu.createTexture()
     ;(pos0.image.data as Float32Array).set(scattered(COUNT))
     const vel0 = gpu.createTexture()
@@ -315,24 +325,30 @@ export default function Scene3D({ getLevels, accent, light = false }: Props) {
       const elapsed = Math.min(0.25, (ms - last) / 1000)
       last = ms
       const t = ms / 1000
-      const live = levelsRef.current()
-      const idle = !live || (live.bass < 0.01 && live.high < 0.01)
-      const goal = idle ? { bass: (0.5 + 0.5 * Math.sin(t * 0.5)) * 0.15, high: 0.04 } : live
-      lv.bass = follow(lv.bass, goal.bass)
-      lv.high = follow(lv.high, goal.high)
-      sim.uFlow.value = 0.14 + lv.bass * 0.9 + lv.high * 0.3
-      sim.uStir.value *= Math.pow(0.35, elapsed)
-      // fade in over ~2.5 s of real time while the particles assemble
-      uniforms.uIntro.value = Math.min(1, uniforms.uIntro.value + elapsed / 2.5)
-      // fixed-size steps keep the simulation stable even when the tab is throttled
-      const steps = Math.max(1, Math.min(4, Math.round(elapsed / STEP)))
-      for (let i = 0; i < steps; i++) step(t)
-      tilt.x = smooth(tilt.x, pointer.x)
-      tilt.y = smooth(tilt.y, pointer.y)
-      spin += elapsed * (0.08 + lv.bass * 0.12)
-      points.rotation.set(0.35 + tilt.y, spin + tilt.x, 0)
-      // Breathing guide open: the sphere moves to the centre and swells and shrinks with the breath.
       const b = breathing.size
+      // Reduced motion: the settled sphere holds still. Only the breathing guide, opened on purpose, moves it, and
+      // only its size and place (the square it replaced moved as much); once the guide closes and it is back, it stops.
+      const home = Math.abs(points.scale.x - 1) + Math.abs(view.x - view.baseX) + Math.abs(view.y - view.baseY) + uniforms.uFillMix.value < 1e-3
+      if (still && b === null && home) return
+      if (!still) {
+        const live = levelsRef.current()
+        const idle = !live || (live.bass < 0.01 && live.high < 0.01)
+        const goal = idle ? { bass: (0.5 + 0.5 * Math.sin(t * 0.5)) * 0.15, high: 0.04 } : live
+        lv.bass = follow(lv.bass, goal.bass)
+        lv.high = follow(lv.high, goal.high)
+        sim.uFlow.value = 0.14 + lv.bass * 0.9 + lv.high * 0.3
+        sim.uStir.value *= Math.pow(0.35, elapsed)
+        // fade in over ~2.5 s of real time while the particles assemble
+        uniforms.uIntro.value = Math.min(1, uniforms.uIntro.value + elapsed / 2.5)
+        // fixed-size steps keep the simulation stable even when the tab is throttled
+        const steps = Math.max(1, Math.min(4, Math.round(elapsed / STEP)))
+        for (let i = 0; i < steps; i++) step(t)
+        tilt.x = smooth(tilt.x, pointer.x)
+        tilt.y = smooth(tilt.y, pointer.y)
+        spin += elapsed * (0.08 + lv.bass * 0.12)
+        points.rotation.set(0.35 + tilt.y, spin + tilt.x, 0)
+      }
+      // Breathing guide open: the sphere moves to the centre and swells and shrinks with the breath.
       // sized against the panel's height: at most half of it at the top of the in-breath, about a quarter at the bottom
       const fit = 0.44 / (SPHERE_SPAN * camera.zoom)
       points.scale.setScalar(smooth(points.scale.x, b === null ? 1 : fit * (0.55 + b * 0.45)))
@@ -351,7 +367,11 @@ export default function Scene3D({ getLevels, accent, light = false }: Props) {
       draw()
     }
 
-    breathing.sphere = !still
+    // The sphere is the breathing guide, reduced motion included (it used to fall back to a flat square there).
+    breathing.sphere = true
+    // iOS drops WebGL contexts when the phone sleeps or runs short of memory: the square beats a blank panel.
+    const onLost = () => (breathing.sphere = false)
+    canvas.addEventListener('webglcontextlost', onLost)
     if (still) {
       // settle the particles onto the shape, then hold a single frame
       sim.uStir.value = 0
@@ -359,9 +379,11 @@ export default function Scene3D({ getLevels, accent, light = false }: Props) {
       uniforms.uIntro.value = 1
       draw()
       redraw.current = draw
-    } else raf = requestAnimationFrame(frame)
+    }
+    raf = requestAnimationFrame(frame)
 
     return () => {
+      canvas.removeEventListener('webglcontextlost', onLost)
       breathing.sphere = false
       redraw.current = null
       cancelAnimationFrame(raf)

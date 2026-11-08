@@ -74,6 +74,21 @@ describe('MixerBar interaction', () => {
     expect(onVolume).toHaveBeenCalledWith('rain', 0.3)
   })
 
+  it('a finger that taps or barely moves (scrolling the page past the strips) leaves the volume alone', () => {
+    const onVolume = vi.fn()
+    render(<MixerBar prefs={DEFAULT_PREFS} onVolume={onVolume} onVariant={() => {}} onSlots={() => {}} />)
+    const slider = screen.getByRole('slider', { name: /volumen lluvia/i })
+    slider.getBoundingClientRect = () => ({ left: 100, width: 200, top: 0, right: 300, bottom: 0, height: 0, x: 100, y: 0, toJSON() {} })
+    slider.setPointerCapture = () => {}
+    fireEvent.pointerDown(slider, { clientX: 250, pointerId: 1, pointerType: 'touch' })
+    fireEvent.pointerMove(slider, { clientX: 254, pointerId: 1, pointerType: 'touch' })
+    fireEvent.pointerUp(slider, { clientX: 254, pointerId: 1, pointerType: 'touch' })
+    expect(onVolume).not.toHaveBeenCalled()
+    // a real sideways slide still sets it
+    fireEvent.pointerDown(slider, { clientX: 150, pointerId: 1, pointerType: 'touch' })
+    fireEvent.pointerMove(slider, { clientX: 190, pointerId: 1, pointerType: 'touch' })
+    expect(onVolume).toHaveBeenLastCalledWith('rain', 0.2)
+  })
 })
 
 describe('keyboard channel', () => {

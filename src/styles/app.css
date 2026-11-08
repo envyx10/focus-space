@@ -464,6 +464,11 @@ button {
     z-index: 5;
   }
 
+  /* The Settings panel lives in the header: lift the header over the tab bar, which would cover the panel's foot. */
+  .app > .region-header:has(.set-panel) {
+    z-index: 6;
+  }
+
   /* Only the picked panel shows under the clock, so the page is never three panels long. */
   .app[data-tab='tasks'] > .region-mixer,
   .app[data-tab='tasks'] > .region-lofi,
@@ -549,11 +554,17 @@ button {
   /* Landscape phones: the clock panel must not need more height than the screen has. */
   @media (orientation: landscape) and (max-height: 500px) {
     .app .focus {
-      min-height: calc(100dvh - 44px - 52px);
+      min-height: calc(100dvh - 44px - 45px);
+      gap: 8px;
     }
 
+    /* Smaller clock and a lower tab bar, or the Start button ends up under the bar. */
     .app .big {
-      font-size: calc(min(17vw, 45dvh) * var(--display-scale, 1));
+      font-size: calc(min(17vw, 28dvh) * var(--display-scale, 1));
+    }
+
+    .m-tabs button {
+      min-height: 44px;
     }
   }
 }
