@@ -349,3 +349,13 @@
 .pri-low {
   opacity: 0.45;
 }
+
+/* Exportar opened: it stays lit and its formats (Word, Web, JSON) take the accent, so they read as its choices. */
+.tasks-tools button[aria-expanded='true'],
+.tasks-tools .export-format {
+  opacity: 1;
+}
+
+.export-format {
+  color: var(--accent);
+}

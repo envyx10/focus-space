@@ -619,3 +619,41 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.tf-head-tools button[aria-expanded='true'],
+.tf-head-tools .export-format {
+  opacity: 1;
+}
+
+/* Phones: with Exportar open the header's buttons don't fit one line, so the header may grow a second one. The title
+   takes no room of its own (basis 0): closed, everything stays on one line and only the title shortens. */
+@media (max-width: 560px) {
+  .tf {
+    grid-template-rows: auto minmax(0, 32%) minmax(0, 1fr);
+  }
+
+  .tf-head {
+    min-height: 44px;
+    flex-wrap: wrap;
+  }
+
+  .tf-brand {
+    flex: 1 1 0;
+  }
+
+  .tf-head-tools {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    margin-left: auto;
+    gap: 0;
+  }
+
+  .tf-head-tools button {
+    padding: 0 4px;
+  }
+
+  /* With the formats out, the shortened title would only show an ellipsis: let the buttons have the row. */
+  .tf-head:has(.export-format) .tf-brand {
+    display: none;
+  }
+}

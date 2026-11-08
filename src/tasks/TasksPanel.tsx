@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react'
-import { useI18n, useT } from '../i18n'
+import { useT } from '../i18n'
 import Icon from '../lib/Icon'
 import { isTypingTarget } from '../lib/useShortcuts'
-import { exportJson, exportWord, IMPORT_ACCEPT, readTasksFile } from './files'
+import ExportMenu from './ExportMenu'
+import { IMPORT_ACCEPT, readTasksFile } from './files'
 import PriorityTag from './PriorityTag'
 import TasksFocus from './TasksFocus'
 import type { Priority, Task } from './types'
@@ -146,7 +147,7 @@ function Row({ task, index, onDelete, sort, ...a }: RowProps) {
 }
 
 export default function TasksPanel({ tasks, synced, saveError, localError, add, restore, clearDone, addMany, describe, move, prioritize, sortByPriority, ...actions }: Props) {
-  const { t, lang } = useI18n()
+  const t = useT()
   const listRef = useRef<HTMLUListElement>(null)
   const sorter = useDragSort(() => listRef.current, (id, to) => move?.(id, to))
   const [full, setFull] = useState(false)
@@ -279,13 +280,8 @@ export default function TasksPanel({ tasks, synced, saveError, localError, add, 
             if (restore) setUndo(gone)
           }}>{t('tasks.clearDone', { n: done })}</button>}
           {canSort && <button onClick={() => sortByPriority?.()}>{t('tasks.sortPriority')}</button>}
-          {tasks.length > 0 && (
-            <button onClick={() => exportWord(tasks, t, lang)} title={t('tasks.exportWordLabel')} aria-label={t('tasks.exportWordLabel')}>
-              {t('tasks.exportWord')}
-            </button>
-          )}
+          <ExportMenu tasks={tasks} />
           {addMany && <button onClick={() => file.current?.click()}>{t('tasks.import')}</button>}
-          {tasks.length > 0 && <button onClick={() => exportJson(tasks)}>{t('tasks.export')}</button>}
           <input ref={file} type="file" accept={IMPORT_ACCEPT} hidden aria-label={t('tasks.importLabel')} onChange={(e) => importFile(e.target.files?.[0])} />
         </div>
       )}

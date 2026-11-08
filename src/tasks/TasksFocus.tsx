@@ -1,8 +1,9 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { createPortal, flushSync } from 'react-dom'
-import { useI18n, useT } from '../i18n'
+import { useT } from '../i18n'
 import Icon from '../lib/Icon'
-import { exportWord, IMPORT_ACCEPT, readTasksFile } from './files'
+import ExportMenu from './ExportMenu'
+import { IMPORT_ACCEPT, readTasksFile } from './files'
 import PriorityTag from './PriorityTag'
 import { PRIORITIES, type Priority, type Task } from './types'
 import { useDragSort } from './useDragSort'
@@ -219,7 +220,7 @@ type Props = {
  * drawn over everything and in the browser's fullscreen, like focus mode.
  */
 export default function TasksFocus({ tasks, onClose, add, move: moveTask, sortByPriority, addMany, ...actions }: Props) {
-  const { t, lang } = useI18n()
+  const t = useT()
   const listRef = useRef<HTMLUListElement>(null)
   const sorter = useDragSort(() => listRef.current, (id, to) => moveTask?.(id, to))
   const file = useRef<HTMLInputElement>(null)
@@ -291,11 +292,7 @@ export default function TasksFocus({ tasks, onClose, add, move: moveTask, sortBy
       <header className="tf-head">
         <span className="tf-brand">{t('tasks.focus.title')}</span>
         <span className="tf-head-tools">
-          {tasks.length > 0 && (
-            <button className="tf-close" onClick={() => exportWord(tasks, t, lang)} title={t('tasks.exportWordLabel')} aria-label={t('tasks.exportWordLabel')}>
-              {t('tasks.exportWord')}
-            </button>
-          )}
+          <ExportMenu tasks={tasks} className="tf-close" />
           {addMany && (
             <button className="tf-close" onClick={() => file.current?.click()} title={t('tasks.focus.importTasksLabel')}>
               {t('tasks.focus.importTasks')}
