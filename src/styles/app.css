@@ -85,12 +85,6 @@ button {
   overflow: hidden;
 }
 
-/* Light theme: the sphere renders exactly as on the dark page (additive light: dense, smooth, lit) and the page shows
-   its negative, so the light reads as graphite. The shader feeds the accent in inverted, so it comes out true. */
-:root[data-theme='light'] .region-focus canvas {
-  filter: invert(1);
-}
-
 .region-mixer {
   grid-column: 1 / 9;
   min-width: 0;
@@ -163,7 +157,7 @@ button {
   }
 }
 
-/* Line icons (src/lib/Icon.tsx): they follow the text colour and sit on the baseline next to a label. */
+/* Line icons (shared/ui/Icon.tsx): they follow the text colour and sit on the baseline next to a label. */
 .ico {
   width: 1.1em;
   height: 1.1em;

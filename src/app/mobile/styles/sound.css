@@ -1,0 +1,240 @@
+/* ---------- Sound ---------- */
+
+.m-radio {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.m-radio.is-off {
+  background: var(--line);
+  color: var(--fg);
+}
+
+.m-radio-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: var(--fs-s);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.m-radio-title {
+  margin: 6px 0 0;
+  font-size: calc(28px * var(--m-ts));
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.m-radio-station {
+  margin: 0;
+  font-size: var(--fs-s);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.75;
+}
+
+.m-radio-controls {
+  display: grid;
+  grid-template-columns: 56px 1fr 56px;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.m-radio-btn {
+  display: grid;
+  place-items: center;
+  height: 56px;
+  border: 1px solid color-mix(in srgb, currentColor 45%, transparent);
+}
+
+.m-radio-play {
+  display: grid;
+  place-items: center;
+  height: 56px;
+  background: var(--on-accent);
+  color: var(--accent);
+}
+
+.m-radio.is-off .m-radio-play {
+  background: var(--fg);
+  color: var(--bg);
+}
+
+.m-radio-play .ico {
+  width: 22px;
+  height: 22px;
+}
+
+.m-radio button:disabled {
+  opacity: 0.4;
+}
+
+/* the accent ring would vanish on the accent card */
+.m-radio :focus-visible {
+  outline: 2px solid var(--on-accent);
+  outline-offset: 2px;
+}
+
+.m-radio-vol {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+}
+
+.m-group {
+  margin-top: 28px;
+}
+
+.m-group-h {
+  margin: 0 0 8px;
+  font-size: var(--fs-s);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.55;
+}
+
+.m-group-note {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: var(--fs-m);
+  line-height: 1.45;
+}
+
+.m-ch {
+  padding: 6px 0 2px;
+  border-top: 1px solid var(--line);
+}
+
+.m-ch:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.m-ch-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  /* the two 44 px hit areas overlap a little: one row reads as one block */
+  margin-bottom: -10px;
+}
+
+/* Off: the name sits back; playing: full strength, and the accent goes to the level. */
+.m-ch-name {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: var(--fs-l);
+  font-weight: 600;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.m-ch.is-live .m-ch-name {
+  color: var(--fg);
+}
+
+.m-ch-pct {
+  flex: none;
+  color: var(--muted);
+  font-size: var(--fs-s);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+}
+
+.m-ch.is-live .m-ch-pct {
+  color: var(--accent);
+}
+
+/* The recording in a fixed column: every slider starts and ends at the same x. */
+.m-ch-body {
+  display: grid;
+  grid-template-columns: calc(118px * var(--m-ts)) 1fr;
+  align-items: center;
+  gap: 12px;
+}
+
+.m-ch-variant {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  min-height: 44px;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.m-ch-variant .ico {
+  flex: none;
+  width: 11px;
+  height: 11px;
+  opacity: 0.7;
+}
+
+.m-ch.is-live .m-ch-variant {
+  color: var(--fg);
+}
+
+.m-ch:not(.is-live) .m-slider-thumb {
+  background: var(--muted);
+}
+
+.m-ch.is-live .m-slider-fill {
+  background: var(--accent);
+}
+
+.m-screen.is-muted .m-ch-list,
+.m-screen.is-muted .m-radio-vol {
+  opacity: 0.35;
+}
+
+.m-mixes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.m-mix {
+  display: flex;
+  border: 1px solid var(--line-strong);
+}
+
+.m-mix-apply {
+  min-height: 44px;
+  padding: 0 14px;
+  font-size: var(--fs-m);
+  font-weight: 600;
+}
+
+.m-mix-x {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  border-left: 1px solid var(--line-strong);
+  color: var(--muted);
+}

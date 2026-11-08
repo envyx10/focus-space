@@ -20,7 +20,7 @@ By opening a pull request you confirm that:
 
 Sign your commits off with `git commit -s` (a `Signed-off-by:` line, the [Developer Certificate of Origin](https://developercertificate.org)). It is how you state point 1.
 
-Adding a language: copy `src/i18n/en.ts`, translate it and register it in `src/i18n/index.tsx`.
+Adding a language: copy `src/i18n/locales/en/`, translate it and register it in `src/i18n/translate.ts`.
 
 ---
 
@@ -44,4 +44,4 @@ Al abrir una pull request confirmas que:
 
 Firma tus commits con `git commit -s` (una línea `Signed-off-by:`, el [Developer Certificate of Origin](https://developercertificate.org)). Es la forma de declarar el punto 1.
 
-Añadir un idioma: copia `src/i18n/en.ts`, tradúcelo y regístralo en `src/i18n/index.tsx`.
+Añadir un idioma: copia `src/i18n/locales/en/`, tradúcelo y regístralo en `src/i18n/translate.ts`.

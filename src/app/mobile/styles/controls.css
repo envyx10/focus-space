@@ -1,0 +1,220 @@
+/* ---------- shared controls ---------- */
+
+.m-icon-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  color: var(--fg);
+}
+
+.m-icon-btn .ico {
+  width: 19px;
+  height: 19px;
+}
+
+.m-icon-btn.is-on {
+  color: var(--accent);
+}
+
+.m-icon-btn.is-danger {
+  color: var(--accent);
+}
+
+.m-seg {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  border: 1px solid var(--line-strong);
+  background: color-mix(in srgb, var(--bg) 60%, transparent);
+}
+
+.m-seg button {
+  min-height: 44px;
+  padding: 0 6px;
+  color: var(--muted);
+  font-size: calc(12px * var(--m-ts));
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.m-seg button + button {
+  border-left: 1px solid var(--line-strong);
+}
+
+.m-seg button[aria-pressed='true'] {
+  background: var(--fg);
+  color: var(--bg);
+}
+
+.m-seg.is-small {
+  display: inline-grid;
+}
+
+.m-seg.is-small button {
+  min-height: 44px;
+  padding: 0 12px;
+  font-size: var(--fs-s);
+  font-variant-numeric: tabular-nums;
+}
+
+.m-stack .m-seg.is-small {
+  display: grid;
+}
+
+.m-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 16px;
+  border: 1px solid var(--line-strong);
+  font-size: var(--fs-m);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.m-btn.is-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+.m-btn.is-wide {
+  width: 100%;
+}
+
+.m-btn:disabled {
+  opacity: 0.35;
+}
+
+.m-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--line-strong);
+  font-size: var(--fs-s);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.m-pill.is-on {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+.m-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 44px;
+  max-width: 50%;
+  padding: 0 6px 0 10px;
+  border: 1px solid var(--line-strong);
+  color: var(--muted);
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.m-chip .ico {
+  width: 12px;
+  height: 12px;
+}
+
+.m-chip.is-static {
+  padding: 0;
+  border: 0;
+}
+
+.m-section-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  min-height: 48px;
+  margin-top: 8px;
+  font-size: var(--fs-s);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.m-foot-note {
+  margin: 28px 0 0;
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.4;
+}
+
+.m-alert {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-size: var(--fs-m);
+}
+
+/* Touch slider: a hairline track like the desktop mixer, a slim square-cut thumb, a 44 px hit area. */
+.m-slider {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 44px;
+  padding-inline: 3px;
+  touch-action: pan-y;
+  cursor: pointer;
+}
+
+.m-slider-track {
+  position: relative;
+  flex: 1;
+  height: 2px;
+  background: var(--line-strong);
+}
+
+.m-slider-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--v);
+  background: var(--fg);
+}
+
+.m-slider-thumb {
+  position: absolute;
+  top: 50%;
+  left: var(--v);
+  width: 6px;
+  height: 20px;
+  background: var(--fg);
+  transform: translate(-50%, -50%);
+  transition: transform 120ms var(--m-ease), background-color 150ms;
+}
+
+.m-slider.is-active .m-slider-thumb {
+  transform: translate(-50%, -50%) scale(1.5, 1.2);
+}
+
+.m-slider.on-accent .m-slider-track {
+  background: color-mix(in srgb, currentColor 28%, transparent);
+}
+
+.m-slider.on-accent .m-slider-fill,
+.m-slider.on-accent .m-slider-thumb {
+  background: currentColor;
+}
+
+.m-slider.is-disabled {
+  opacity: 0.4;
+  cursor: default;
+}

@@ -1,0 +1,259 @@
+/* ---------- Focus ---------- */
+
+.m-focus {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: calc(var(--m-safe-t) + 10px) 16px 16px;
+  overflow: hidden;
+}
+
+.m-stage-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.m-focus > :not(.m-stage-bg):not(.br) {
+  position: relative;
+  z-index: 1;
+}
+
+.m-focus-top {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: 'id tools' 'status tools';
+  align-items: start;
+  gap: 2px 8px;
+}
+
+.m-focus-id {
+  grid-area: id;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding-top: 6px;
+}
+
+.m-focus-id .lbl {
+  opacity: 1;
+  font-weight: 600;
+}
+
+.m-focus-status {
+  grid-area: status;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  font-size: var(--fs-s);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+}
+
+.m-focus-tools {
+  grid-area: tools;
+  display: flex;
+  align-items: center;
+  margin-right: -10px;
+}
+
+/* The three header tools share one weight: no frames, the same icon size, the accent only when one is on.
+   Breathe keeps its word (the one a newcomer looks for), the other two are universal icons. */
+.m-tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 44px;
+  height: 44px;
+  padding: 0 10px;
+  color: var(--fg);
+  font-size: var(--fs-s);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.m-tool .ico {
+  width: 18px;
+  height: 18px;
+}
+
+.m-tool.is-on {
+  color: var(--accent);
+}
+
+/* The rhythm: figures in full ink, words quiet, a thin divider between the parts. */
+.m-hint {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: var(--fs-s);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  line-height: 1.6;
+}
+
+.m-hint > span + span::before {
+  content: '';
+  display: inline-block;
+  width: 1px;
+  height: 0.9em;
+  margin: 0 10px;
+  vertical-align: -0.1em;
+  background: var(--line-strong);
+}
+
+.m-hint b {
+  color: var(--fg);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.m-modes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.m-stepper {
+  display: grid;
+  grid-template-columns: 52px 1fr 52px;
+  align-items: center;
+  min-height: 44px;
+  border: 1px solid var(--line-strong);
+  background: color-mix(in srgb, var(--bg) 60%, transparent);
+  font-size: calc(12px * var(--m-ts));
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-align: center;
+}
+
+.m-stepper button {
+  height: 100%;
+  font-size: 18px;
+}
+
+.m-stepper button:first-child {
+  border-right: 1px solid var(--line-strong);
+}
+
+.m-stepper button:last-child {
+  border-left: 1px solid var(--line-strong);
+}
+
+.m-clock {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  font-family: var(--display, var(--font));
+  font-weight: var(--display-weight, 700);
+  font-style: var(--display-style, normal);
+  font-size: calc(min(27vw, 26dvh) * var(--display-scale, 1));
+  letter-spacing: var(--display-tracking, -0.045em);
+  line-height: 0.74;
+  font-feature-settings: 'tnum';
+  text-rendering: geometricPrecision;
+  pointer-events: none;
+}
+
+.m-clock-digits {
+  display: flex;
+  align-items: center;
+}
+
+.m-clock .colon {
+  display: flex;
+  flex-direction: column;
+  gap: 0.14em;
+  margin: 0 0.07em 0 0.05em;
+}
+
+.m-clock .colon i {
+  width: 0.09em;
+  height: 0.09em;
+  background: var(--accent);
+}
+
+.m-clock .sec {
+  color: var(--faint);
+}
+
+.m-clock sup {
+  align-self: flex-start;
+  margin: 0.08em 0 0 0.35em;
+  font-size: max(0.085em, 11px);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+}
+
+.m-focus-foot {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.m-task-line {
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+}
+
+.m-task-chip {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  column-gap: 12px;
+  width: 100%;
+  min-height: 56px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  text-align: left;
+}
+
+.m-task-chip-k {
+  grid-column: 1;
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.55;
+}
+
+.m-task-chip.has-task .m-task-chip-k {
+  color: var(--accent);
+  opacity: 1;
+}
+
+.m-task-chip-v {
+  grid-column: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--fs-b);
+  font-weight: 500;
+}
+
+.m-task-chip:not(.has-task) .m-task-chip-v {
+  opacity: 0.5;
+}
+
+.m-task-chip > .ico {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  opacity: 0.5;
+}

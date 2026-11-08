@@ -1,0 +1,5 @@
+/* Settings panel styles, in cascade order. */
+@import './panel.css';
+@import './fields.css';
+@import './sliders.css';
+@import './accent.css';

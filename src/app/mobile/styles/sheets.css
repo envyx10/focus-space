@@ -1,0 +1,268 @@
+/* ---------- sheets ---------- */
+
+.m-sheet-root {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+}
+
+.m-sheet-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgb(0 0 0 / 0.6);
+  opacity: 0;
+  transition: opacity 320ms var(--m-ease);
+}
+
+.m-sheet-root.is-shown .m-sheet-backdrop {
+  opacity: 1;
+}
+
+.m-sheet {
+  position: absolute;
+  inset: auto 0 0;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100% - var(--m-safe-t) - 16px);
+  padding-bottom: var(--m-safe-b);
+  background: var(--bg);
+  border-top: 1px solid var(--line-strong);
+  outline: none;
+  transform: translateY(100%);
+  transition: transform 380ms var(--m-ease-sheet);
+}
+
+.m-app[data-kb] .m-sheet {
+  padding-bottom: 0;
+}
+
+.m-sheet-root.is-shown .m-sheet {
+  transform: none;
+}
+
+.m-sheet.is-dragging {
+  transition: none;
+}
+
+.m-sheet.is-full {
+  height: calc(100% - var(--m-safe-t) - 16px);
+}
+
+.m-sheet-grab {
+  flex: none;
+  touch-action: none;
+  cursor: grab;
+}
+
+.m-sheet-handle {
+  display: block;
+  width: 36px;
+  height: 4px;
+  margin: 8px auto 0;
+  background: var(--line-strong);
+}
+
+.m-sheet-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 4px 6px 10px 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.m-sheet-titles {
+  min-width: 0;
+}
+
+.m-sheet-kicker {
+  margin-bottom: 4px;
+}
+
+.m-sheet-head h2 {
+  margin: 0;
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.m-sheet-actions {
+  display: flex;
+  flex: none;
+  /* delete and close never touch: a slip must not delete */
+  gap: 12px;
+}
+
+.m-sheet-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0 16px 16px;
+}
+
+.m-sheet-text {
+  margin: 16px 0 0;
+  color: var(--muted);
+  font-size: var(--fs-b);
+  line-height: 1.45;
+}
+
+.m-sheet-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding-top: 20px;
+}
+
+/* Task detail (the desktop editor) inside a sheet */
+.m-sheet .tf-detail {
+  max-width: none;
+  padding: 14px 0 8px;
+}
+
+.m-sheet .tf-title {
+  font-family: var(--font);
+  font-size: calc(24px * var(--m-ts));
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* long commands wrap instead of being cut */
+.m-sheet .tf-rendered pre,
+.m-sheet .tf-rendered pre code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.m-sheet .tf-desc {
+  min-height: 160px;
+}
+
+.m-sheet .tf-mode {
+  min-height: 40px;
+}
+
+.m-sheet .tf-foot {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  position: sticky;
+  bottom: -16px;
+  margin-bottom: -16px;
+  padding: 12px 0 16px;
+  background: var(--bg);
+}
+
+/* landscape or keyboard up: the page is short, the foot scrolls with the text instead of eating half of it */
+.m-app[data-kb] .m-sheet .tf-foot {
+  position: static;
+}
+
+.m-sheet .tf-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.m-sheet .tf-actions .btn {
+  min-height: 48px;
+  min-width: 0;
+  padding: 0 8px;
+  justify-content: center;
+  font-size: var(--fs-s);
+  white-space: normal;
+}
+
+.m-sheet .tf-actions .btn:only-child {
+  grid-column: 1 / -1;
+}
+
+.m-pick-list,
+.m-list,
+.m-ch-list,
+.m-mixes {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.m-pick-list button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 56px;
+  border-bottom: 1px solid var(--line);
+  font-size: var(--fs-l);
+  font-weight: 500;
+  text-align: left;
+}
+
+.m-pick-list button .ico {
+  flex: none;
+  opacity: 0.45;
+}
+
+.m-pick-list button.is-on {
+  color: var(--accent);
+}
+
+.m-pick-list button.is-on .ico {
+  opacity: 1;
+}
+
+.m-pick-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.m-pick-list .m-pick-none {
+  color: var(--muted);
+  font-size: var(--fs-s);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.m-menu {
+  display: grid;
+}
+
+.m-menu button {
+  min-height: 56px;
+  border-bottom: 1px solid var(--line);
+  font-size: var(--fs-l);
+  font-weight: 500;
+  text-align: left;
+}
+
+.m-menu button:disabled {
+  opacity: 0.35;
+}
+
+.m-form {
+  display: grid;
+  gap: 18px;
+  padding-top: 16px;
+}
+
+.m-field {
+  display: grid;
+  gap: 8px;
+}
+
+.m-field input {
+  min-height: 48px;
+  border: 0;
+  border-bottom: 1px solid var(--line-strong);
+  border-radius: 0;
+  background: none;
+  outline: none;
+}
+
+.m-field input:focus {
+  border-bottom-color: var(--accent);
+}

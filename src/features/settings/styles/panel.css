@@ -1,0 +1,122 @@
+.set {
+  display: inline-block;
+}
+
+.set-btn {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 11px;
+}
+
+/* Fixed under the header so it works from any column and never gets clipped by the grid. */
+.set-panel {
+  position: fixed;
+  top: 44px;
+  right: 0;
+  z-index: 60;
+  width: 380px;
+  max-width: 100vw;
+  max-height: calc(100% - 44px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0 20px 28px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-right: 0;
+  border-bottom: 0;
+  text-align: left;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 13px;
+  animation: set-in 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.set-panel ::selection,
+.set-panel::selection {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+@keyframes set-in {
+  from {
+    opacity: 0;
+    transform: translateX(14px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .set-panel {
+    animation: none;
+  }
+}
+
+/* Stays put while the groups scroll under it, so closing is always one click away. */
+.set-head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin: 0 -20px;
+  padding: 18px 20px 14px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+
+.set-close,
+.set-act,
+.set-scene button,
+.set-scene-item button {
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.set-close {
+  opacity: 0.55;
+}
+
+@media (hover: hover) {
+  .set-close:hover {
+    opacity: 1;
+    color: var(--accent);
+  }
+}
+
+.set-group {
+  padding-top: 26px;
+}
+
+.set-group h3 {
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.55;
+}
+
+/* Every setting is a row: the name on the left, its control on the right. */
+.set-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  min-height: 42px;
+  padding: 8px 0;
+  border-top: 1px solid var(--line);
+}
+
+.set-row > span:first-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.set-row small {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  opacity: 0.5;
+}
