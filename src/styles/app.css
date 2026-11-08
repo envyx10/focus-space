@@ -177,11 +177,18 @@ button {
     background: var(--bg);
   }
 
+  /* Grows into any height the panel below leaves (tablets, the short Radio tab), so no empty band sits above the tab bar. */
   .app > .region-focus {
     order: 1;
     min-height: 560px;
-    flex: none;
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
     border-bottom: 1px solid var(--line);
+  }
+
+  .app > .region-focus > .focus {
+    flex: 1;
   }
 
   .app > .region-tasks {
@@ -555,6 +562,21 @@ button {
 
   .app .mx-variant:not(.is-single) {
     min-height: 36px;
+  }
+
+  /* Small text controls get a 44 px tap area; the negative margin cancels the padding so nothing moves. */
+  .app .pk-trigger,
+  .app .pl-play,
+  .app .pl-vol,
+  .app .tasks-tools button,
+  .app .tk-new input {
+    padding-block: 14px;
+    margin-block: -14px;
+  }
+
+  .app .tasks-expand {
+    padding: 11px;
+    margin: -11px;
   }
 
   .app .mx-slider {

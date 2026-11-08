@@ -45,6 +45,9 @@ describe('timer', () => {
     expect(r.state.endsAt).toBeNull()
     expect(remaining(r.state, 11 * MIN)).toBe(0)
     expect(r.phasesEnded).toBe(1)
+    // and Start runs a fresh session instead of doing nothing
+    const again = start(r.state, 12 * MIN)
+    expect(again.endsAt).toBe(22 * MIN)
   })
 
   it('advance on a paused timer does nothing', () => {

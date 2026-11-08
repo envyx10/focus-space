@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useT } from '../i18n'
-import { chime, notifyPhase, phaseLabel, type Chime } from './alerts'
+import { chime, notifyPhase, phaseLabel, primeChime, type Chime } from './alerts'
 import { advance, extend, initialState, pause, remaining, reset, skip, start, withConfig, type TimerConfig, type TimerMode, type TimerState } from './timer'
 import { loadTimerStore, saveTimerStore, todayKey } from './timerStore'
 
@@ -70,7 +70,7 @@ export function useTimer({ chimeVolume, chimeSound, notify, onFocus }: Options) 
       }
       if (r.focusedMs > 0 || r.focusSessions > 0) o.onFocus?.(r.focusedMs, r.focusSessions)
       const worked = r.state.completedWork - s.completedWork
-      if (worked > 0) setStore((st) => ({ ...st, completedWork: st.completedWork + worked }))
+      if (worked > 0) setStore((st) => ({ ...st, day: todayKey(), completedWork: (st.day === todayKey() ? st.completedWork : 0) + worked }))
       setAwaiting(r.state.endsAt === null)
       stateRef.current = r.state
       setState(r.state)
@@ -81,6 +81,9 @@ export function useTimer({ chimeVolume, chimeSound, notify, onFocus }: Options) 
     const t = Date.now()
     setNow(t)
     setAwaiting(false)
+    primeChime()
+    // A tab left open overnight: the first start of the day counts sessions from 01 again.
+    setStore((st) => (st.day === todayKey() ? st : { ...st, day: todayKey(), completedWork: 0 }))
     setState((s) => start(s, t))
   }, [])
   const pauseT = useCallback(() => setState((s) => pause(s, Date.now())), [])

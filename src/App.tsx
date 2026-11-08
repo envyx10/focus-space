@@ -53,7 +53,8 @@ export default function App() {
   const [stats, setStats] = useState(loadStats)
   useEffect(() => saveStats(stats), [stats])
   const timer = useTimer({
-    chimeVolume: prefs.chimeVolume,
+    // "Mute all" covers the end-of-phase chime too.
+    chimeVolume: prefs.muted ? 0 : prefs.chimeVolume,
     chimeSound: prefs.chimeSound,
     notify: prefs.notify,
     onFocus: (ms, sessions) => setStats((s) => addFocus(s, todayKey(), ms, sessions)),
@@ -259,7 +260,7 @@ export default function App() {
             aria-pressed={mobileTab === id}
             onClick={() => {
               setMobileTab(id)
-              requestAnimationFrame(() => document.querySelector(`[data-region="${id}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }))
+              requestAnimationFrame(() => document.querySelector(`[data-region="${id}"]`)?.scrollIntoView?.({ behavior: 'smooth', block: 'nearest' }))
             }}
           >
             {t(`tabs.${id}`)}

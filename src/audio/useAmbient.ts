@@ -32,12 +32,12 @@ export function useAmbient() {
       engine.resume().catch(() => {})
     }
     const onVisible = () => document.visibilityState === 'visible' && wake()
-    addEventListener('pointerdown', wake)
-    addEventListener('keydown', wake)
+    // A finger's pointerdown isn't a "user activation"; its pointerup/touchend is, and iOS only resumes audio in one.
+    const gestures = ['pointerdown', 'pointerup', 'touchend', 'keydown'] as const
+    for (const g of gestures) addEventListener(g, wake)
     document.addEventListener('visibilitychange', onVisible)
     return () => {
-      removeEventListener('pointerdown', wake)
-      removeEventListener('keydown', wake)
+      for (const g of gestures) removeEventListener(g, wake)
       document.removeEventListener('visibilitychange', onVisible)
       ctx.close().catch(() => {})
     }

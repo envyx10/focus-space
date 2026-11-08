@@ -77,7 +77,11 @@ function Minutes({ label, value, limits, onCommit }: { label: string; value: num
         defaultValue={value}
         onBlur={(e) => {
           const n = Math.round(Number(e.target.value))
-          if (!Number.isFinite(n)) return
+          // An emptied field is not 0 (which would clamp to the minimum): put the old value back.
+          if (!e.target.value.trim() || !Number.isFinite(n)) {
+            e.target.value = String(value)
+            return
+          }
           const clamped = Math.min(limits[1], Math.max(limits[0], n))
           if (clamped !== value) onCommit(clamped)
           else e.target.value = String(value)

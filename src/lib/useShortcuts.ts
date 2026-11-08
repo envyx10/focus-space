@@ -33,7 +33,8 @@ export function useShortcuts(handlers: ShortcutHandlers): void {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey) return
+      // e.repeat: a held key would toggle the timer, fullscreen or mute dozens of times a second.
+      if (e.defaultPrevented || e.repeat || e.ctrlKey || e.metaKey || e.altKey) return
       if (isTypingTarget(e.target)) return
       const h = ref.current
       if (e.key === 'Escape') return h.escape()
