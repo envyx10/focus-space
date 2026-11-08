@@ -32,8 +32,14 @@ function crc32(data: Uint8Array): number {
   return (c ^ 0xffffffff) >>> 0
 }
 
-export function zip(files: Record<string, string>): Uint8Array {
+/** MS-DOS date and time, as ZIP stores them (2-second steps, local time). */
+function dosStamp(d: Date): [time: number, date: number] {
+  return [(d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1), ((Math.max(1980, d.getFullYear()) - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate()]
+}
+
+export function zip(files: Record<string, string>, when = new Date()): Uint8Array {
   const enc = new TextEncoder()
+  const [time, date] = dosStamp(when)
   const parts: Uint8Array[] = []
   const central: Uint8Array[] = []
   let offset = 0
@@ -45,6 +51,8 @@ export function zip(files: Record<string, string>): Uint8Array {
     local.setUint32(0, 0x04034b50, true)
     local.setUint16(4, 20, true)
     local.setUint16(6, 0x0800, true) // UTF-8 names
+    local.setUint16(10, time, true)
+    local.setUint16(12, date, true)
     local.setUint32(14, crc, true)
     local.setUint32(18, data.length, true)
     local.setUint32(22, data.length, true)
@@ -55,6 +63,8 @@ export function zip(files: Record<string, string>): Uint8Array {
     dir.setUint16(4, 20, true)
     dir.setUint16(6, 20, true)
     dir.setUint16(8, 0x0800, true)
+    dir.setUint16(12, time, true)
+    dir.setUint16(14, date, true)
     dir.setUint32(16, crc, true)
     dir.setUint32(20, data.length, true)
     dir.setUint32(24, data.length, true)

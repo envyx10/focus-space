@@ -279,13 +279,13 @@ export default function TasksPanel({ tasks, synced, saveError, localError, add, 
             if (restore) setUndo(gone)
           }}>{t('tasks.clearDone', { n: done })}</button>}
           {canSort && <button onClick={() => sortByPriority?.()}>{t('tasks.sortPriority')}</button>}
-          {tasks.length > 0 && <button onClick={() => exportJson(tasks)}>{t('tasks.export')}</button>}
           {tasks.length > 0 && (
             <button onClick={() => exportWord(tasks, t, lang)} title={t('tasks.exportWordLabel')} aria-label={t('tasks.exportWordLabel')}>
               {t('tasks.exportWord')}
             </button>
           )}
           {addMany && <button onClick={() => file.current?.click()}>{t('tasks.import')}</button>}
+          {tasks.length > 0 && <button onClick={() => exportJson(tasks)}>{t('tasks.export')}</button>}
           <input ref={file} type="file" accept={IMPORT_ACCEPT} hidden aria-label={t('tasks.importLabel')} onChange={(e) => importFile(e.target.files?.[0])} />
         </div>
       )}
