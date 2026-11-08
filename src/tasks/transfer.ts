@@ -64,3 +64,13 @@ export function parseImport(raw: string): Task[] {
   }
   return capImport(out)
 }
+
+/** Saves the list as a JSON file that parseImport reads back. */
+export function downloadTasks(tasks: Task[]): void {
+  const url = URL.createObjectURL(new Blob([serializeTasks(tasks)], { type: 'application/json' }))
+  const a = document.createElement('a')
+  a.href = url
+  a.download = 'focus-space-tareas.json'
+  a.click()
+  setTimeout(() => URL.revokeObjectURL(url), 0)
+}

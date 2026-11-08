@@ -28,11 +28,13 @@ type Actions = {
 const num = (i: number) => String(i + 1).padStart(2, '0')
 
 /** One task as a page: its title and a long free-form description. Remounted (key) per task, so drafts never leak between them. */
-function Detail({ task, index, ...a }: { task: Task; index: number } & Omit<Actions, 'add'>) {
+export function Detail({ task, index, ...a }: { task: Task; index: number } & Omit<Actions, 'add'>) {
   const t = useT()
   const [title, setTitle] = useState(task.text)
   const [desc, setDesc] = useState(task.description ?? '')
-  const [saving, setSaving] = useState(false)
+  // What the store last got: "saving" is derived from it, never set inside an effect (an effect that sets state on
+  // every keystroke chains synchronous renders while typing fast, and React drops keystrokes past its update limit).
+  const [savedText, setSavedText] = useState(task.description ?? '')
   // A task with notes opens formatted; Edit shows the raw text. An empty one is always the editor.
   const [editing, setEditing] = useState(!task.description?.trim())
   const area = useRef<HTMLTextAreaElement>(null)
@@ -45,16 +47,16 @@ function Detail({ task, index, ...a }: { task: Task; index: number } & Omit<Acti
   describe.current = a.describe
 
   const flush = () => {
-    setSaving(false)
     if (latest.current === saved.current) return
     saved.current = latest.current
+    setSavedText(latest.current)
     describe.current(task.id, latest.current)
   }
+  const saving = desc !== savedText
 
   // Autosave shortly after typing stops, and once more when leaving the task or the view.
   useEffect(() => {
     if (desc === saved.current) return
-    setSaving(true)
     const id = setTimeout(flush, SAVE_MS)
     return () => clearTimeout(id)
   }, [desc])
