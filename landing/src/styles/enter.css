@@ -1,0 +1,105 @@
+/* ---------- 07 enter: the name, full width, as heavy as the type goes ---------- */
+
+.enter {
+  position: relative;
+  min-height: 100svh;
+  padding: 22vh var(--gutter) 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: 1fr auto auto;
+  gap: var(--s5);
+}
+.mark {
+  align-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.04em;
+  font-family: var(--display);
+  font-weight: 900;
+  font-stretch: 125%;
+  /* the name fills the width between the gutters */
+  font-size: calc((100vw - 2 * var(--gutter)) / 8.95);
+  line-height: 0.8;
+  letter-spacing: -0.075em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.mark__word {
+  display: block;
+  overflow: clip;
+  overflow-clip-margin: 0.06em;
+  padding-bottom: 0.02em;
+}
+.mark__word > span {
+  display: block;
+}
+.mark__slash {
+  flex: none;
+  align-self: stretch;
+  width: 0.09em;
+  margin: -0.02em 0.14em 0;
+  background: var(--accent);
+  transform: skewX(-20deg);
+  transform-origin: 50% 100%;
+}
+.enter__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--s4);
+  flex-wrap: wrap;
+}
+.enter__actions {
+  display: flex;
+  gap: var(--s1);
+  flex-wrap: wrap;
+}
+.footer {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0 calc(var(--gutter) * -1);
+  background: var(--rule);
+  border-top: 1px solid var(--rule);
+}
+.footer__cell {
+  display: grid;
+  gap: var(--s2);
+  align-content: start;
+  padding: var(--s4) var(--gutter) var(--s5);
+  background: var(--bg);
+}
+.footer__mark {
+  font-family: var(--display);
+  font-weight: 900;
+  font-stretch: 125%;
+  font-size: clamp(26px, 2.4vw, 40px);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+}
+.footer__id .body {
+  max-width: 32ch;
+}
+.footer__list {
+  display: grid;
+  gap: 6px;
+  font-size: 15px;
+  font-weight: 500;
+}
+.footer__list a {
+  color: var(--fg);
+}
+.footer__list a:hover {
+  color: var(--accent);
+}
+.footer__base {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--s1) var(--s3);
+  padding: var(--s2) var(--gutter);
+  background: var(--bg);
+  color: var(--faint);
+}

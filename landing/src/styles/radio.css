@@ -1,0 +1,92 @@
+/* the app's lofi block, as the app draws it */
+.radio {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--s2);
+  padding: 12px 16px 14px;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.radio__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px var(--s2);
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.radio__live {
+  font-weight: 700;
+}
+.radio__state {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.radio__next {
+  padding: 4px 10px;
+  white-space: nowrap;
+  border: 1.5px solid currentColor;
+  border-radius: 999px !important; /* the app's one pill: keep it as the app draws it */
+  font: inherit;
+  font-weight: 700;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  transition: background 0.2s, color 0.2s;
+}
+.radio__next:hover {
+  background: var(--on-accent);
+  color: var(--accent);
+}
+.radio__title {
+  font-family: var(--font);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.radio__vol {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 10px;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.radio__vol i {
+  height: 2px;
+  background: color-mix(in srgb, var(--on-accent) 30%, transparent);
+}
+.radio__vol b {
+  display: block;
+  width: 60%;
+  height: 100%;
+  background: currentColor;
+}
+
+.fkey {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+}
+.fkey kbd {
+  width: 48px;
+  height: 48px;
+  font-size: 16px;
+  font-weight: 700;
+  transition: background 0.3s, color 0.3s, border-color 0.3s;
+}
+.fkey:hover kbd {
+  border-color: var(--fg);
+}
+.fkey[aria-pressed='true'] kbd {
+  background: var(--fg);
+  color: #050505;
+  border-color: var(--fg);
+}

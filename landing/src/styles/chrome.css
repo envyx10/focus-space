@@ -1,0 +1,134 @@
+/* ---------- hierarchy: label → heading → text → action, always the same steps ---------- */
+
+.stack {
+  display: grid;
+  gap: var(--s3);
+  justify-items: start;
+}
+.stack > .h-xl,
+.stack > .h-l {
+  margin-bottom: var(--s1);
+}
+.stack > .body + .body {
+  margin-top: calc(var(--s2) * -1);
+}
+
+/* ---------- the instrument chrome, fixed in the corners ---------- */
+
+.chrome {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: var(--s3) var(--gutter);
+  pointer-events: none;
+}
+.chrome > * {
+  pointer-events: auto;
+}
+.chrome__mark {
+  display: block;
+  font-family: var(--display);
+  font-size: 14px;
+  font-weight: 900;
+  font-stretch: 125%;
+  letter-spacing: 0.06em;
+  margin-bottom: var(--s1);
+}
+.chrome__id .lbl {
+  color: var(--faint);
+  transition: opacity 0.6s var(--ease-out);
+}
+/* past the cover the readings step back: only the name stays, nothing runs into the headings */
+.chrome.is-quiet .chrome__id .lbl {
+  opacity: 0;
+}
+.chrome__nav {
+  display: flex;
+  gap: var(--s3);
+  color: var(--muted);
+}
+.chrome__app {
+  color: var(--fg);
+}
+
+.rail {
+  position: fixed;
+  left: var(--gutter);
+  top: 50%;
+  z-index: 10;
+  transform: translateY(-50%);
+}
+.rail ol {
+  display: grid;
+  gap: 4px;
+}
+.rail a {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+}
+.rail__n {
+  font-family: var(--mono);
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid transparent;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--faint);
+  transition: color 0.3s, border-color 0.3s;
+}
+.rail__name {
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 0.3s, transform 0.3s var(--ease-out);
+}
+.rail a:hover .rail__n,
+.rail a:focus-visible .rail__n,
+.rail a.is-on .rail__n {
+  color: var(--fg);
+}
+.rail a:hover .rail__name,
+.rail a:focus-visible .rail__name {
+  opacity: 1;
+  transform: none;
+}
+.rail a.is-on .rail__n {
+  border-color: var(--fg);
+}
+
+/* the close takes the whole width: the index steps away */
+html[data-scene='enter'] .rail {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Focus mode (04.4): the page itself steps back and only the point remains. */
+html.is-focus .chrome,
+html.is-focus .rail,
+html.is-focus .room > :not(.room__side),
+html.is-focus .room__side > :not(.fz--focus),
+html.is-focus .fz--focus > :not(.fkey),
+html.is-focus .grain {
+  opacity: 0;
+  pointer-events: none;
+}
+.chrome,
+.rail,
+.room > *,
+.room__side > *,
+.fz--focus > * {
+  transition: opacity 0.9s var(--ease-out);
+}
+
+/* the page's content column starts clear of the rail */
+.hero__copy,
+.room,
+.details {
+  --inset: calc(var(--gutter) + var(--rail));
+}

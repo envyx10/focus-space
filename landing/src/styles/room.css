@@ -1,0 +1,174 @@
+/* ---------- 04 features: the app's one screen, laid out as the app lays it out ---------- */
+
+.features {
+  position: relative;
+}
+.features__mark {
+  position: absolute;
+  left: 0;
+  width: 1px;
+  height: 1px;
+}
+.room {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--s5) var(--s4);
+  padding: var(--s6) var(--gutter);
+}
+.room__head {
+  grid-column: 1 / -1;
+  padding-bottom: var(--s3);
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--s4);
+  flex-wrap: wrap;
+}
+.room__head .body {
+  max-width: 34ch;
+}
+.fz {
+  display: grid;
+  gap: var(--s2);
+  align-content: start;
+  justify-items: start;
+}
+.fz > .lbl:first-child,
+.mixhead > .lbl {
+  color: var(--accent);
+}
+.fz .body {
+  font-size: 15px;
+}
+
+/* the clock: the biggest thing in the room, set over the sphere */
+.fz--timer {
+  grid-column: 1 / -1;
+  justify-items: center;
+  text-align: center;
+}
+.clock {
+  display: flex;
+  align-items: baseline;
+  /* tall condensed numerals: the clock stands up like a column */
+  font-family: var(--display);
+  font-weight: 800;
+  font-stretch: 70%;
+  font-size: clamp(110px, 15vw, 260px);
+  line-height: 0.8;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+.clock__colon {
+  color: var(--accent);
+  margin: 0 0.02em;
+}
+.clock__dim {
+  color: #77766f;
+}
+.clock__note {
+  max-width: 44ch;
+}
+
+.tasklist {
+  display: grid;
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  width: 100%;
+  font-size: 16px;
+  font-weight: 500;
+}
+.tasklist li {
+  display: flex;
+  justify-content: space-between;
+  padding: 9px 12px;
+  background: var(--bg);
+  color: var(--muted);
+}
+.tasklist .is-active {
+  background: #151515;
+  color: var(--fg);
+}
+.tasklist .is-done {
+  color: var(--faint);
+  text-decoration: line-through;
+}
+
+.room__side {
+  display: grid;
+  gap: var(--s4);
+  align-content: center;
+}
+.room__side > .fz + .fz {
+  padding-top: var(--s3);
+  border-top: 1px solid var(--rule);
+}
+
+.fz--sound {
+  grid-column: 1 / -1;
+  padding-top: var(--s3);
+  border-top: 1px solid var(--rule);
+  grid-template-columns: minmax(0, 2fr) minmax(0, 4.4fr) minmax(0, 3.6fr);
+  align-items: stretch;
+  gap: var(--s3);
+  width: 100%;
+}
+.mixhead {
+  align-self: end;
+}
+.mixhead {
+  display: grid;
+  gap: var(--s2);
+}
+.mix {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+}
+.mix li {
+  position: relative;
+  display: grid;
+  gap: 4px;
+  padding: 12px 14px 14px;
+  background: var(--bg);
+}
+.mix__name {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.mix__name .lbl {
+  font-size: 10px;
+  line-height: 1.6;
+}
+.mix b {
+  font-family: var(--display);
+  font-size: 40px;
+  font-weight: 800;
+  font-stretch: 70%;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+}
+.mix .is-on b {
+  color: var(--fg);
+}
+.mix i {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 8px;
+  height: 2px;
+  background: var(--fg);
+  transform-origin: left;
+}
+.fz--sound .mix {
+  align-self: stretch;
+}
