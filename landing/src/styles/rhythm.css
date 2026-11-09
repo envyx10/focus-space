@@ -2,8 +2,7 @@
 
 .rhythm,
 .breathe,
-.faq,
-.local {
+.faq {
   position: relative;
   padding: 20vh var(--gutter) 6vh calc(var(--gutter) + var(--rail));
   display: grid;

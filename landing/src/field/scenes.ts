@@ -11,7 +11,6 @@ export type SceneId =
   | 'rhythm'
   | 'breathe'
   | 'faq'
-  | 'local'
   | 'details'
   | 'enter'
 

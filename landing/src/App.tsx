@@ -5,7 +5,6 @@ import { useScenes } from '~/motion/useScenes'
 import Breathe from '~/sections/Breathe'
 import Details from '~/sections/Details'
 import Faq from '~/sections/Faq'
-import Local from '~/sections/Local'
 import Rhythm from '~/sections/Rhythm'
 import Enter from '~/sections/Enter'
 import Features from '~/sections/Features'
@@ -40,7 +39,6 @@ export default function App() {
         <Breathe />
         <Details />
         <Faq />
-        <Local />
         <Enter />
       </main>
     </>

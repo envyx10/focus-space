@@ -33,7 +33,7 @@ export default function Enter() {
       <div className="enter__row">
         <div className="stack">
           <p className="lbl" data-reveal>
-            [ 08 ] Entra
+            [ 07 ] Entra
           </p>
           <p className="h-l" data-reveal>
             Entra en <em>tu espacio.</em>

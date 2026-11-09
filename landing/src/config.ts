@@ -11,8 +11,7 @@ export const CHAPTERS: { anchor: string; n: string; name: string; scenes: SceneI
   { anchor: 'breathe', n: '04', name: 'Respira', scenes: ['breathe'] },
   { anchor: 'details', n: '05', name: 'Los detalles', scenes: ['details'] },
   { anchor: 'faq', n: '06', name: 'Preguntas', scenes: ['faq'] },
-  { anchor: 'local', n: '07', name: 'En local', scenes: ['local'] },
-  { anchor: 'enter', n: '08', name: 'Entra', scenes: ['enter'] },
+  { anchor: 'enter', n: '07', name: 'Entra', scenes: ['enter'] },
 ]
 
 export const chapterOf = (scene: SceneId) => CHAPTERS.findIndex((c) => c.scenes.includes(scene))

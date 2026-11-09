@@ -21,8 +21,7 @@
     grid-template-columns: repeat(5, minmax(0, 1fr));
   }
   .rhythm__head,
-  .faq,
-  .local {
+  .faq {
     grid-template-columns: minmax(0, 1fr);
   }
   .faq__head {
@@ -75,8 +74,7 @@
   }
   .rhythm,
   .breathe,
-  .faq,
-  .local {
+  .faq {
     padding: 14vh var(--gutter) 4vh;
   }
   /* the cycle stands up on a phone: eight blocks read top to bottom */

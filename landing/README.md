@@ -20,7 +20,7 @@ Type: Archivo Black for display, condensed and tall in one weight (emphasis by t
 
 ## Chapters
 
-Portada · Todo en su sitio (the app's one screen, walked piece by piece) · El ritmo (one Pomodoro cycle to scale, from the app's presets) · Respira (the app's breathing guide, `breath.ts`, with the sphere swelling on each breath) · Los detalles · Preguntas (answers from the README) · En local (the quick start) · Entra.
+Portada · Todo en su sitio (the app's one screen, walked piece by piece) · El ritmo (one Pomodoro cycle to scale, from the app's presets) · Respira (the app's breathing guide, `breath.ts`, with the sphere swelling on each breath) · Los detalles · Preguntas (answers from the README) · Entra.
 
 ## Notes
 
