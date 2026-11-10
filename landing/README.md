@@ -8,9 +8,9 @@ bun run build:landing    # type-check + build to dist-landing/
 bun run preview:landing
 ```
 
-Set `VITE_APP_URL` to the app's address when deploying: every "Abrir Focus/Space" link goes there. Without it, dev points at `http://localhost:5173` and production at the GitHub repository.
+"Abrir la app" points at the deployed app, https://focus-space-envyx10.netlify.app (in dev, the local app on :5173). Set `VITE_APP_URL` to send it somewhere else, e.g. a custom domain.
 
-On Netlify, a second site from this repository: build command `bun run build:landing`, publish directory `dist-landing`.
+**Deploy**: a second Netlify site from this same repository, with the environment variable `FS_SITE=landing`. The root `netlify.toml` then builds the landing into `dist`; the app's site (without that variable) keeps building the app. The landing ships only its own `landing/public` (favicon and icon), about 1 MB.
 
 ## Art direction
 

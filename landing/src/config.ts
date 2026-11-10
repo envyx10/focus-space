@@ -1,7 +1,7 @@
 import type { SceneId } from '~/field/scenes'
 
-/** Where "Abrir Focus/Space" goes. Set VITE_APP_URL when deploying; in dev the app runs on :5173. */
-export const APP_URL: string = import.meta.env.VITE_APP_URL || (import.meta.env.DEV ? 'http://localhost:5173' : 'https://github.com/envyx10/focus-space')
+/** Where "Abrir la app" goes: the deployed app (VITE_APP_URL overrides it, e.g. for a custom domain); in dev, the local app on :5173. */
+export const APP_URL: string = import.meta.env.VITE_APP_URL || (import.meta.env.DEV ? 'http://localhost:5173' : 'https://focus-space-envyx10.netlify.app')
 export const REPO_URL = 'https://github.com/envyx10/focus-space'
 
 export const CHAPTERS: { anchor: string; n: string; name: string; scenes: SceneId[] }[] = [
