@@ -1,10 +1,9 @@
 /* The app's tokens (@/styles/tokens.css), one typeface (Inter Tight, the app's own), light weights, small caps labels. */
 :root {
   --bg: #0a0a0a; /* a switched-off CRT, never pure black */
-  --mono: 'JetBrains Mono', ui-monospace, monospace;
+  --mono: 'Inter Tight', 'Helvetica Neue', Arial, sans-serif; /* labels share the grotesque (styles/types.css) */
   --rule: #242424;
-  /* the display face: one grotesque whose width is part of the voice, from condensed to extended */
-  --display: 'Archivo', 'Inter Tight', sans-serif;
+  --display: 'Inter Tight', 'Helvetica Neue', Arial, sans-serif;
   --on-accent: #0b0b0b;
   --gutter: clamp(16px, 2.4vw, 36px);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -120,9 +119,7 @@ ul {
 }
 
 /*
- * Display: Archivo Black, condensed and tall, one weight, upper case, set solid like a poster. The emphasis
- * never changes weight or width, only tone. The extended cut of the same family is kept for the name alone
- * (the logotype), so the two widths each have one job.
+ * Display defaults; the page's final type (Swiss: Inter Tight bold, sentence case) is set in styles/types.css.
  */
 .h-xl,
 .h-l,
@@ -197,11 +194,12 @@ ul {
 }
 .reveals .split:not([data-manual]) {
   /* the same dry wipe as the cover: printed left to right, never floated in */
-  clip-path: inset(-0.25em 100% -0.25em 0);
+  clip-path: inset(-0.25em 100% -0.25em -0.3em);
   transition: clip-path 0.9s var(--ease-io);
 }
 .reveals .split[data-in] {
-  clip-path: inset(-0.25em 0% -0.25em 0);
+  /* open past the glyphs: a tightly tracked last letter overhangs its box */
+  clip-path: inset(-0.25em -0.3em -0.25em -0.3em);
 }
 
 .sr-only {

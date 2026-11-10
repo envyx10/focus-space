@@ -93,7 +93,7 @@
   }
   .walk__steps {
     display: grid;
-    grid-template-columns: repeat(6, 92px);
+    grid-template-columns: repeat(6, minmax(56px, 80px));
     gap: 4px;
   }
   .walk__steps button {

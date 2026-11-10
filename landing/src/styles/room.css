@@ -25,6 +25,12 @@
   gap: var(--s4);
   flex-wrap: wrap;
 }
+/* on the pinned room the title and the step bar always share one row */
+@media (min-width: 1101px) {
+  .room__head {
+    flex-wrap: nowrap;
+  }
+}
 .room__head .body {
   max-width: 34ch;
 }

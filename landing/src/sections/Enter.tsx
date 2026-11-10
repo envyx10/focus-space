@@ -12,7 +12,7 @@ export default function Enter() {
       const q = gsap.utils.selector(root)
       gsap
         .timeline({ scrollTrigger: { trigger: q('.mark')[0], start: 'top 85%', once: true } })
-        .fromTo(q('.mark__word'), { clipPath: 'inset(-0.2em 100% -0.2em 0)' }, { clipPath: 'inset(-0.2em 0% -0.2em 0)', duration: 0.9, stagger: 0.12, ease: 'power4.inOut' })
+        .fromTo(q('.mark__word'), { clipPath: 'inset(-0.25em 100% -0.25em -0.3em)' }, { clipPath: 'inset(-0.25em -0.3em -0.25em -0.3em)', duration: 0.9, stagger: 0.12, ease: 'power4.inOut' })
         .from(q('.mark__slash'), { scaleY: 0, duration: 1, ease: 'expo.inOut' }, 0.2)
     })
     return () => mm.revert()

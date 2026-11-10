@@ -13,7 +13,7 @@ export default function Hero() {
     mm.add(MOTION, () => {
       const q = gsap.utils.selector(root)
       // a dry wipe, line by line, left to right: the headline is printed, not floated in
-      gsap.fromTo(q('.hero__title .line'), { clipPath: 'inset(-0.25em 100% -0.25em 0)' }, { clipPath: 'inset(-0.25em 0% -0.25em 0)', duration: 0.9, stagger: 0.14, delay: 0.25, ease: 'power4.inOut' })
+      gsap.fromTo(q('.hero__title .line'), { clipPath: 'inset(-0.25em 100% -0.25em -0.3em)' }, { clipPath: 'inset(-0.25em -0.3em -0.25em -0.3em)', duration: 0.9, stagger: 0.14, delay: 0.25, ease: 'power4.inOut' })
       gsap.from(q('[data-in]'), { autoAlpha: 0, duration: 0.6, stagger: 0.06, delay: 0.9, ease: 'none' })
     })
     return () => mm.revert()

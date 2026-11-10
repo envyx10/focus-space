@@ -13,8 +13,8 @@
   align-self: center;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.04em;
+  justify-content: center;
+  gap: 0;
   font-family: var(--display);
   font-weight: 900;
   font-stretch: 125%;
@@ -27,8 +27,6 @@
 }
 .mark__word {
   display: block;
-  overflow: clip;
-  overflow-clip-margin: 0.06em;
   padding-bottom: 0.02em;
 }
 .mark__word > span {
@@ -38,7 +36,8 @@
   flex: none;
   align-self: stretch;
   width: 0.09em;
-  margin: -0.02em 0.14em 0;
+  /* a touch more on the left: the tightly tracked "s" of Focus overhangs its box towards the slash */
+  margin: -0.02em 0.14em 0 0.2em;
   background: var(--accent);
   transform: skewX(-20deg);
   transform-origin: 50% 100%;

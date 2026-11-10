@@ -16,7 +16,7 @@ On Netlify, a second site from this repository: build command `bun run build:lan
 
 **One object: the app's own sphere.** The same particles, GPU simulation and shaders as the app (`src/features/visual`), drawn on a canvas the size of the window so its currents never hit an edge. It glides between chapters, takes the accent colour, tilts towards the pointer, parts where the pointer moves, and on the cover sheds a slow trail of dust. Nothing else on the page is made of particles: the details and the close leave the stage to the words.
 
-Type: Archivo Black for display, condensed and tall in one weight (emphasis by tone only), its extended cut kept for the name as logotype; Inter Tight (the app's own) for text, justified and hyphenated; JetBrains Mono for labels. One spacing scale. The close sets the name, FOCUS/SPACE, across the full width. No screenshots.
+Type: Swiss. Inter Tight, the app's own grotesque, for everything: bold headlines in sentence case, set tight and flush left; labels in the same face; text justified and hyphenated. One spacing scale. The close sets the name, FOCUS/SPACE, across the full width. No screenshots.
 
 ## Chapters
 

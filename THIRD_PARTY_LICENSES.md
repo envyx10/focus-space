@@ -126,8 +126,8 @@ The landing is a separate build (`bun run build:landing`). Besides React and thr
 |---|---|---|
 | [gsap](https://gsap.com) | 3.15.1 | [Standard "no charge" license](https://gsap.com/standard-license) |
 
-GSAP is free to use, including commercially; its license is not an open-source one and it is not part of the app's own bundle. Its headlines use **Archivo** (SIL Open Font License 1.1), loaded from Google Fonts like the clock typefaces.
-*GSAP es de uso gratuito, también comercial; su licencia no es de código abierto y no forma parte del paquete de la app. Sus titulares usan **Archivo** (SIL Open Font License 1.1), cargada desde Google Fonts como las tipografías del reloj.*
+GSAP is free to use, including commercially; its license is not an open-source one and it is not part of the app's own bundle.
+*GSAP es de uso gratuito, también comercial; su licencia no es de código abierto y no forma parte del paquete de la app.*
 
 ## Development tools (not shipped) · Herramientas de desarrollo (no se publican)
 
