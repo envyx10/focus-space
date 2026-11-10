@@ -10,7 +10,7 @@ bun run preview:landing
 
 "Abrir la app" points at the deployed app, https://focus-space-envyx10.netlify.app (in dev, the local app on :5173). Set `VITE_APP_URL` to send it somewhere else, e.g. a custom domain.
 
-**Deploy**: a second Netlify site from this same repository, with the environment variable `FS_SITE=landing`. The root `netlify.toml` then builds the landing into `dist`; the app's site (without that variable) keeps building the app. The landing ships only its own `landing/public` (favicon and icon), about 1 MB.
+**Deploy**: a second Netlify site from this same repository, `focus-space-landing` (https://focus-space-landing.netlify.app), with the environment variable `FS_SITE=landing`. The root `netlify.toml` then builds the landing into `dist`; the app's site (without that variable) keeps building the app. The landing ships only its own `landing/public` (favicon and icon), about 1 MB.
 
 ## Art direction
 
