@@ -21,9 +21,12 @@ export default function Breathe() {
   useEffect(() => {
     if (!running) return
     let raf = 0
+    // the button can be pressed before the chapter reaches the middle of the screen: only leaving it ends the guide
+    let seen = false
     const tick = (now: number) => {
       // leaving the chapter ends the guide: the sphere goes back to its size elsewhere
-      if (field.scene !== 'breathe') {
+      if (field.scene === 'breathe') seen = true
+      else if (seen) {
         field.breath = null
         return setB(null)
       }
@@ -73,7 +76,10 @@ export default function Breathe() {
             {b ? (
               <>
                 <span className="breathe__phase">{b.phase === 'in' ? 'Inspira' : 'Suelta'}</span>
-                <span className="breathe__left">{b.left}</span>
+                {/* the countdown changes every second: kept out of the live region so screen readers hear only the phase */}
+                <span className="breathe__left" aria-hidden="true">
+                  {b.left}
+                </span>
                 <span className="lbl">
                   {b.phase === 'in' ? 'por la nariz' : 'despacio, por la boca'} · {b.count} respiraciones
                 </span>
