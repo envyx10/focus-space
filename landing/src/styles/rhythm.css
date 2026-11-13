@@ -1,0 +1,96 @@
+/* ---------- 03 rhythm: one Pomodoro cycle drawn to scale ---------- */
+
+.rhythm,
+.breathe,
+.faq {
+  position: relative;
+  padding: 20vh var(--gutter) 6vh calc(var(--gutter) + var(--rail));
+  display: grid;
+  gap: var(--s5);
+}
+.rhythm__head {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+  align-items: end;
+  gap: var(--s5);
+}
+.rhythm__pick {
+  justify-items: start;
+}
+.cycle {
+  display: flex;
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  min-height: 180px;
+}
+.cycle__b {
+  flex-basis: 0;
+  min-width: 0;
+  display: grid;
+  align-content: space-between;
+  padding: 12px 12px 14px;
+  background: var(--bg);
+  overflow: hidden;
+  transition: flex-grow 0.8s var(--ease-io);
+}
+.cycle__b--work {
+  background: var(--fg);
+  color: #0a0a0a;
+}
+.cycle__b--work .lbl {
+  color: #0a0a0a;
+}
+.cycle__b--long {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.cycle__b--long .lbl {
+  color: inherit;
+}
+.cycle__min {
+  font-family: var(--display);
+  font-weight: 900;
+  font-stretch: 70%;
+  font-size: clamp(36px, 4.4vw, 76px);
+  line-height: 0.85;
+}
+.cycle__b--short .cycle__min {
+  font-size: clamp(18px, 1.6vw, 26px);
+  color: var(--muted);
+}
+.cycle__b .lbl {
+  white-space: nowrap;
+}
+.tally {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+}
+.tally > div {
+  display: grid;
+  gap: var(--s1);
+  padding: var(--s3);
+  background: var(--bg);
+}
+.tally dd {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 900;
+  font-stretch: 72%;
+  font-size: clamp(28px, 2.6vw, 44px);
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+.tally dd.tally__note {
+  font-family: var(--font);
+  font-weight: 400;
+  font-stretch: 100%;
+  font-size: 15px;
+  line-height: 1.5;
+  text-transform: none;
+  color: var(--muted);
+}

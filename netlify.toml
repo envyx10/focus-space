@@ -1,5 +1,7 @@
+# One repository, two Netlify sites. The landing's site sets FS_SITE=landing and gets the landing built into
+# dist; every other site (the app's) builds the app exactly as before.
 [build]
-  command = "bun run build"
+  command = "if [ \"$FS_SITE\" = landing ]; then bun run build:landing --outDir ../dist; else bun run build; fi"
   publish = "dist"
 
 [build.environment]

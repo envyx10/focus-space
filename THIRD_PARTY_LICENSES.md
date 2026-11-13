@@ -117,6 +117,18 @@ The built app serves the full text of every one of these licenses, plus ours, at
 Versions are the ones in `bun.lock` when this file was written; check it for the current ones.
 *Las versiones son las de `bun.lock` al escribir este archivo; consúltalo para las actuales.*
 
+## Landing page (`landing/`) · Página del producto
+
+The landing is a separate build (`bun run build:landing`). Besides React and three.js (above), it ships one more package:
+*La landing es un build aparte (`bun run build:landing`). Además de React y three.js (arriba), incluye un paquete más:*
+
+| Package | Version | License |
+|---|---|---|
+| [gsap](https://gsap.com) | 3.15.1 | [Standard "no charge" license](https://gsap.com/standard-license) |
+
+GSAP is free to use, including commercially; its license is not an open-source one and it is not part of the app's own bundle.
+*GSAP es de uso gratuito, también comercial; su licencia no es de código abierto y no forma parte del paquete de la app.*
+
 ## Development tools (not shipped) · Herramientas de desarrollo (no se publican)
 
 `@testing-library/*`, `@types/*`, `@vitejs/plugin-react`, `jsdom`, `oxlint`, `vite` and `vitest` are MIT. `typescript` is Apache-2.0. They are only used to build and test the project.

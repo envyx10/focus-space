@@ -1,0 +1,53 @@
+/* ---------- 01 hero ---------- */
+
+.hero {
+  position: relative;
+  min-height: 100svh;
+}
+.hero__hint {
+  position: absolute;
+  top: var(--s3);
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  white-space: nowrap;
+}
+.hero__copy {
+  position: absolute;
+  left: var(--inset);
+  right: var(--gutter);
+  bottom: var(--s5);
+  display: grid;
+  gap: var(--s4);
+}
+.hero__title {
+  font-size: clamp(56px, 9.6vw, 184px);
+}
+.hero__title .line {
+  display: block;
+}
+.hero__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--s4);
+  flex-wrap: wrap;
+}
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s1);
+}
+.hero__controls {
+  position: absolute;
+  right: var(--gutter);
+  top: 128px;
+  display: grid;
+  gap: var(--s2);
+  justify-items: end;
+}
+.ctl {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+}
