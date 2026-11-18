@@ -79,3 +79,13 @@
   justify-content: space-between;
   margin-bottom: 8px;
 }
+
+.pod-video {
+  position: relative;
+}
+
+.pod-shield {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+}

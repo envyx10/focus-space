@@ -3,6 +3,8 @@ export type PodcastEmbed = { kind: 'youtube' | 'spotify' | 'apple'; src: string 
 
 const YT_ID = /^[\w-]{11}$/
 const YT_LIST = /^[\w-]{10,64}$/
+// No related videos from other channels, no annotations; enablejsapi lets the card hear play/pause.
+const YT_PARAMS = 'rel=0&iv_load_policy=3&enablejsapi=1'
 const YT_HOSTS = ['youtube.com', 'www.youtube.com', 'm.youtube.com', 'music.youtube.com']
 
 /**
@@ -23,8 +25,8 @@ export function parsePodcastUrl(input: string): PodcastEmbed | null {
   if (host === 'youtu.be' || YT_HOSTS.includes(host)) {
     const list = u.searchParams.get('list')
     const id = host === 'youtu.be' ? parts[0] : parts[0] === 'watch' ? u.searchParams.get('v') : ['live', 'embed', 'shorts'].includes(parts[0]) ? parts[1] : null
-    if (id && YT_ID.test(id)) return { kind: 'youtube', src: `https://www.youtube-nocookie.com/embed/${id}` }
-    if (parts[0] === 'playlist' && list && YT_LIST.test(list)) return { kind: 'youtube', src: `https://www.youtube-nocookie.com/embed/videoseries?list=${list}` }
+    if (id && YT_ID.test(id)) return { kind: 'youtube', src: `https://www.youtube-nocookie.com/embed/${id}?${YT_PARAMS}` }
+    if (parts[0] === 'playlist' && list && YT_LIST.test(list)) return { kind: 'youtube', src: `https://www.youtube-nocookie.com/embed/videoseries?list=${list}&${YT_PARAMS}` }
     return null
   }
 

@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { useT } from '@/i18n'
 import { parsePodcastUrl, type PodcastEmbed } from './podcastUrl'
 import './podcast.css'
@@ -8,6 +8,9 @@ type Props = { url: string; onUrl: (url: string) => void }
 // Spotify and Apple embeds have fixed heights; YouTube keeps its 16:9 video.
 const height = (e: PodcastEmbed) => (e.kind === 'spotify' ? 352 : e.kind === 'apple' ? (e.src.includes('?i=') ? 175 : 450) : undefined)
 
+const YT_ORIGIN = 'https://www.youtube-nocookie.com'
+const ytCommand = (frame: HTMLIFrameElement | null, msg: object) => frame?.contentWindow?.postMessage(JSON.stringify(msg), YT_ORIGIN)
+
 /** A link field and, once a valid link is saved, the service's own embedded player (video included). */
 export default function PodcastPlayer({ url, onUrl }: Props) {
   const t = useT()
@@ -15,6 +18,29 @@ export default function PodcastPlayer({ url, onUrl }: Props) {
   const [editing, setEditing] = useState(!embed)
   const [draft, setDraft] = useState(url)
   const [error, setError] = useState(false)
+  const frame = useRef<HTMLIFrameElement>(null)
+  // YouTube keeps its title, controls and "more videos" up while the pointer is over the video. While it plays,
+  // a clear shield takes the pointer instead so they fade out; clicking the shield pauses and gives them back.
+  const [ytPlaying, setYtPlaying] = useState(false)
+  const youtube = embed?.kind === 'youtube' && !editing
+
+  useEffect(() => {
+    if (!youtube) return
+    const onMessage = (e: MessageEvent) => {
+      if (e.origin !== YT_ORIGIN || e.source !== frame.current?.contentWindow || typeof e.data !== 'string') return
+      let data: { event?: string; info?: { playerState?: number } | number }
+      try {
+        data = JSON.parse(e.data)
+      } catch {
+        return
+      }
+      const state = data.event === 'onStateChange' ? data.info : typeof data.info === 'object' ? data.info.playerState : undefined
+      // 1 = playing, 3 = buffering (still "on"); anything else (paused, ended, cued) shows YouTube's UI again.
+      if (typeof state === 'number') setYtPlaying(state === 1 || state === 3)
+    }
+    window.addEventListener('message', onMessage)
+    return () => window.removeEventListener('message', onMessage)
+  }, [youtube])
 
   const submit = (e: FormEvent) => {
     e.preventDefault()
@@ -28,17 +54,29 @@ export default function PodcastPlayer({ url, onUrl }: Props) {
     <div className="pod">
       {embed && !editing ? (
         <>
-          <iframe
-            key={embed.src}
-            className={`pod-frame pod-${embed.kind}`}
-            src={embed.src}
-            height={height(embed)}
-            title={t('podcast.frame')}
-            allow="autoplay; encrypted-media; fullscreen; picture-in-picture; clipboard-write"
-            allowFullScreen
-            // YouTube refuses to play embeds that send no referrer (error 153).
-            referrerPolicy="strict-origin-when-cross-origin"
-          />
+          <div className="pod-video">
+            <iframe
+              key={embed.src}
+              ref={frame}
+              className={`pod-frame pod-${embed.kind}`}
+              src={youtube ? `${embed.src}&origin=${encodeURIComponent(location.origin)}` : embed.src}
+              // Ask YouTube to report play/pause (the IFrame API's own handshake).
+              onLoad={() => youtube && ytCommand(frame.current, { event: 'listening', id: 1, channel: 'widget' })}
+              height={height(embed)}
+              title={t('podcast.frame')}
+              allow="autoplay; encrypted-media; fullscreen; picture-in-picture; clipboard-write"
+              allowFullScreen
+              // YouTube refuses to play embeds that send no referrer (error 153).
+              referrerPolicy="strict-origin-when-cross-origin"
+            />
+            {youtube && ytPlaying && (
+              <button
+                className="pod-shield"
+                aria-label={t('podcast.pause')}
+                onClick={() => ytCommand(frame.current, { event: 'command', func: 'pauseVideo', args: [] })}
+              />
+            )}
+          </div>
           <div className="pod-actions">
             <button onClick={() => setEditing(true)}>{t('podcast.change')}</button>
             <button
