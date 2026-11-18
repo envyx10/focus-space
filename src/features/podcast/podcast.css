@@ -1,0 +1,86 @@
+.pod {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.pod-frame {
+  display: block;
+  width: 100%;
+  border: 0;
+  border-radius: 12px;
+  background: var(--line);
+}
+
+.pod-youtube {
+  aspect-ratio: 16 / 9;
+}
+
+.pod-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+}
+
+.pod-form input {
+  min-width: 0;
+  padding: 8px 10px;
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  font-size: 12px;
+}
+
+.pod-form input[aria-invalid] {
+  border-color: var(--accent);
+}
+
+.pod-form button,
+.pod-actions button {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 500;
+}
+
+.pod-form button {
+  padding: 0 12px;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.pod-error {
+  grid-column: 1 / -1;
+  margin: 0;
+  line-height: 1.4;
+  color: var(--accent);
+}
+
+.pod-actions {
+  display: flex;
+  gap: 16px;
+  opacity: 0.6;
+}
+
+@media (hover: hover) {
+  .pod-actions button:hover {
+    color: var(--accent);
+  }
+}
+
+/* Desktop: a floating card over the bottom-right of the focus panel, above the radio. */
+.pod-card {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  z-index: 3;
+  width: min(420px, calc(100% - 32px));
+  padding: 12px;
+  background: var(--bg);
+  border: 1px solid var(--line-strong);
+}
+
+.pod-card-head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}

@@ -1,9 +1,10 @@
-import { lazy, Suspense, type CSSProperties } from 'react'
+import { lazy, Suspense, useState, type CSSProperties } from 'react'
 import type { AppState } from '@/app/hooks/useAppState'
 import MixerBar from '@/features/audio/MixerBar'
 import AccountMenu from '@/features/auth/AccountMenu'
 import BreakCorner from '@/features/break/BreakCorner'
 import LofiBlock from '@/features/lofi/LofiBlock'
+import PodcastPlayer from '@/features/podcast/PodcastPlayer'
 import SettingsMenu from '@/features/settings/SettingsMenu'
 import FocusTasks from '@/features/tasks/components/FocusTasks'
 import TasksPanel from '@/features/tasks/components/TasksPanel'
@@ -33,6 +34,8 @@ export default function DesktopApp({ app, settingsOpen, onSettingsOpen }: Props)
   const { t, lang } = useI18n()
   const { ambient, prefs, timer, tasks, now, immersive, lofi } = app
   const activeTask = tasks.tasks.find((k) => k.active)
+  // Closing the card unmounts the embed, which stops it; the link itself stays saved.
+  const [podcastOpen, setPodcastOpen] = useState(false)
 
   return (
     <div
@@ -158,6 +161,17 @@ export default function DesktopApp({ app, settingsOpen, onSettingsOpen }: Props)
             {t('immersive.exit')}
           </button>
         )}
+        {podcastOpen && (
+          <section className="pod-card" aria-label={t('podcast.label')}>
+            <div className="pod-card-head lbl">
+              <span>{t('podcast.label')}</span>
+              <button onClick={() => setPodcastOpen(false)} aria-label={t('podcast.close')}>
+                <Icon name="close" />
+              </button>
+            </div>
+            <PodcastPlayer url={prefs.podcastUrl} onUrl={ambient.setPodcastUrl} />
+          </section>
+        )}
       </main>
 
       <section className="region-mixer" data-region="mixer">
@@ -173,6 +187,8 @@ export default function DesktopApp({ app, settingsOpen, onSettingsOpen }: Props)
           onVolume={ambient.setLofiVolume}
           station={lofi.station}
           onStation={app.selectStation}
+          podcastOpen={podcastOpen}
+          onPodcast={() => setPodcastOpen((o) => !o)}
         />
       </section>
 
