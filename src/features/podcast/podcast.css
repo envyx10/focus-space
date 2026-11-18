@@ -67,16 +67,11 @@
   }
 }
 
-/* Desktop: a floating card over the bottom-right of the focus panel, above the radio. */
+/* Desktop card: lives in the .side-rail (see app.css), so it never sits over the clock or the task list. */
 .pod-card {
-  position: absolute;
-  right: 16px;
-  bottom: 16px;
-  z-index: 3;
-  width: min(420px, calc(100% - 32px));
   padding: 12px;
   background: var(--bg);
-  border: 1px solid var(--line-strong);
+  border-top: 1px solid var(--line-strong);
 }
 
 .pod-card-head {

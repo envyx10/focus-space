@@ -42,6 +42,7 @@ export default function DesktopApp({ app, settingsOpen, onSettingsOpen }: Props)
       className="app"
       style={{ ...app.themeStyle, '--zoom': ZOOM[prefs.textScale] } as CSSProperties}
       data-immersive={immersive.immersive || undefined}
+      data-podcast={podcastOpen || undefined}
       data-muted={prefs.muted || undefined}
     >
       <header className="region-header" data-region="header">
@@ -155,12 +156,17 @@ export default function DesktopApp({ app, settingsOpen, onSettingsOpen }: Props)
             </Suspense>
           )}
         </FocusPanel>
-        {immersive.immersive && <FocusTasks tasks={tasks.tasks} />}
         {immersive.immersive && (
           <button className="exit-immersive" onClick={immersive.exit}>
             {t('immersive.exit')}
           </button>
         )}
+      </main>
+
+      {/* One rail for the focus-mode list and the podcast card: CSS docks it under the tasks or beside the clock,
+          and the card stays the same node across modes so the podcast keeps playing. */}
+      <div className="side-rail">
+        {immersive.immersive && <FocusTasks tasks={tasks.tasks} />}
         {podcastOpen && (
           <section className="pod-card" aria-label={t('podcast.label')}>
             <div className="pod-card-head lbl">
@@ -172,7 +178,7 @@ export default function DesktopApp({ app, settingsOpen, onSettingsOpen }: Props)
             <PodcastPlayer url={prefs.podcastUrl} onUrl={ambient.setPodcastUrl} />
           </section>
         )}
-      </main>
+      </div>
 
       <section className="region-mixer" data-region="mixer">
         <MixerBar prefs={prefs} onVolume={ambient.setVolume} onVariant={ambient.setVariant} onSlots={ambient.setSlots} />

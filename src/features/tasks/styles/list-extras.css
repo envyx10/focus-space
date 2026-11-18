@@ -50,15 +50,10 @@
 }
 
 /* Focus mode: the list, read-only, on the right edge. Desktop only: a phone has no room beside the clock. */
+/* Placed by .side-rail in app.css; it shrinks first when the podcast card shares the column. */
 .focus-tasks {
-  position: absolute;
-  top: 50%;
-  right: 24px;
-  z-index: 3;
-  width: min(260px, 22vw);
-  max-height: 70%;
+  min-height: 0;
   overflow: hidden;
-  transform: translateY(-50%);
   pointer-events: none;
 }
 
