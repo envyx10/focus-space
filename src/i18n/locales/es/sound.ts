@@ -29,6 +29,7 @@ export const sound = {
   'podcast.invalid': 'Enlace no válido. Pega un enlace https a un vídeo o lista de YouTube, o a un episodio o programa de Spotify o Apple Podcasts.',
   'podcast.change': 'Cambiar enlace',
   'podcast.remove': 'Quitar',
+  'podcast.pause': 'Pausar el vídeo y mostrar sus controles',
   'podcast.frame': 'Reproductor del podcast',
 
   // typefaces and scene

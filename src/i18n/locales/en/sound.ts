@@ -29,6 +29,7 @@ export const sound = {
   'podcast.invalid': 'Invalid link. Paste an https link to a YouTube video or playlist, or to a Spotify or Apple Podcasts episode or show.',
   'podcast.change': 'Change link',
   'podcast.remove': 'Remove',
+  'podcast.pause': 'Pause the video and show its controls',
   'podcast.frame': 'Podcast player',
 
   // typefaces and scene
