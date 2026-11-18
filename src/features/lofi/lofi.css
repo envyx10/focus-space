@@ -95,3 +95,17 @@
     background: color-mix(in srgb, currentColor 15%, transparent);
   }
 }
+
+.pl-podcast {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+  padding: 3px 6px;
+  border: 1px solid currentColor;
+}
+
+.pl-podcast[aria-expanded='true'] {
+  background: var(--on-accent);
+  color: var(--accent);
+}

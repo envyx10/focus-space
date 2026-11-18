@@ -96,6 +96,40 @@ button {
   border-top: 1px solid var(--line);
 }
 
+/* The podcast card gets its own row under the tasks; the clock panel spans both rows, so it keeps its size. */
+.app[data-podcast] {
+  grid-template-rows: 44px 1fr auto minmax(140px, auto);
+}
+
+.app[data-podcast] > .region-tasks {
+  grid-row: 2;
+}
+
+.app[data-podcast] > .region-focus {
+  grid-row: 2 / 4;
+}
+
+.app[data-podcast] > .region-mixer,
+.app[data-podcast] > .region-lofi {
+  grid-row: 4;
+}
+
+.side-rail {
+  position: relative;
+  z-index: 1;
+  grid-column: 1 / 5;
+  grid-row: 3;
+  min-width: 0;
+  /* a tall Spotify player must still leave room for the task list */
+  max-height: 55vh;
+  overflow: auto;
+  border-right: 1px solid var(--line);
+}
+
+.side-rail:empty {
+  display: none;
+}
+
 /* Swiss label primitives shared by every region */
 .num {
   font-size: 11px;
@@ -126,6 +160,29 @@ button {
 .app[data-immersive] > .region-focus {
   grid-column: 1 / -1;
   grid-row: 1 / -1;
+}
+
+/* Focus mode: the rail is the right-hand column beside the clock, the task list on top and the podcast under it. */
+.app[data-immersive] > .side-rail {
+  z-index: 2;
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
+  justify-self: end;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: min(260px, 22vw);
+  max-height: calc(100% - 96px);
+  margin-right: 24px;
+  border: 0;
+}
+
+.app[data-immersive] > .side-rail > .pod-card {
+  flex: none;
+  padding: 0;
+  border: 0;
+  background: none;
 }
 
 /* Top centre: the top-left corner already holds the panel number, label and small clock. */

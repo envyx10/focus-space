@@ -6,6 +6,7 @@ import { haptic } from '@/app/mobile/platform'
 import { channel, CHANNEL_IDS, nextVariant, type ChannelId } from '@/features/audio/channels'
 import type { Ambient } from '@/features/audio/useAmbient'
 import { STATIONS, type Lofi } from '@/features/lofi/useYouTubeLofi'
+import PodcastPlayer from '@/features/podcast/PodcastPlayer'
 import { useT } from '@/i18n'
 import { pad2 } from '@/shared/lib/format'
 import Icon from '@/shared/ui/Icon'
@@ -129,6 +130,11 @@ export default function SoundView({ ambient, lofi, onStation }: Props) {
             <span>{t('lofi.vol', { n: pad2(lofiPct) })}</span>
             <Slider value={prefs.lofiVolume} onChange={ambient.setLofiVolume} label={t('lofi.volume')} onAccent={!unavailable} disabled={unavailable} />
           </div>
+        </section>
+
+        <section className="m-group">
+          <h2 className="m-group-h">{t('podcast.label')}</h2>
+          <PodcastPlayer url={prefs.podcastUrl} onUrl={ambient.setPodcastUrl} />
         </section>
 
         <section className="m-group">

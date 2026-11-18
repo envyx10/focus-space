@@ -1,6 +1,7 @@
 import { channel, CHANNEL_IDS, CHANNELS, type ChannelId } from '@/features/audio/channels'
 import { CHIMES, type Chime } from '@/features/timer/alerts'
 import { TYPEFACES } from '@/features/visual/typefaces'
+import { parsePodcastUrl } from '@/features/podcast/podcastUrl'
 import { isRecord, readJSON, writeJSON } from '@/shared/lib/storage'
 import { DEFAULT_ACCENT, isHex } from './accent'
 
@@ -55,6 +56,8 @@ export type Prefs = {
   /** Highlight colour, #rrggbb. */
   accent: string
   lofiStation: number
+  /** The pasted podcast link ('' when none); re-validated on load. */
+  podcastUrl: string
   scenes: Scene[]
   /** Channels shown in the mixer, in order. */
   slots: ChannelId[]
@@ -75,6 +78,7 @@ export const DEFAULT_PREFS: Prefs = {
   textScale: 'm',
   accent: DEFAULT_ACCENT,
   lofiStation: 0,
+  podcastUrl: '',
   scenes: [],
   slots: DEFAULT_SLOTS,
 }
@@ -129,6 +133,7 @@ export function loadPrefs(): Prefs {
     textScale: TEXT_SCALES.includes(r.textScale as TextScale) ? (r.textScale as TextScale) : DEFAULT_PREFS.textScale,
     accent: isHex(r.accent) ? r.accent.toLowerCase() : DEFAULT_ACCENT,
     lofiStation: Number.isInteger(r.lofiStation) && (r.lofiStation as number) >= 0 ? (r.lofiStation as number) : 0,
+    podcastUrl: typeof r.podcastUrl === 'string' && parsePodcastUrl(r.podcastUrl) ? r.podcastUrl : '',
     scenes: parseScenes(r.scenes),
     slots: parseSlots(r.slots),
   }

@@ -115,6 +115,7 @@ export function useAmbient() {
   const setTextScale = useCallback((textScale: TextScale) => setPrefs((p) => ({ ...p, textScale })), [])
   const setAccent = useCallback((accent: string) => setPrefs((p) => ({ ...p, accent })), [])
   const setLofiStation = useCallback((lofiStation: number) => setPrefs((p) => ({ ...p, lofiStation })), [])
+  const setPodcastUrl = useCallback((podcastUrl: string) => setPrefs((p) => ({ ...p, podcastUrl })), [])
 
   const getLevels = useCallback(() => {
     const engine = engineRef.current
@@ -142,6 +143,7 @@ export function useAmbient() {
     setBreakGame,
     setTextScale,
     setLofiStation,
+    setPodcastUrl,
     setAccent,
     getLevels,
   }
