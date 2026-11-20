@@ -1,0 +1,70 @@
+/*
+ * The page's type: Swiss. Inter Tight, the app's own grotesque, for everything: bold headlines in sentence case,
+ * set tight and flush left; small labels in the same face. It overrides the base display settings (base.css),
+ * and comes last so it wins over the section and responsive sheets.
+ */
+
+/* every big, set-solid piece of type on the page */
+:root :is(.h-xl, .h-l, .h-s, .mark, .chrome__mark, .footer__mark, .clock, .mix b, .cycle__min, .tally dd, .breathe__phase, .breathe__left) {
+  font-stretch: 100%;
+}
+
+:root :is(.h-xl, .h-l, .h-s, .mark, .breathe__phase, .tally dd) {
+  text-transform: none;
+  font-weight: 700;
+}
+:root .h-xl {
+  font-size: clamp(40px, 6.3vw, 120px);
+  line-height: 0.9;
+  letter-spacing: -0.055em;
+}
+:root .hero__title {
+  font-size: clamp(42px, 6.9vw, 132px);
+}
+:root .h-l {
+  font-size: clamp(30px, 3.2vw, 54px);
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+}
+:root .h-s {
+  font-size: clamp(18px, 1.45vw, 22px);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}
+:root .lbl,
+:root :is(.box, .seg__btn, .key, .rail__n, .chrome__nav) {
+  letter-spacing: 0.02em;
+  font-weight: 600;
+}
+:root .lbl {
+  font-size: 12px;
+}
+:root :is(.clock, .mix b, .cycle__min, .breathe__left) {
+  font-weight: 700;
+  letter-spacing: -0.06em;
+}
+:root .clock {
+  font-size: clamp(100px, min(12vw, 19vh), 210px);
+}
+:root .mark {
+  font-weight: 800;
+  letter-spacing: -0.065em;
+  font-size: calc((100vw - 2 * var(--gutter)) / 5.7);
+}
+:root :is(.chrome__mark, .footer__mark) {
+  letter-spacing: -0.02em;
+}
+
+/* ---------- phones: one step smaller for the wider faces ---------- */
+
+@media (max-width: 820px) {
+  :root .h-xl {
+    font-size: 10.6vw;
+  }
+  :root .hero__title {
+    font-size: 12.2vw;
+  }
+  :root .clock {
+    font-size: 22vw;
+  }
+}

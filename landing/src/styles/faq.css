@@ -1,0 +1,62 @@
+/* ---------- 06 questions ---------- */
+
+.faq {
+  grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+  align-items: start;
+}
+.faq__head {
+  position: sticky;
+  top: 120px;
+}
+.faq__list {
+  display: grid;
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+}
+.qa {
+  background: var(--bg);
+}
+.qa summary {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--s3);
+  padding: var(--s3);
+  cursor: pointer;
+  list-style: none;
+  transition: background 0.2s;
+}
+.qa summary::-webkit-details-marker {
+  display: none;
+}
+.qa summary:hover {
+  background: #121212;
+}
+.qa summary .lbl {
+  color: var(--accent);
+}
+.qa__sign {
+  position: relative;
+  width: 14px;
+  height: 14px;
+}
+.qa__sign::before,
+.qa__sign::after {
+  content: '';
+  position: absolute;
+  inset: 6px 0 auto;
+  height: 2px;
+  background: var(--fg);
+  transition: transform 0.3s var(--ease-out);
+}
+.qa__sign::after {
+  transform: rotate(90deg);
+}
+.qa[open] .qa__sign::after {
+  transform: rotate(0deg);
+}
+.qa .body {
+  padding: 0 var(--s3) var(--s3) calc(var(--s3) * 2 + 2ch);
+  max-width: 64ch;
+}

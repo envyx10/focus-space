@@ -1,0 +1,58 @@
+/* ---------- 04 breathe: the app's guide, with the sphere on the right ---------- */
+
+.breathe {
+  min-height: 100vh;
+  align-content: center;
+}
+.breathe__copy {
+  max-width: 620px;
+}
+.breathe__ctl {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  flex-wrap: wrap;
+}
+.breathe__now {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  /* centred on the button: same height, no extra room above or below */
+  min-height: 48px;
+  flex-wrap: wrap;
+}
+.breathe__phase {
+  font-family: var(--display);
+  font-weight: 900;
+  font-stretch: 72%;
+  font-size: 40px;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.breathe__left {
+  font-family: var(--display);
+  font-weight: 900;
+  font-stretch: 70%;
+  font-size: 56px;
+  line-height: 1;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.why {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  max-width: 900px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+}
+.why li {
+  display: grid;
+  gap: var(--s2);
+  align-content: start;
+  padding: var(--s3);
+  background: var(--bg);
+}
+.breathe__note {
+  color: var(--faint);
+}

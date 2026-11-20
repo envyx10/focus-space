@@ -1,0 +1,146 @@
+/* the walk: a step bar in the header and a reticle that slides to the lit piece */
+.walk {
+  display: none;
+}
+.reticle {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  --c: var(--accent);
+  background:
+    linear-gradient(var(--c), var(--c)) top left / 22px 2px,
+    linear-gradient(var(--c), var(--c)) top left / 2px 22px,
+    linear-gradient(var(--c), var(--c)) top right / 22px 2px,
+    linear-gradient(var(--c), var(--c)) top right / 2px 22px,
+    linear-gradient(var(--c), var(--c)) bottom left / 22px 2px,
+    linear-gradient(var(--c), var(--c)) bottom left / 2px 22px,
+    linear-gradient(var(--c), var(--c)) bottom right / 22px 2px,
+    linear-gradient(var(--c), var(--c)) bottom right / 2px 22px;
+  background-repeat: no-repeat;
+  transition:
+    left 0.75s var(--ease-io),
+    top 0.75s var(--ease-io),
+    width 0.75s var(--ease-io),
+    height 0.75s var(--ease-io);
+}
+.reticle .lbl {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 6px);
+  color: var(--accent);
+  font-weight: 700;
+  white-space: nowrap;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reticle {
+    transition: none;
+  }
+}
+
+/* Wide screens: the room holds still and the scroll walks through it, one piece lit at a time. */
+@media (min-width: 1101px) and (min-height: 740px) {
+  .features {
+    --step: 65vh;
+    height: calc(6 * var(--step) + 100svh);
+  }
+  .room {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 5fr) minmax(0, 3fr);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    gap: var(--s3) var(--s5);
+    padding: 84px var(--gutter) var(--s3) var(--inset);
+  }
+  .fz--tasks {
+    grid-column: 1;
+    grid-row: 2;
+    align-self: center;
+  }
+  .fz--timer {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: center;
+  }
+  .room__side {
+    grid-column: 3;
+    grid-row: 2;
+    gap: var(--s3);
+  }
+  .room__side > .fz + .fz {
+    padding-top: var(--s2);
+  }
+  .fz {
+    gap: 12px;
+  }
+  .clock {
+    font-size: clamp(110px, min(14vw, 22vh), 240px);
+  }
+  .walk {
+    display: grid;
+    gap: 10px;
+    justify-items: end;
+    align-self: end;
+  }
+  .walk__now {
+    color: var(--fg);
+  }
+  .walk__now b {
+    color: var(--accent);
+  }
+  .walk__hint {
+    color: var(--faint);
+  }
+  .walk__steps {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(56px, 80px));
+    gap: 4px;
+  }
+  .walk__steps button {
+    display: grid;
+    justify-items: start;
+    gap: 2px;
+    width: 100%;
+    padding-top: 10px;
+    text-align: left;
+    background: linear-gradient(var(--rule), var(--rule)) top / 100% 3px no-repeat;
+    transition: background-size 0.4s;
+  }
+  .walk__steps button .lbl {
+    font-size: 10px;
+    color: var(--faint);
+    transition: color 0.3s;
+  }
+  .walk__steps button.is-past {
+    background-image: linear-gradient(#77766f, #77766f);
+  }
+  .walk__steps button.is-on {
+    background-image: linear-gradient(var(--accent), var(--accent));
+  }
+  .walk__steps button.is-on .lbl,
+  .walk__steps button:hover .lbl {
+    color: var(--fg);
+  }
+  /* the room assembles as you walk it: pieces still to come are not there yet, the ones seen stay, dimmed */
+  .room .fz,
+  .reveals .room .fz[data-reveal] {
+    transition:
+      opacity 0.6s var(--ease-out),
+      transform 0.7s var(--ease-out);
+  }
+  .room .fz.is-ahead,
+  .reveals .room .fz.is-ahead[data-reveal] {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  .room .fz.is-past,
+  .reveals .room .fz.is-past[data-reveal] {
+    opacity: 0.32;
+    transform: none;
+  }
+  .room .fz.is-on,
+  .reveals .room .fz.is-on[data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}

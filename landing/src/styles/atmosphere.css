@@ -1,0 +1,70 @@
+/* ---------- the room: black, a faint light at the centre, a fine film of grain ---------- */
+
+.atmo {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+/* the app's sphere, on a canvas the size of the window so its currents never hit an edge */
+.sphere {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.sphere canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.sphere--static {
+  background: radial-gradient(16vmin 16vmin at 50% 38%, rgba(236, 235, 230, 0.08), transparent 70%);
+}
+
+/* CRT scanlines: the faintest horizontal sweep over everything below the words */
+.atmo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, transparent 0 2px, rgba(0, 0, 0, 0.22) 2px 4px);
+  z-index: 3;
+}
+.sphere::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, transparent 0 2px, rgba(0, 0, 0, 0.18) 2px 4px);
+}
+
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0.035;
+}
+.grain > div {
+  position: absolute;
+  inset: -50%;
+  background-size: 180px 180px;
+  animation: grain 1.2s steps(5) infinite;
+}
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-6%, 4%); }
+  40% { transform: translate(5%, -8%); }
+  60% { transform: translate(-10%, -3%); }
+  80% { transform: translate(8%, 6%); }
+  100% { transform: translate(0, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .grain > div {
+    animation: none;
+  }
+}

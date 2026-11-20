@@ -16,10 +16,14 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "test": "vitest run",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "dev:landing": "vite --config landing/vite.config.ts",
+    "build:landing": "tsc -p landing/tsconfig.json && vite build --config landing/vite.config.ts",
+    "preview:landing": "vite preview --config landing/vite.config.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.118.0",
+    "gsap": "^3.15.1",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "react-markdown": "^10.1.0",
