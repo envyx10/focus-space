@@ -42,7 +42,6 @@ export default function DesktopApp({ app, settingsOpen, onSettingsOpen }: Props)
       className="app"
       style={{ ...app.themeStyle, '--zoom': ZOOM[prefs.textScale] } as CSSProperties}
       data-immersive={immersive.immersive || undefined}
-      data-podcast={podcastOpen || undefined}
       data-muted={prefs.muted || undefined}
     >
       <header className="region-header" data-region="header">
@@ -163,19 +162,23 @@ export default function DesktopApp({ app, settingsOpen, onSettingsOpen }: Props)
         )}
       </main>
 
-      {/* One rail for the focus-mode list and the podcast card: CSS docks it under the tasks or beside the clock,
-          and the card stays the same node across modes so the podcast keeps playing. */}
+      {/* One rail for the focus-mode list and the link card: CSS docks it under the tasks or beside the clock,
+          and the card stays the same node across modes so the player keeps playing. Closed, the card is just its
+          header bar, so the button sits where the player opens. Focus mode only keeps an open card. */}
       <div className="side-rail">
         {immersive.immersive && <FocusTasks tasks={tasks.tasks} />}
-        {podcastOpen && (
+        {(podcastOpen || !immersive.immersive) && (
           <section className="pod-card" aria-label={t('podcast.label')}>
-            <div className="pod-card-head lbl">
+            <button
+              className="pod-card-head lbl"
+              aria-expanded={podcastOpen}
+              aria-label={podcastOpen ? t('podcast.close') : t('podcast.open')}
+              onClick={() => setPodcastOpen((o) => !o)}
+            >
               <span>{t('podcast.label')}</span>
-              <button onClick={() => setPodcastOpen(false)} aria-label={t('podcast.close')}>
-                <Icon name="close" />
-              </button>
-            </div>
-            <PodcastPlayer url={prefs.podcastUrl} onUrl={ambient.setPodcastUrl} />
+              <Icon name={podcastOpen ? 'close' : 'plus'} />
+            </button>
+            {podcastOpen && <PodcastPlayer url={prefs.podcastUrl} onUrl={ambient.setPodcastUrl} />}
           </section>
         )}
       </div>
@@ -192,10 +195,7 @@ export default function DesktopApp({ app, settingsOpen, onSettingsOpen }: Props)
           onToggle={lofi.toggle}
           onVolume={ambient.setLofiVolume}
           station={lofi.station}
-          onStation={app.selectStation}
-          podcastOpen={podcastOpen}
-          onPodcast={() => setPodcastOpen((o) => !o)}
-        />
+          onStation={app.selectStation}        />
       </section>
 
       {!prefs.calm && <Grain />}

@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 10px;
   background: var(--accent);
   color: var(--on-accent);
 }
@@ -13,13 +14,26 @@
   color: var(--fg);
 }
 
-.pl-row {
+/* The column is only a third of the screen: each piece stays on one line and the row wraps instead. */
+.pl-row,
+.pl-row > span {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+}
+
+.pl-row {
   justify-content: space-between;
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   font-weight: 500;
+}
+
+.pl-play,
+.pl-station {
+  white-space: nowrap;
 }
 
 .pl-play {
@@ -34,21 +48,11 @@
 }
 
 .pl-title {
-  font-size: 22px;
+  font-size: clamp(17px, 1.6vw, 22px);
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1;
 }
-
-.pl-mid {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 12px;
-}
-
-
-
 
 .pl-vol {
   display: grid;
@@ -80,7 +84,6 @@
 }
 
 .pl-station {
-  margin-left: 10px;
   padding: 2px 8px;
   border: 1px solid currentColor;
   border-radius: 999px;
@@ -94,18 +97,4 @@
 .pl-station:focus-visible {
     background: color-mix(in srgb, currentColor 15%, transparent);
   }
-}
-
-.pl-podcast {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-weight: 700;
-  padding: 3px 6px;
-  border: 1px solid currentColor;
-}
-
-.pl-podcast[aria-expanded='true'] {
-  background: var(--on-accent);
-  color: var(--accent);
 }

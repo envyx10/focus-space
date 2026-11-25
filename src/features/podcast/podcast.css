@@ -74,10 +74,23 @@
   border-top: 1px solid var(--line-strong);
 }
 
+/* The card's header is its open/close toggle; closed, it is all the card shows. */
 .pod-card-head {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.pod-card-head[aria-expanded='true'] {
   margin-bottom: 8px;
+}
+
+@media (hover: hover) {
+  .pod-card-head:hover {
+    color: var(--accent);
+    opacity: 1;
+  }
 }
 
 .pod-video {
