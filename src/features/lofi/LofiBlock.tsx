@@ -12,15 +12,12 @@ type Props = {
   onVolume: (v: number) => void
   station?: number
   onStation?: (i: number) => void
-  /** Shows or hides the podcast card. */
-  onPodcast?: () => void
-  podcastOpen?: boolean
 }
 
 const STEP = 0.05
 const round = (v: number) => Math.round(Math.min(1, Math.max(0, v)) * 100) / 100
 
-export default function LofiBlock({ status, playing, volume, onToggle, onVolume, station = 0, onStation, onPodcast, podcastOpen }: Props) {
+export default function LofiBlock({ status, playing, volume, onToggle, onVolume, station = 0, onStation }: Props) {
   const t = useT()
   const pct = Math.round(volume * 100)
   const unavailable = status === 'unavailable'
@@ -48,20 +45,13 @@ export default function LofiBlock({ status, playing, volume, onToggle, onVolume,
           )}
         </span>
       </div>
-      <div className="pl-mid">
-        <div className="pl-title">
-          {current.title.split('\n').map((line, i) => (
-            <span key={line}>
-              {i > 0 && <br />}
-              {line}
-            </span>
-          ))}
-        </div>
-        {onPodcast && (
-          <button className="pl-podcast" aria-expanded={podcastOpen} onClick={onPodcast}>
-            {t('podcast.label')}
-          </button>
-        )}
+      <div className="pl-title">
+        {current.title.split('\n').map((line, i) => (
+          <span key={line}>
+            {i > 0 && <br />}
+            {line}
+          </span>
+        ))}
       </div>
       <div
         className="pl-vol"

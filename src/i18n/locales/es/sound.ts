@@ -20,17 +20,17 @@ export const sound = {
   'lofi.volume': 'Volumen lofi',
   'lofi.vol': 'Vol {n}',
 
-  // podcast
-  'podcast.label': 'Podcast',
-  'podcast.open': 'Abrir podcast',
-  'podcast.close': 'Cerrar podcast',
+  // your own link: a YouTube video or playlist (music too), or a Spotify / Apple podcast
+  'podcast.label': 'Tu enlace',
+  'podcast.open': 'Abrir tu enlace',
+  'podcast.close': 'Cerrar tu enlace',
   'podcast.placeholder': 'Pega un enlace de YouTube, Spotify o Apple Podcasts',
   'podcast.load': 'Cargar',
   'podcast.invalid': 'Enlace no válido. Pega un enlace https a un vídeo o lista de YouTube, o a un episodio o programa de Spotify o Apple Podcasts.',
   'podcast.change': 'Cambiar enlace',
   'podcast.remove': 'Quitar',
   'podcast.pause': 'Pausar el vídeo y mostrar sus controles',
-  'podcast.frame': 'Reproductor del podcast',
+  'podcast.frame': 'Reproductor de tu enlace',
 
   // typefaces and scene
   'type.label': 'Tipo',

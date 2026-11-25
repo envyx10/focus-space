@@ -47,7 +47,8 @@ button {
   position: relative;
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  grid-template-rows: 44px 1fr minmax(140px, auto);
+  /* row 3 is the link card under the tasks; the clock panel spans rows 2-3, so it keeps its size */
+  grid-template-rows: 44px 1fr auto minmax(140px, auto);
   /* --zoom is the text-size setting: the whole grid scales and the viewport it must fit shrinks to match */
   zoom: var(--zoom, 1);
   height: calc(100vh / var(--zoom, 1));
@@ -75,43 +76,29 @@ button {
 
 .region-tasks {
   grid-column: 1 / 5;
+  grid-row: 2;
   border-right: 1px solid var(--line);
   overflow: auto;
 }
 
 .region-focus {
   grid-column: 5 / 13;
+  grid-row: 2 / 4;
   position: relative;
   overflow: hidden;
 }
 
 .region-mixer {
   grid-column: 1 / 9;
+  grid-row: 4;
   min-width: 0;
   border-top: 1px solid var(--line);
 }
 
 .region-lofi {
   grid-column: 9 / 13;
-  border-top: 1px solid var(--line);
-}
-
-/* The podcast card gets its own row under the tasks; the clock panel spans both rows, so it keeps its size. */
-.app[data-podcast] {
-  grid-template-rows: 44px 1fr auto minmax(140px, auto);
-}
-
-.app[data-podcast] > .region-tasks {
-  grid-row: 2;
-}
-
-.app[data-podcast] > .region-focus {
-  grid-row: 2 / 4;
-}
-
-.app[data-podcast] > .region-mixer,
-.app[data-podcast] > .region-lofi {
   grid-row: 4;
+  border-top: 1px solid var(--line);
 }
 
 .side-rail {

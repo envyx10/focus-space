@@ -168,7 +168,11 @@ export default function SettingsMenu(p: Props) {
                 {ACCENTS.map((c) => (
                   <button key={c} className="set-swatch" style={{ background: c }} aria-label={c} aria-pressed={prefs.accent === c} onClick={() => p.onAccent(c)} />
                 ))}
-                <input className="set-color" type="color" value={prefs.accent} title={t('settings.accentCustom')} aria-label={t('settings.accentCustom')} onChange={(e) => p.onAccent(e.target.value.toLowerCase())} />
+                {/* A "+" square, not a colour square: it must not read as one more preset. A custom accent fills it. */}
+                <label className="set-swatch set-color" title={t('settings.accentCustom')} data-on={!ACCENTS.some((c) => c === prefs.accent) || undefined}>
+                  <input type="color" value={prefs.accent} aria-label={t('settings.accentCustom')} onChange={(e) => p.onAccent(e.target.value.toLowerCase())} />
+                  <Icon name="plus" />
+                </label>
               </span>
             </div>
             <button
